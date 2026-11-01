@@ -1,0 +1,132 @@
+/* DarkGradientBg from the supplied 21st.dev example, adapted to the existing
+   Django landing page. All layers are decorative and never intercept input. */
+body.landing-page {
+  background: #05090c;
+  color: #f3f7f7;
+}
+body.landing-page .site-header {
+  background: #0d161a;
+  border-color: #30434a;
+  color: #f3f7f7;
+}
+body.landing-page .brand-mark { background: #b2e9e8; color: #102d35; }
+body.landing-page .header-action { background: #a8e5ef; color: #102d35; }
+body.landing-page .header-action:hover { background: #d0f3f6; }
+
+body.landing-page main {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: radial-gradient(100% 35% at 0% 0%, #2e2e2e 0%, #05090c 100%);
+}
+body.landing-page main::before,
+body.landing-page main::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+}
+/* Skewed blue streaks fade away from the top, as in the supplied component. */
+body.landing-page main::before {
+  /* Limit the moving layer to the opening section, not the full page. */
+  inset: -100px -100px auto;
+  height: 1550px;
+  background: repeating-linear-gradient(135deg,
+    transparent 0%, transparent 7%, rgba(0,207,255,.28) 7.3%,
+    rgba(0,207,255,.11) 9%, transparent 10%, transparent 19%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, rgba(0,0,0,.65) 450px, transparent 1300px);
+  mask-image: linear-gradient(to bottom, #000 0, rgba(0,0,0,.65) 450px, transparent 1300px);
+  animation: landing-light-drift 12s ease-in-out infinite alternate;
+}
+@keyframes landing-light-drift {
+  from { transform: translate3d(-60px, -45px, 0); }
+  to { transform: translate3d(60px, 45px, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.landing-page main::before { animation: none; }
+}
+/* A locally rendered dot texture replaces the remote 21st.dev texture asset. */
+body.landing-page main::after {
+  opacity: .12;
+  background-image: radial-gradient(circle at 1px 1px, #fff 1px, transparent 0);
+  background-size: 20px 20px;
+}
+body.landing-page .hero,
+body.landing-page .hero-copy,
+body.landing-page .discover { background: transparent; }
+body.landing-page .hero h1 { color: #fff; }
+body.landing-page .hero h1 em { color: #a8e5ef; }
+body.landing-page .guide-heading, body.landing-page .hero-description,
+body.landing-page .suggestions, body.landing-page .quick-explore-label { color: #d4e5e9; }
+body.landing-page .guide-heading span:first-child { color: #b9ebf3; }
+body.landing-page .guide-heading span:first-child::before { background: #6ad3e8; }
+body.landing-page .search button { background: #a8e5ef; color: #102d35; }
+body.landing-page .search button:hover { background: #d0f3f6; }
+body.landing-page .search button:active { background: #83d5e3; }
+body.landing-page .hero-visual,
+body.landing-page .hero-photo-caption { background: #162a30; }
+body.landing-page .photo-index { border-color: #527078; }
+body.landing-page .quick-explore a { border-color: #5a747b; color: #f3f7f7; }
+body.landing-page .quick-explore a:hover,
+body.landing-page .quick-explore a:active { background: #1c343b; }
+
+/* Keep reading surfaces, labels, and controls legible on the dark field. */
+body.landing-page :is(.section-heading h2, .intro-heading h2, .workflow-heading h2,
+.steps h3, .empty-state h3) { color: #f5f8f8; }
+body.landing-page :is(.section-kicker, .section-heading .section-kicker) { color: #9ce0eb; }
+body.landing-page :is(.section-heading p:not(.section-kicker), .intro-content > p,
+.directory-meta, .carousel-hint, .map-attribution, .empty-state p, .steps p) { color: #c0d1d5; }
+body.landing-page .directory-meta strong { color: #f3f7f7; }
+body.landing-page .text-link { color: #fff; border-color: #a8e5ef; }
+body.landing-page .filters a { border-color: #6c858b; color: #ecf6f7; }
+body.landing-page .filters a:hover,
+body.landing-page .filters a.selected { background: #a8e5ef; border-color: #a8e5ef; color: #102d35; }
+body.landing-page .carousel-controls button { background: #182c32; border-color: #759198; color: #f3f7f7; }
+body.landing-page .carousel-controls button:hover { background: #28464f; border-color: #a8e5ef; }
+body.landing-page .places-grid .place-card,
+body.landing-page .places-grid .place-card:first-child { background: #17272c; border: 1px solid #39545a; }
+body.landing-page :is(.card-heading h3, .card-detail, .rating) { color: #f5f8f8; }
+body.landing-page :is(.address, .description, .place-tags span, .rating span, .save-link) { color: #c5d9dc; }
+body.landing-page :is(.osm-source, .map-attribution a) { color: #a8e5ef; }
+body.landing-page .card-bottom { border-color: #526b70; }
+body.landing-page .button-outline { border-color: #a8e5ef; color: #f3f7f7; }
+body.landing-page .button-outline:hover { background: #a8e5ef; color: #102d35; }
+body.landing-page .empty-state { border-color: #6c858b; background: #14242a; }
+body.landing-page .introduction { background: #162b31; border: 1px solid #39545a; }
+body.landing-page .interest-links a { border-color: #526b70; color: #f3f7f7; }
+body.landing-page .interest-links a:hover { color: #a8e5ef; }
+body.landing-page .steps > div, body.landing-page .steps > div:last-child { border-color: #526b70; }
+body.landing-page .steps > div > span { color: #a8e5ef; }
+body.landing-page .workflow .button, body.landing-page .empty-state .button { background: #a8e5ef; color: #102d35; }
+body.landing-page .workflow .button:hover, body.landing-page .empty-state .button:hover { background: #d0f3f6; }
+body.landing-page .site-footer { background: #0d161a; border-top: 1px solid #30434a; }
+body.landing-page :focus-visible { outline-color: #f6bd82; }
+@media (hover: none) {
+  body.landing-page .quick-explore a:hover { background: transparent; }
+  body.landing-page .quick-explore a:active { background: #1c343b; }
+  body.landing-page .search button:hover { background: #a8e5ef; }
+  body.landing-page .search button:active { background: #83d5e3; }
+}
+
+/* Scroll reveals are added only when the browser can observe them. Content is
+   visible by default, and keyboard focus never waits for an animation. */
+body.landing-page .landing-reveal {
+  transition: opacity 500ms ease-out, transform 500ms cubic-bezier(.22, 1, .36, 1);
+}
+body.landing-page .landing-reveal.is-reveal-pending {
+  opacity: 0;
+  transform: translateY(24px);
+}
+body.landing-page .landing-reveal.is-reveal-pending:focus-within {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.landing-page .landing-reveal.is-reveal-pending {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

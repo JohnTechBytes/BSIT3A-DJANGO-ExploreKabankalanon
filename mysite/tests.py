@@ -39,6 +39,8 @@ class HomepageTests(TestCase):
         self.assertContains(response, "Existing local place")
         self.assertContains(response, "Existing description")
         self.assertContains(response, "css/design-craft.css")
+        self.assertContains(response, "css/landing-pattern.css")
+        self.assertContains(response, "js/landing-reveal.js")
         self.assertContains(response, "4.5")
         self.assertNotContains(response, "Unverified place")
         self.assertNotContains(response, "Inactive place")
