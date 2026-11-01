@@ -6,6 +6,15 @@
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (motion.matches) return;
 
+    // Stop the decorative drift when its opening section is out of view.
+    const hero = document.querySelector('.hero');
+    const main = document.querySelector('main');
+    if (hero && main) {
+        new IntersectionObserver(entries => {
+            main.classList.toggle('background-paused', !entries[0].isIntersecting);
+        }).observe(hero);
+    }
+
     const targets = document.querySelectorAll([
         '.discover .section-heading', '.discover .filters', '.discover .directory-meta',
         '.discover .places-carousel', '.discover .empty-state', '.discover .browse-more',
