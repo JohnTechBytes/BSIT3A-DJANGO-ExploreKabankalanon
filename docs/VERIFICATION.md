@@ -21,7 +21,7 @@ python manage.py test
 ```
 
 ```
-Ran 236 tests in 43.154s
+Ran 237 tests in 43.766s
 OK (skipped=15)
 ```
 
@@ -147,7 +147,7 @@ python manage.py seed_kabankalan
 python manage.py seed_city_information
 python manage.py createsuperuser
 
-python manage.py test          # 236 tests, 15 skipped
+python manage.py test          # 237 tests, 15 skipped
 python manage.py check         # System check identified no issues
 python manage.py check --database default          # the content scope system check
 python manage.py check_content_scope              # the scope audit

@@ -46,6 +46,18 @@ class HomepageTests(TestCase):
         self.assertNotContains(response, "Inactive place")
         self.assertNotContains(response, "Outside city")
 
+    def test_city_hall_background_is_local_and_featured_cathedral_remains(self):
+        from django.contrib.staticfiles import finders
+        from pathlib import Path
+
+        background = finders.find('img/places/kabankalan-city-hall-background.jpg')
+        stylesheet = finders.find('css/landing-pattern.css')
+        self.assertIsNotNone(background)
+        self.assertIn('kabankalan-city-hall-background.jpg', Path(stylesheet).read_text())
+        response = self.render_home()
+        self.assertContains(response, 'img/places/new-kabankalan-cathedral.jpg')
+        self.assertContains(response, 'Lightningscale / Wikimedia Commons')
+
     def test_landing_search_and_main_links_use_existing_routes(self):
         response = self.render_home()
         self.assertContains(response, f'action="{reverse("places:smart_search")}"')

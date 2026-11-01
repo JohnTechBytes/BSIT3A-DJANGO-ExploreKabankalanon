@@ -10,3 +10,12 @@
 The image shows the new Saint Francis Xavier Cathedral in Barangay Talubangi.
 It is not the 2013 photograph of the former cathedral (now Santo Niño Shrine).
 OpenStreetMap provides map information; this photograph is sourced from Wikimedia Commons.
+
+# Kabankalan City Hall landing background
+
+- File: `kabankalan-city-hall-background.jpg` (1,200 × 675 pixels).
+- Source: photograph supplied by the user; original creator, source and license
+  were not supplied and have not been verified.
+- Changes: converted to JPEG and softly blurred for use as a decorative
+  background; the page additionally darkens, scales and crops it for contrast.
+- Confirm the creator and permission/license before publishing the site.

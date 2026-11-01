@@ -56,6 +56,23 @@ body.landing-page main::after {
 body.landing-page .hero,
 body.landing-page .hero-copy,
 body.landing-page .discover { background: transparent; }
+/* The user-supplied City Hall image is pre-blurred once, rather than applying
+   a costly live filter. The translucent layer keeps copy and controls legible. */
+body.landing-page .hero { position: relative; isolation: isolate; }
+body.landing-page .hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .32;
+  background: url('../img/places/kabankalan-city-hall-background.jpg') center 42% / cover no-repeat;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 100%);
+}
+@media (max-width: 720px) {
+  body.landing-page .hero::before { background-size: auto 540px; background-position: center top; }
+}
 body.landing-page .hero h1 { color: #fff; }
 body.landing-page .hero h1 em { color: #a8e5ef; }
 body.landing-page .guide-heading, body.landing-page .hero-description,
