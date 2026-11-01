@@ -12,7 +12,7 @@ paper about "the system works" can be re-run in a few minutes.
 
 ## 1. Automated test suite
 
-The result below was refreshed on 31 October 2026 against the current redesign
+The result below was refreshed on 1 November 2026 against the current redesign
 working tree using SQLite. Other historical audit results retain their original
 build and date.
 
@@ -21,7 +21,7 @@ python manage.py test
 ```
 
 ```
-Ran 235 tests in 30.714s
+Ran 236 tests in 43.154s
 OK (skipped=15)
 ```
 
@@ -147,7 +147,7 @@ python manage.py seed_kabankalan
 python manage.py seed_city_information
 python manage.py createsuperuser
 
-python manage.py test          # 235 tests, 15 skipped
+python manage.py test          # 236 tests, 15 skipped
 python manage.py check         # System check identified no issues
 python manage.py check --database default          # the content scope system check
 python manage.py check_content_scope              # the scope audit

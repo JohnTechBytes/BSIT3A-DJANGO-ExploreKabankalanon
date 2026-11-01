@@ -76,3 +76,61 @@ body.auth-body .auth-brand-panel {
 }
 body.auth-body .auth-logo-mark { background: #a8e5ef; color: #102d35; }
 body.auth-body .auth-eyebrow { color: #a8e5ef !important; }
+
+/* The remaining directory uses the same field-guide cover and readable cards. */
+body.discovery-page { background: #081115; }
+body.discovery-page .discovery { color: #e6f1f3; }
+body.discovery-page .discovery-header {
+  padding: clamp(28px, 4vw, 48px);
+  border: 0;
+  background: radial-gradient(ellipse at 0% 0%, rgba(110,145,151,.22), transparent 65%), repeating-linear-gradient(135deg, transparent 0 110px, rgba(0,207,255,.13) 112px, rgba(0,207,255,.03) 145px, transparent 160px 275px), #091317;
+}
+body.discovery-page .discovery-header h1 { color: #fff; font-family: EKFraunces, Georgia, serif; font-weight: 560; }
+body.discovery-page .discovery-header p { color: #d4e5e9; }
+body.discovery-page .discovery-header .discovery-link { background: #a8e5ef; color: #102d35; }
+body.discovery-page .discovery-header .discovery-link:hover { background: #d0f3f6; color: #102d35; }
+body.discovery-page .discovery-pagination a { color: #a8e5ef; }
+
+/* When motion is supported, only the decorative light moves; content and
+   native controls remain still. The static background is the no-JS fallback. */
+.public-motion-surface {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.public-motion-surface.has-motion-layer {
+  background: radial-gradient(ellipse at 0% 0%, rgba(110,145,151,.22), transparent 65%), #091317 !important;
+}
+.public-motion-layer {
+  position: absolute;
+  z-index: -1;
+  inset: -85px;
+  pointer-events: none;
+  background: repeating-linear-gradient(135deg, transparent 0 110px, rgba(0,207,255,.22) 112px, rgba(0,207,255,.06) 145px, transparent 160px 275px);
+  animation: public-light-drift 15s linear infinite alternate;
+}
+.public-motion-layer.is-motion-paused { animation-play-state: paused; }
+@keyframes public-light-drift {
+  from { transform: translate3d(-55px, -40px, 0); }
+  to { transform: translate3d(55px, 40px, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .public-motion-layer { animation: none; }
+}
+
+/* Error recovery should be calm and immediate, so it stays static. */
+body .error-shell {
+  background: radial-gradient(ellipse at 0% 0%, #1c3035, transparent 60%), #091317;
+  color: #f3f7f7;
+}
+body .error-shell::after { display: none; }
+body .error-shell :is(.error-brand, .error-brand b span, .error-title) { color: #f3f7f7; }
+body .error-shell :is(.error-brand small, .error-copy, .error-foot) { color: #c5d9dc; }
+body .error-shell :is(.error-code, .error-eyebrow) { color: #a8e5ef; }
+body .error-shell .error-brand-mark { background: #a8e5ef; border-color: #a8e5ef; color: #102d35; }
+body .error-shell .error-foot { border-color: #526b70; }
+body .error-shell .error-btn { background: transparent; border-color: #69858b; color: #f3f7f7; }
+body .error-shell .error-btn:hover { background: #28464f; border-color: #a8e5ef; color: #fff; }
+body .error-shell .error-btn.primary { background: #a8e5ef; border-color: #a8e5ef; color: #102d35; }
+body .error-shell .error-btn.primary:hover { background: #d0f3f6; color: #102d35; }
+body .error-shell :focus-visible { outline-color: #f6bd82; }

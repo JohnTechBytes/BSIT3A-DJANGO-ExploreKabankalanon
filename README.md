@@ -376,7 +376,7 @@ Optional, read at runtime with safe defaults:
 ### Tests
 
 ```bash
-python manage.py test          # Django runner: 235 tests, 15 skipped
+python manage.py test          # Django runner: 236 tests, 15 skipped
 ```
 
 The suite covers the public flows (search, filters, save/unsave, reviews,

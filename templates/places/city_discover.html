@@ -65,18 +65,19 @@
 {% else %}
     {% sample_photo place as stock_image %}
 
+    {% if stock_image %}
     <div class="sample-photo-wrapper">
         <img
             class="discovery-photo"
             src="{{ stock_image }}"
-            alt="Illustrative travel image for {{ place.title }}"
-            loading="lazy"
+            alt="Illustrative category sample, not an actual photo of {{ place.title }}"
+            loading="lazy" decoding="async"
         >
-
-        <span class="sample-photo-label">
-            Sample image · Not actual destination
-        </span>
+        <span class="sample-photo-label">Illustrative category sample · Not actual destination</span>
     </div>
+    {% else %}
+    <div class="discovery-empty" role="img" aria-label="No verified photo available for {{ place.title }}">Photo not yet available</div>
+    {% endif %}
 {% endif %}
 
             <div class="discovery-body">

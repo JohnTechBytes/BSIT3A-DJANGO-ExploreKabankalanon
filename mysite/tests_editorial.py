@@ -5,6 +5,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 
 from apps.cities.models import City
+from apps.core.models import Category
 from apps.itineraries.models import Itinerary
 from apps.places.models import Place
 
@@ -30,6 +31,7 @@ class EditorialScreenTests(TestCase):
                 self.assertContains(response, "css/auth-guide.css")
                 self.assertContains(response, "css/design-craft.css")
                 self.assertContains(response, "css/public-night.css")
+                self.assertContains(response, "js/public-motion.js")
                 self.assertContains(response, 'name="csrfmiddlewaretoken"')
 
     def test_public_screens_retain_their_editorial_scope(self):
@@ -51,6 +53,7 @@ class EditorialScreenTests(TestCase):
                 self.assertContains(response, 'css/design-craft.css')
                 self.assertContains(response, 'css/public-night.css')
                 self.assertContains(response, 'js/public-reveal.js')
+                self.assertContains(response, 'js/public-motion.js')
         self.assertContains(self.client.get(reverse("itineraries:create")), 'name="title"')
         self.assertContains(self.client.get(reverse("itineraries:builder", args=[self.trip.pk])), 'name="place_id"')
         self.assertContains(self.client.get(reverse("visits:check_in", args=[self.place.pk])), 'name="visit_note"')
@@ -64,6 +67,17 @@ class EditorialScreenTests(TestCase):
         self.assertContains(response, self.place.title)
         self.assertNotContains(response, 'Unpublished candidate')
         self.assertContains(response, 'Page 1 of 1')
+        self.assertContains(response, 'Photo not yet available')
+        self.assertNotContains(response, 'images.unsplash.com')
+
+    def test_city_discovery_uses_labelled_local_category_samples(self):
+        category = Category.objects.create(name="Museum", slug="museum")
+        Place.objects.create(city=self.place.city, title="Local Museum", category=category,
+                             is_active=True, is_verified=True)
+        response = self.client.get(reverse("places:city_discover"))
+        self.assertContains(response, '/static/img/samples/museum.jpg')
+        self.assertContains(response, 'Illustrative category sample · Not actual destination')
+        self.assertNotContains(response, 'images.unsplash.com')
 
     def test_staff_admin_keeps_forms_filters_and_actions(self):
         self.client.force_login(self.user)
