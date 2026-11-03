@@ -58,6 +58,18 @@ class HomepageTests(TestCase):
         self.assertContains(response, 'img/places/new-kabankalan-cathedral.jpg')
         self.assertContains(response, 'Lightningscale / Wikimedia Commons')
 
+    def test_landing_uses_light_guide_and_respects_reduced_motion(self):
+        from django.contrib.staticfiles import finders
+        from pathlib import Path
+
+        response = self.render_home()
+        self.assertContains(response, 'Find your place<br><em>in Kabankalan.</em>')
+        self.assertContains(response, 'content="#eef4e9"')
+        stylesheet = Path(finders.find('css/landing-pattern.css')).read_text()
+        self.assertIn('background: #fbfaf5', stylesheet)
+        self.assertIn('prefers-reduced-motion: reduce', stylesheet)
+        self.assertIn('landing-reveal.is-reveal-pending', stylesheet)
+
     def test_landing_search_and_main_links_use_existing_routes(self):
         response = self.render_home()
         self.assertContains(response, f'action="{reverse("places:smart_search")}"')

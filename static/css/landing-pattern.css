@@ -1,150 +1,159 @@
-/* DarkGradientBg from the supplied 21st.dev example, adapted to the existing
-   Django landing page. All layers are decorative and never intercept input. */
+/* A bright, welcoming local guide. This stylesheet is scoped to the landing
+   page so the other public pages and staff tools remain unchanged. */
 body.landing-page {
-  background: #05090c;
-  color: #f3f7f7;
+  --ink: #184b45;
+  --ink-dark: #173d38;
+  --muted: #586c65;
+  --line: #dbe4d8;
+  background: #fbfaf5;
+  color: #173d38;
 }
-body.landing-page .site-header {
-  background: #0d161a;
-  border-color: #30434a;
-  color: #f3f7f7;
+body.landing-page .site-header { background: #fffefb; border-color: #e9eee5; }
+body.landing-page .header-inner { min-height: 80px; }
+body.landing-page .brand-mark { border-radius: 13px; background: #255f50; color: #fff; }
+body.landing-page .main-nav a, body.landing-page .account-link { color: #405850; }
+body.landing-page .main-nav a:hover, body.landing-page .account-link:hover { color: #1a5c47; }
+body.landing-page .header-action, body.landing-page .button {
+  background: #225d4c; color: #fff; border-radius: 999px;
 }
-body.landing-page .brand-mark { background: #b2e9e8; color: #102d35; }
-body.landing-page .header-action { background: #a8e5ef; color: #102d35; }
-body.landing-page .header-action:hover { background: #d0f3f6; }
+body.landing-page .header-action:hover, body.landing-page .button:hover { background: #164b3c; }
+body.landing-page main { background: #fbfaf5; }
 
-body.landing-page main {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  background: radial-gradient(100% 35% at 0% 0%, #2e2e2e 0%, #05090c 100%);
+/* A softly washed photo adds a sense of place without competing with text.
+   The supplied City Hall photo stays local and its rights remain documented. */
+body.landing-page .hero {
+  position: relative; isolation: isolate; overflow: hidden;
+  background: #eef4e9;
 }
-body.landing-page main::before,
-body.landing-page main::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  pointer-events: none;
-}
-/* Skewed blue streaks fade away from the top, as in the supplied component. */
-body.landing-page main::before {
-  /* Limit the moving layer to the opening section, not the full page. */
-  inset: -100px -100px auto;
-  height: 1550px;
-  background: repeating-linear-gradient(135deg,
-    transparent 0%, transparent 7%, rgba(0,207,255,.28) 7.3%,
-    rgba(0,207,255,.11) 9%, transparent 10%, transparent 19%);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0, rgba(0,0,0,.65) 450px, transparent 1300px);
-  mask-image: linear-gradient(to bottom, #000 0, rgba(0,0,0,.65) 450px, transparent 1300px);
-  animation: landing-light-drift 12s ease-in-out infinite alternate;
-}
-@keyframes landing-light-drift {
-  from { transform: translate3d(-60px, -45px, 0); }
-  to { transform: translate3d(60px, 45px, 0); }
-}
-body.landing-page main.background-paused::before { animation-play-state: paused; }
-@media (prefers-reduced-motion: reduce) {
-  body.landing-page main::before { animation: none; }
-}
-/* A locally rendered dot texture replaces the remote 21st.dev texture asset. */
-body.landing-page main::after {
-  opacity: .12;
-  background-image: radial-gradient(circle at 1px 1px, #fff 1px, transparent 0);
-  background-size: 20px 20px;
-}
-body.landing-page .hero,
-body.landing-page .hero-copy,
-body.landing-page .discover { background: transparent; }
-/* The user-supplied City Hall image is pre-blurred once, rather than applying
-   a costly live filter. The translucent layer keeps copy and controls legible. */
-body.landing-page .hero { position: relative; isolation: isolate; }
 body.landing-page .hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: .32;
-  background: url('../img/places/kabankalan-city-hall-background.jpg') center 42% / cover no-repeat;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 100%);
+  content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none;
+  background: linear-gradient(90deg, rgba(242,247,237,.97) 0%, rgba(242,247,237,.92) 55%, rgba(242,247,237,.83) 100%),
+    url('../img/places/kabankalan-city-hall-background.jpg') center 42% / cover no-repeat;
+}
+body.landing-page .hero::after {
+  content: ''; position: absolute; z-index: -1; pointer-events: none;
+  width: min(60vw, 720px); aspect-ratio: 1; top: -40%; right: -12%; border-radius: 50%;
+  background: radial-gradient(circle, rgba(214,229,199,.75), rgba(214,229,199,0) 70%);
+  animation: sunlight-drift 14s ease-in-out infinite alternate;
+}
+@keyframes sunlight-drift { from { transform: translate3d(-24px, 10px, 0); } to { transform: translate3d(24px, 34px, 0); } }
+body.landing-page main.background-paused .hero::after { animation-play-state: paused; }
+body.landing-page .hero-inner {
+  grid-template-columns: minmax(0, 1fr) minmax(0, .91fr);
+  gap: clamp(40px, 7vw, 100px); align-items: center;
+  padding-block: clamp(62px, 7.5vw, 106px) 56px;
+}
+body.landing-page .hero-copy { padding: 0; background: transparent; color: #173d38; }
+body.landing-page .guide-heading {
+  margin: 0 0 26px; gap: 8px 14px; color: #59736a; font-size: 11px; letter-spacing: .1em;
+}
+body.landing-page .guide-heading span:first-child { color: #246a53; }
+body.landing-page .guide-heading span:first-child::before { background: #d68d53; }
+body.landing-page .hero h1 {
+  max-width: 13ch; margin: 0 0 22px; color: #173d38;
+  font-size: clamp(55px, 6.2vw, 84px); line-height: 1.06; letter-spacing: -.045em;
+}
+body.landing-page .hero h1 em { color: #3d8060; font-style: italic; }
+body.landing-page .hero-description { color: #536c61; max-width: 43ch; font-size: 17px; line-height: 1.7; }
+body.landing-page .search-label { color: #284e43; font-size: 13px; }
+body.landing-page .search-row { min-height: 66px; padding: 6px; border: 1px solid #d2dfd1; border-radius: 12px; box-shadow: 0 10px 28px rgba(50,89,68,.07); }
+body.landing-page .search-icon { color: #6d8379; }
+body.landing-page .search button { min-width: 108px; border-radius: 8px; background: #225d4c; color: #fff; }
+body.landing-page .search button:hover { background: #164b3c; }
+body.landing-page .suggestions { color: #697d72; }
+body.landing-page .suggestions a { color: #315d4e; text-decoration-color: #aec8b7; }
+body.landing-page .hero-visual {
+  position: relative; align-self: center; padding: 12px; overflow: visible;
+  border: 1px solid rgba(255,255,255,.95); border-radius: 20px;
+  background: #fffefb; box-shadow: 0 24px 65px rgba(56,87,68,.14);
+  transform: rotate(1deg);
+}
+body.landing-page .hero-photo { overflow: hidden; border-radius: 12px 12px 0 0; background: #e1eadd; }
+body.landing-page .hero-image-frame { border-radius: 12px; background: #e4ece0; }
+body.landing-page .hero-photo-caption {
+  padding: 19px 8px 13px; color: #234c40; background: transparent;
+}
+body.landing-page .hero-photo-caption small { color: #7b8d7d; font-size: 10px; letter-spacing: .1em; }
+body.landing-page .hero-photo-caption strong { font-size: clamp(21px, 2vw, 28px); }
+body.landing-page .hero-photo-caption > span:last-child { display: grid; place-items: center; width: 39px; height: 39px; border-radius: 50%; background: #edf4e9; color: #225d4c; font-size: 19px; }
+body.landing-page .photo-index { margin: 0 8px; padding: 11px 0; border-top: 1px solid #e4ebe0; color: #667b70; font-size: 11px; }
+body.landing-page .hero-photo-credit { padding: 0 8px 4px; color: #65766c; }
+body.landing-page .hero-photo-credit a { color: #376e59; }
+body.landing-page .quick-explore { gap: 0; padding-block: 0 38px; }
+body.landing-page .quick-explore-label { color: #638075; font-size: 13px; }
+body.landing-page .quick-explore a { min-height: 58px; padding-inline: 20px; border-left: 1px solid #cfdfcf; border-radius: 0; background: transparent; color: #284f42; }
+body.landing-page .quick-explore a:hover { background: rgba(255,255,255,.6); }
+
+body.landing-page .discover { padding-block: 96px 100px; background: #fbfaf5; }
+body.landing-page :is(.section-heading h2, .intro-heading h2, .workflow-heading h2) { color: #173d38; }
+body.landing-page :is(.section-kicker, .section-heading .section-kicker) { color: #a35e3a; letter-spacing: .12em; }
+body.landing-page :is(.section-heading p:not(.section-kicker), .intro-content > p, .directory-meta, .carousel-hint, .map-attribution, .empty-state p, .steps p) { color: #60756b; }
+body.landing-page .text-link { color: #255c4c; border-color: #a5c3ae; }
+body.landing-page .filters a { border: 1px solid #d3dfd2; border-radius: 999px; color: #49665a; background: transparent; }
+body.landing-page .filters a:hover, body.landing-page .filters a.selected { border-color: #225d4c; background: #225d4c; color: #fff; }
+body.landing-page .directory-meta strong { color: #254d42; }
+body.landing-page .carousel-controls button { border: 1px solid #d4e0d3; border-radius: 50%; background: #fffefb; color: #285647; }
+body.landing-page .carousel-controls button:first-child { border-radius: 999px; }
+body.landing-page .carousel-controls button:hover { background: #e9f2e7; border-color: #9fc0a7; }
+body.landing-page .places-grid { gap: 20px; }
+body.landing-page .places-grid .place-card, body.landing-page .places-grid .place-card:first-child {
+  overflow: hidden; border: 1px solid #e3e9df; border-radius: 16px; background: #fffefb;
+  box-shadow: 0 7px 22px rgba(45,77,54,.04);
+}
+body.landing-page .card-image { background: #e0eadc; }
+body.landing-page .category-badge { top: 14px; left: 14px; border-radius: 999px; padding: 6px 11px; color: #2d5d4c; }
+body.landing-page .sample-badge { border-radius: 4px; }
+body.landing-page :is(.card-heading h3, .card-detail, .rating) { color: #224a3e; }
+body.landing-page :is(.address, .description, .place-tags span, .rating span, .save-link) { color: #62786b; }
+body.landing-page :is(.osm-source, .map-attribution a) { color: #2b6a52; }
+body.landing-page .card-bottom { border-color: #e7ede4; }
+body.landing-page .button-outline { background: transparent; color: #225d4c; border: 1px solid #86ad96; }
+body.landing-page .button-outline:hover { background: #225d4c; color: #fff; }
+body.landing-page .empty-state { background: #fffefb; border: 1px solid #d9e5d5; border-radius: 16px; }
+body.landing-page .introduction { background: #e8f1e4; border: 0; border-radius: 22px; }
+body.landing-page .interest-links a { border-color: #c5d9c3; color: #295446; }
+body.landing-page .interest-links a:hover { color: #a05837; }
+body.landing-page .workflow { padding-block: 105px; }
+body.landing-page .steps > div, body.landing-page .steps > div:last-child { border-color: #d8e4d6; }
+body.landing-page .steps > div > span { color: #aa6947; }
+body.landing-page .steps h3 { color: #244c3f; }
+body.landing-page .site-footer { background: #edf3e8; border-top: 1px solid #dae6d8; color: #254e40; }
+body.landing-page .footer-inner p, body.landing-page .footer-inner > a:last-child { color: #587267; }
+body.landing-page :focus-visible { outline-color: #a34f2d; }
+
+/* Content is visible without JavaScript; observers add one-time reveals only
+   when motion is allowed. Keyboard focus always reveals immediately. */
+body.landing-page .landing-reveal { transition: opacity 550ms ease-out, transform 550ms cubic-bezier(.22, 1, .36, 1); }
+body.landing-page .landing-reveal.is-reveal-pending { opacity: 0; transform: translateY(22px); }
+body.landing-page .landing-reveal.is-reveal-pending:focus-within { opacity: 1; transform: none; transition: none; }
+@media (prefers-reduced-motion: no-preference) {
+  body.landing-page .hero-copy { animation: hero-settle 650ms cubic-bezier(.22, 1, .36, 1) both; }
+  body.landing-page .hero-visual { animation: card-settle 750ms cubic-bezier(.22, 1, .36, 1) both; }
+  @keyframes hero-settle { from { transform: translateY(15px); } to { transform: translateY(0); } }
+  @keyframes card-settle { from { opacity: .65; transform: translateY(20px) rotate(1deg); } to { opacity: 1; transform: translateY(0) rotate(1deg); } }
+}
+@media (hover: hover) and (pointer: fine) {
+  body.landing-page .places-grid .place-card { transition: box-shadow 200ms ease, transform 200ms ease; }
+  body.landing-page .places-grid .place-card:hover { transform: translateY(-4px); box-shadow: 0 14px 32px rgba(45,77,54,.1); }
+}
+@media (max-width: 1050px) {
+  body.landing-page .hero-inner { gap: 38px; }
 }
 @media (max-width: 720px) {
-  body.landing-page .hero::before { background-size: auto 540px; background-position: center top; }
-}
-body.landing-page .hero h1 { color: #fff; }
-body.landing-page .hero h1 em { color: #a8e5ef; }
-body.landing-page .guide-heading, body.landing-page .hero-description,
-body.landing-page .suggestions, body.landing-page .quick-explore-label { color: #d4e5e9; }
-body.landing-page .guide-heading span:first-child { color: #b9ebf3; }
-body.landing-page .guide-heading span:first-child::before { background: #6ad3e8; }
-body.landing-page .search button { background: #a8e5ef; color: #102d35; }
-body.landing-page .search button:hover { background: #d0f3f6; }
-body.landing-page .search button:active { background: #83d5e3; }
-body.landing-page .hero-visual,
-body.landing-page .hero-photo-caption { background: #162a30; }
-body.landing-page .photo-index { border-color: #527078; }
-body.landing-page .quick-explore a { border-color: #5a747b; color: #f3f7f7; }
-body.landing-page .quick-explore a:hover,
-body.landing-page .quick-explore a:active { background: #1c343b; }
-
-/* Keep reading surfaces, labels, and controls legible on the dark field. */
-body.landing-page :is(.section-heading h2, .intro-heading h2, .workflow-heading h2,
-.steps h3, .empty-state h3) { color: #f5f8f8; }
-body.landing-page :is(.section-kicker, .section-heading .section-kicker) { color: #9ce0eb; }
-body.landing-page :is(.section-heading p:not(.section-kicker), .intro-content > p,
-.directory-meta, .carousel-hint, .map-attribution, .empty-state p, .steps p) { color: #c0d1d5; }
-body.landing-page .directory-meta strong { color: #f3f7f7; }
-body.landing-page .text-link { color: #fff; border-color: #a8e5ef; }
-body.landing-page .filters a { border-color: #6c858b; color: #ecf6f7; }
-body.landing-page .filters a:hover,
-body.landing-page .filters a.selected { background: #a8e5ef; border-color: #a8e5ef; color: #102d35; }
-body.landing-page .carousel-controls button { background: #182c32; border-color: #759198; color: #f3f7f7; }
-body.landing-page .carousel-controls button:hover { background: #28464f; border-color: #a8e5ef; }
-body.landing-page .places-grid .place-card,
-body.landing-page .places-grid .place-card:first-child { background: #17272c; border: 1px solid #39545a; }
-body.landing-page :is(.card-heading h3, .card-detail, .rating) { color: #f5f8f8; }
-body.landing-page :is(.address, .description, .place-tags span, .rating span, .save-link) { color: #c5d9dc; }
-body.landing-page :is(.osm-source, .map-attribution a) { color: #a8e5ef; }
-body.landing-page .card-bottom { border-color: #526b70; }
-body.landing-page .button-outline { border-color: #a8e5ef; color: #f3f7f7; }
-body.landing-page .button-outline:hover { background: #a8e5ef; color: #102d35; }
-body.landing-page .empty-state { border-color: #6c858b; background: #14242a; }
-body.landing-page .introduction { background: #162b31; border: 1px solid #39545a; }
-body.landing-page .interest-links a { border-color: #526b70; color: #f3f7f7; }
-body.landing-page .interest-links a:hover { color: #a8e5ef; }
-body.landing-page .steps > div, body.landing-page .steps > div:last-child { border-color: #526b70; }
-body.landing-page .steps > div > span { color: #a8e5ef; }
-body.landing-page .workflow .button, body.landing-page .empty-state .button { background: #a8e5ef; color: #102d35; }
-body.landing-page .workflow .button:hover, body.landing-page .empty-state .button:hover { background: #d0f3f6; }
-body.landing-page .site-footer { background: #0d161a; border-top: 1px solid #30434a; }
-body.landing-page :focus-visible { outline-color: #f6bd82; }
-@media (hover: none) {
-  body.landing-page .quick-explore a:hover { background: transparent; }
-  body.landing-page .quick-explore a:active { background: #1c343b; }
-  body.landing-page .search button:hover { background: #a8e5ef; }
-  body.landing-page .search button:active { background: #83d5e3; }
-}
-
-/* Scroll reveals are added only when the browser can observe them. Content is
-   visible by default, and keyboard focus never waits for an animation. */
-body.landing-page .landing-reveal {
-  transition: opacity 500ms ease-out, transform 500ms cubic-bezier(.22, 1, .36, 1);
-}
-body.landing-page .landing-reveal.is-reveal-pending {
-  opacity: 0;
-  transform: translateY(24px);
-}
-body.landing-page .landing-reveal.is-reveal-pending:focus-within {
-  opacity: 1;
-  transform: none;
-  transition: none;
+  body.landing-page .hero-inner { grid-template-columns: 1fr; gap: 34px; padding-block: 48px 32px; }
+  body.landing-page .hero h1 { font-size: clamp(48px, 10.8vw, 68px); }
+  body.landing-page .hero-copy { padding: 0; }
+  body.landing-page .hero-visual { transform: none; }
+  body.landing-page .quick-explore { grid-template-columns: 1fr; padding-block: 0 34px; }
+  body.landing-page .quick-explore-label { padding-bottom: 9px; }
+  body.landing-page .quick-explore a { border-left: 0; border-top: 1px solid #cfdfcf; padding-inline: 2px; }
+  body.landing-page .quick-explore a:last-child { border-bottom: 1px solid #cfdfcf; }
+  body.landing-page .discover { padding-block: 68px; }
+  body.landing-page .workflow { padding-block: 72px; }
+  body.landing-page .introduction { border-radius: 18px; }
+  @keyframes card-settle { from { opacity: .65; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 }
 @media (prefers-reduced-motion: reduce) {
-  body.landing-page .landing-reveal.is-reveal-pending {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
+  body.landing-page .hero::after, body.landing-page .hero-copy, body.landing-page .hero-visual { animation: none; }
+  body.landing-page .landing-reveal.is-reveal-pending { opacity: 1; transform: none; transition: none; }
 }
