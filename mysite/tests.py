@@ -64,11 +64,16 @@ class HomepageTests(TestCase):
 
         response = self.render_home()
         self.assertContains(response, 'Find your place<br><em>in Kabankalan.</em>')
-        self.assertContains(response, 'content="#eef4e9"')
+        self.assertContains(response, 'content="#ffffff"')
         stylesheet = Path(finders.find('css/landing-pattern.css')).read_text()
-        self.assertIn('background: #fbfaf5', stylesheet)
+        self.assertIn('--surface: #f8fafc', stylesheet)
+        self.assertIn('#4f46e5', stylesheet)
+        self.assertIn('backdrop-filter: blur(12px)', stylesheet)
         self.assertIn('prefers-reduced-motion: reduce', stylesheet)
         self.assertIn('landing-reveal.is-reveal-pending', stylesheet)
+        self.assertContains(response, 'aria-label="Ways to explore Kabankalan"')
+        self.assertContains(response, 'aria-label="Your journey links"')
+        self.assertContains(response, '<strong>1</strong> published places')
 
     def test_landing_search_and_main_links_use_existing_routes(self):
         response = self.render_home()

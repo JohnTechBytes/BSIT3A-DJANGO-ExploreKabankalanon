@@ -16,6 +16,7 @@
     }
 
     const targets = document.querySelectorAll([
+        '.feature-heading', '.quick-explore', '.closing-inner',
         '.discover .section-heading', '.discover .filters', '.discover .directory-meta',
         '.discover .places-carousel', '.discover .empty-state', '.discover .browse-more',
         '.introduction .intro-heading', '.introduction .intro-content',

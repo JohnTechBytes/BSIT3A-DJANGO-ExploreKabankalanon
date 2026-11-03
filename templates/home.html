@@ -5,17 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Discover Kabankalan places for your hobbies, save favorites, and plan your next local adventure.">
-    <meta name="theme-color" content="#eef4e9">
+    <meta name="theme-color" content="#ffffff">
     <title>ExploreKabankalan | Discover your next adventure</title>
     <link rel="stylesheet" href="{% static 'css/landing.css' %}?v=20261031-7">
     <link rel="stylesheet" href="{% static 'css/design-craft.css' %}?v=20261101-2">
-    <link rel="stylesheet" href="{% static 'css/landing-pattern.css' %}?v=20261103-1">
+    <link rel="stylesheet" href="{% static 'css/landing-pattern.css' %}?v=20261103-3">
 </head>
 <body class="landing-page">
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
     <div class="header-inner wrap">
-        <a class="brand" href="{% url 'home' %}" aria-label="ExploreKabankalan home"><span class="brand-mark" aria-hidden="true">E<span>K</span></span><span>Explore<br><strong>Kabankalan</strong></span></a>
+        <a class="brand" href="{% url 'home' %}"><span class="brand-mark" aria-hidden="true">E<span>K</span></span><span>Explore<br><strong>Kabankalan</strong></span></a>
         <nav class="main-nav" aria-label="Main navigation">
             <a href="{% url 'places:attraction_carousel' %}?browse=all">Explore places</a><a href="{% url 'places:attraction_carousel' %}?mode=nearby">Nearby</a><a href="{% url 'info:city_information' %}">City information</a><a href="#hobbies">Interests</a><a href="#how-it-works">How it works</a>
         </nav>
@@ -26,9 +26,11 @@
     <section class="hero" aria-labelledby="hero-title">
         <div class="hero-inner wrap">
             <div class="hero-copy">
-                <div class="guide-heading"><span>YOUR LOCAL GUIDE</span><span>Kabankalan City, Negros Occidental</span></div>
+                <div class="guide-heading"><span>YOUR LOCAL CITY GUIDE</span><span>Kabankalan City, Negros Occidental</span></div>
                 <h1 id="hero-title">Find your place<br><em>in Kabankalan.</em></h1>
                 <p class="hero-description">Find a place for your next coffee, walk, food trip, or favorite hobby—right here in Kabankalan.</p>
+                <div class="hero-actions"><a class="button primary-action" href="{% url 'places:attraction_carousel' %}?browse=all">Explore places <span aria-hidden="true">↗</span></a><a class="button secondary-action" href="{% url 'places:attraction_carousel' %}?mode=nearby">Find nearby <span aria-hidden="true">→</span></a></div>
+                <div class="hero-trust"><span><strong>{{ published_count }}</strong> published places</span><span>Made for exploring Kabankalan</span></div>
                 <form class="search" action="{% url 'places:smart_search' %}" method="get" role="search">
                     <label class="search-label" for="home-search">What are you looking for?</label>
                     <div class="search-row"><svg class="search-icon" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="m15.5 15.5 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><input id="home-search" name="q" type="search" placeholder="Try coffee, hiking, or a place name" required><button type="submit">Explore <span aria-hidden="true">↗</span></button></div>
@@ -36,21 +38,26 @@
                 <div class="suggestions"><span>Try a search:</span><a href="{% url 'places:smart_search' %}?q=coffee%20shops">Coffee shops</a><a href="{% url 'places:smart_search' %}?q=hiking">Hiking</a><a href="{% url 'places:smart_search' %}?q=food%20trips">Food trips</a></div>
             </div>
             <div class="hero-visual">
-                <a class="hero-photo" href="{% url 'info:city_information' %}?q=New%20Kabankalan%20Cathedral" aria-label="Find New Kabankalan Cathedral in City Information">
+                <div class="preview-bar"><span class="preview-icon" aria-hidden="true">✦</span><span><strong>Discover Kabankalan</strong><small>Your local guide</small></span><span class="preview-status">Explore</span></div>
+                <a class="hero-photo" href="{% url 'info:city_information' %}?q=New%20Kabankalan%20Cathedral">
                     <span class="hero-image-frame"><img src="{% static 'img/places/new-kabankalan-cathedral.jpg' %}" width="1378" height="767" alt="The facade of the new Saint Francis Xavier Cathedral in Kabankalan" fetchpriority="high"></span>
                     <span class="hero-photo-caption"><span><small>FEATURED IN KABANKALAN</small><strong>New Kabankalan Cathedral</strong></span><span aria-hidden="true">↗</span></span>
                 </a>
                 <p class="photo-index"><span>Talubangi, Kabankalan City</span><span>Explore local places</span></p>
                 <p class="hero-photo-credit">Photo: <a href="https://commons.wikimedia.org/wiki/File:New_Kabankalan_Cathedral.jpg" target="_blank" rel="noopener noreferrer">Lightningscale / Wikimedia Commons</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a> · Unmodified</p>
+                <div class="preview-floating preview-floating-location" aria-hidden="true"><span>⌖</span><span><strong>Kabankalan City</strong><small>Negros Occidental</small></span></div>
+                <div class="preview-floating" aria-hidden="true"><span>✦</span><span><strong>{{ published_count }} places</strong><small>Ready to explore</small></span></div>
             </div>
         </div>
-        <nav class="quick-explore wrap" aria-label="Ways to explore Kabankalan">
-            <span class="quick-explore-label">Where will you start?</span>
-            <a href="{% url 'places:attraction_carousel' %}?browse=all"><span>Explore places</span><span aria-hidden="true">↗</span></a>
-            <a href="{% url 'places:attraction_carousel' %}?mode=nearby"><span>Find nearby</span><span aria-hidden="true">↗</span></a>
-            <a href="{% url 'info:city_information' %}"><span>City information</span><span aria-hidden="true">↗</span></a>
-        </nav>
     </section>
+    <section class="feature-section" aria-labelledby="feature-title"><div class="wrap">
+        <div class="feature-heading"><p class="section-kicker">EXPLORE YOUR WAY</p><h2 id="feature-title">A little easier to get out there.</h2><p>Start with a place, a location, or a little local knowledge.</p></div>
+        <nav class="quick-explore" aria-label="Ways to explore Kabankalan">
+            <a href="{% url 'places:attraction_carousel' %}?browse=all"><span>Explore places</span><small>Browse the city’s published places and find your next stop.</small><span class="feature-icon" aria-hidden="true">↗</span></a>
+            <a href="{% url 'places:attraction_carousel' %}?mode=nearby"><span>Find nearby</span><small>See places around you when you share your location.</small><span class="feature-icon" aria-hidden="true">⌁</span></a>
+            <a href="{% url 'info:city_information' %}"><span>City information</span><small>Get to know the city through local information.</small><span class="feature-icon" aria-hidden="true">✦</span></a>
+        </nav>
+    </div></section>
 
     <section class="discover" id="discover" aria-labelledby="discover-title"><div class="wrap">
         <div class="section-heading"><div><p class="section-kicker">01 / THE PLACE DIRECTORY</p><h2 id="discover-title">Get to know the city.</h2><p>Explore published places, or choose a category to narrow your search.</p></div><a class="text-link" href="{% url 'places:attraction_carousel' %}?browse=all">See all places <span aria-hidden="true">↗</span></a></div>
@@ -66,8 +73,8 @@
         <div class="places-grid">
         {% for place in featured_places %}
             <article class="place-card">
-                <a class="card-image" href="{% url 'places:place_detail' place.pk %}" aria-label="Explore {{ place.title }}">{% if place.cover_image %}<img src="{{ place.cover_image.url }}" alt="{{ place.title }}" loading="lazy">{% elif place.cover_image_url %}<img src="{{ place.cover_image_url }}" alt="{{ place.title }}" loading="lazy">{% elif place.sample_image %}<img src="{% static place.sample_image %}" alt="Illustrative category sample, not an actual photo of {{ place.title }}" loading="lazy"><span class="sample-badge">Illustrative category sample</span>{% else %}<div class="image-placeholder"><span>Kabankalan</span><small>LOCAL PLACE</small></div>{% endif %}{% if place.category %}<span class="category-badge">{{ place.category.name }}</span>{% endif %}</a>
-                <div class="card-body"><div class="card-heading"><h3><a href="{% url 'places:place_detail' place.pk %}">{{ place.title }}</a></h3>{% if place.review_count %}<span class="rating" aria-label="Rating {{ place.avg_rating|floatformat:1 }} from {{ place.review_count }} reviews">★ {{ place.avg_rating|floatformat:1 }} <span>({{ place.review_count }})</span></span>{% endif %}</div><p class="address">{% if place.barangay %}{{ place.barangay }}{% else %}{{ place.address|default:'Kabankalan City' }}{% endif %}</p><p class="description">{{ place.description|default:'Discover this local spot and make it part of your Kabankalan adventure.'|truncatewords:20 }}</p><div class="place-tags">{% for hobby in place.hobbies.all|slice:':3' %}<span>{{ hobby.name }}</span>{% endfor %}</div>{% if place.osm_source_url %}<a class="osm-source" href="{{ place.osm_source_url }}" target="_blank" rel="noopener noreferrer">OpenStreetMap record ↗</a>{% endif %}<div class="card-bottom"><a class="card-detail" href="{% url 'places:place_detail' place.pk %}">View place <span aria-hidden="true">↗</span></a><a class="save-link" href="{% url 'places:place_detail' place.pk %}" aria-label="View {{ place.title }} to save it">Save for later</a></div></div>
+                <a class="card-image" href="{% url 'places:place_detail' place.pk %}"><span class="sr-only">Explore {{ place.title }}. </span>{% if place.cover_image %}<img src="{{ place.cover_image.url }}" alt="{{ place.title }}" loading="lazy">{% elif place.cover_image_url %}<img src="{{ place.cover_image_url }}" alt="{{ place.title }}" loading="lazy">{% elif place.sample_image %}<img src="{% static place.sample_image %}" alt="Illustrative category sample, not an actual photo of {{ place.title }}" loading="lazy"><span class="sample-badge">Illustrative category sample</span>{% else %}<div class="image-placeholder"><span>Kabankalan</span><small>LOCAL PLACE</small></div>{% endif %}{% if place.category %}<span class="category-badge">{{ place.category.name }}</span>{% endif %}</a>
+                <div class="card-body"><div class="card-heading"><h3><a href="{% url 'places:place_detail' place.pk %}">{{ place.title }}</a></h3>{% if place.review_count %}<span class="rating" aria-label="Rating {{ place.avg_rating|floatformat:1 }} from {{ place.review_count }} reviews">★ {{ place.avg_rating|floatformat:1 }} <span>({{ place.review_count }})</span></span>{% endif %}</div><p class="address">{% if place.barangay %}{{ place.barangay }}{% else %}{{ place.address|default:'Kabankalan City' }}{% endif %}</p><p class="description">{{ place.description|default:'Discover this local spot and make it part of your Kabankalan adventure.'|truncatewords:20 }}</p><div class="place-tags">{% for hobby in place.hobbies.all|slice:':3' %}<span>{{ hobby.name }}</span>{% endfor %}</div>{% if place.osm_source_url %}<a class="osm-source" href="{{ place.osm_source_url }}" target="_blank" rel="noopener noreferrer">OpenStreetMap record ↗</a>{% endif %}<div class="card-bottom"><a class="card-detail" href="{% url 'places:place_detail' place.pk %}">View place <span aria-hidden="true">↗</span></a><a class="save-link" href="{% url 'places:place_detail' place.pk %}" aria-label="Save for later: view {{ place.title }}">Save for later</a></div></div>
             </article>
         {% endfor %}
         </div></div>
@@ -86,9 +93,10 @@
 
 
     <section class="workflow wrap" id="how-it-works" aria-labelledby="workflow-title"><div class="workflow-heading"><p class="section-kicker">03 / YOUR NEXT DAY OUT</p><h2 id="workflow-title">Make a day of it.</h2><a class="button" href="{% url 'itineraries:list' %}">Plan your itinerary <span aria-hidden="true">↗</span></a></div><div class="steps"><div><span>01</span><div><h3>Find a place</h3><p>Choose an interest or search for somewhere you’d like to visit.</p></div></div><div><span>02</span><div><h3>Save your favorites</h3><p>Keep the places you want to explore in your personal list.</p></div></div><div><span>03</span><div><h3>Plan your visit</h3><p>Organize your chosen stops into an itinerary that fits your time.</p></div></div></div></section>
+    <section class="closing-cta" aria-labelledby="closing-title"><div class="wrap closing-inner"><div><p class="section-kicker">YOUR NEXT LOCAL ADVENTURE</p><h2 id="closing-title">There’s more to discover close to home.</h2><p>Explore places, find a new favorite, and make a plan for your next day out.</p></div><a class="button primary-action" href="{% url 'places:attraction_carousel' %}?browse=all">Explore Kabankalan <span aria-hidden="true">↗</span></a></div></section>
 </main>
-<footer class="site-footer"><div class="wrap footer-inner"><a class="footer-brand" href="{% url 'home' %}">Explore<strong>Kabankalan</strong></a><p>Discover your city, your way.<br>© {% now 'Y' %} ExploreKabankalan</p><a href="#main">Back to top ↑</a></div></footer>
+<footer class="site-footer"><div class="wrap"><div class="footer-grid"><div class="footer-about"><a class="footer-brand" href="{% url 'home' %}">Explore<strong>Kabankalan</strong></a><p>Discover your city, your way.</p></div><nav aria-label="Explore links"><strong>Explore</strong><a href="{% url 'places:attraction_carousel' %}?browse=all">Places</a><a href="{% url 'places:attraction_carousel' %}?mode=nearby">Nearby</a><a href="{% url 'info:city_information' %}">City information</a></nav><nav aria-label="Your journey links"><strong>Your journey</strong><a href="{% url 'places:saved_places' %}">Saved places</a><a href="{% url 'itineraries:list' %}">Itineraries</a><a href="#how-it-works">How it works</a></nav><nav aria-label="More links"><strong>More</strong><a href="#hobbies">Interests</a><a href="{% url 'core:privacy_notice' %}">Privacy notice</a><a href="#main">Back to top ↑</a></nav></div><div class="footer-bottom">© {% now 'Y' %} ExploreKabankalan <span>Kabankalan City, Negros Occidental</span></div></div></footer>
 <script src="{% static 'js/landing-carousel.js' %}?v=20261101-2" defer></script>
-<script src="{% static 'js/landing-reveal.js' %}?v=20261101-2" defer></script>
+<script src="{% static 'js/landing-reveal.js' %}?v=20261103-1" defer></script>
 </body>
 </html>
