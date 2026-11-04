@@ -2,6 +2,7 @@ import re
 
 from django.db.models import Case, Count, IntegerField, Q, Value, When
 from django.shortcuts import render
+from django.urls import reverse
 
 from apps.cities.locking import LOCKED_CITY_PK
 from apps.core.models import Category
@@ -43,6 +44,19 @@ def home(request):
         place.osm_source_url = (
             f"https://www.openstreetmap.org/{match[1]}/{match[2]}" if match else ""
         )
+    # The landing map is a small preview of actual records, not a second
+    # ranking or invented locations. The full list remains in the carousel.
+    map_places = []
+    for place in featured_places:
+        if (place.latitude is not None and place.longitude is not None
+                and -90 <= place.latitude <= 90 and -180 <= place.longitude <= 180):
+            map_places.append({
+                "title": place.title, "latitude": float(place.latitude),
+                "longitude": float(place.longitude),
+                "url": reverse("places:place_detail", args=[place.pk]),
+            })
+            if len(map_places) == 24:
+                break
     # One aggregate query for both counters instead of two separate counts.
     totals = published.aggregate(
         published=Count("id"),
@@ -50,6 +64,7 @@ def home(request):
     )
     return render(request, "home.html", {
         "featured_places": featured_places,
+        "map_places": map_places,
         "categories": categories,
         "selected_category": selected_category,
         "published_count": totals["published"],

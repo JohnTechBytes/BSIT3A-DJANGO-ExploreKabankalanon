@@ -38,9 +38,8 @@ class HomepageTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Existing local place")
         self.assertContains(response, "Existing description")
-        self.assertContains(response, "css/design-craft.css")
-        self.assertContains(response, "css/landing-pattern.css")
-        self.assertContains(response, "js/landing-reveal.js")
+        self.assertContains(response, "css/explore.css")
+        self.assertContains(response, "js/motion.js")
         self.assertContains(response, "4.5")
         self.assertNotContains(response, "Unverified place")
         self.assertNotContains(response, "Inactive place")
@@ -56,7 +55,7 @@ class HomepageTests(TestCase):
         self.assertIn('--ek-primary: #1e7a5c', css)
         self.assertIn('--ek-bg: #f8f6f1', css)
         self.assertIn('.ek-theme {', css)
-        self.assertNotContains(response, 'class="landing-page ek-theme"')
+        self.assertContains(response, 'class="landing-page ek-theme"')
         for asset in ('plus-jakarta-sans-variable.ttf', 'inter-variable.ttf',
                       'PLUS-JAKARTA-SANS-OFL.txt', 'INTER-OFL.txt'):
             self.assertIsNotNone(finders.find('fonts/' + asset))
@@ -66,7 +65,7 @@ class HomepageTests(TestCase):
         from pathlib import Path
 
         background = finders.find('img/places/kabankalan-city-hall-background.jpg')
-        stylesheet = finders.find('css/landing-pattern.css')
+        stylesheet = finders.find('css/explore.css')
         self.assertIsNotNone(background)
         self.assertIn('kabankalan-city-hall-background.jpg', Path(stylesheet).read_text())
         response = self.render_home()
@@ -79,16 +78,16 @@ class HomepageTests(TestCase):
 
         response = self.render_home()
         self.assertContains(response, 'Find your place<br><em>in Kabankalan.</em>')
-        self.assertContains(response, 'content="#ffffff"')
-        stylesheet = Path(finders.find('css/landing-pattern.css')).read_text()
-        self.assertIn('--surface: #f8fafc', stylesheet)
-        self.assertIn('#4f46e5', stylesheet)
-        self.assertIn('backdrop-filter: blur(12px)', stylesheet)
+        self.assertContains(response, 'content="#f8f6f1"')
+        stylesheet = Path(finders.find('css/explore.css')).read_text()
+        self.assertIn('--ek-bg: #f8f6f1', stylesheet)
+        self.assertIn('--ek-primary: #1e7a5c', stylesheet)
+        self.assertIn('backdrop-filter: blur(8px)', stylesheet)
         self.assertIn('prefers-reduced-motion: reduce', stylesheet)
         self.assertIn('landing-reveal.is-reveal-pending', stylesheet)
         self.assertContains(response, 'aria-label="Ways to explore Kabankalan"')
         self.assertContains(response, 'aria-label="Your journey links"')
-        self.assertContains(response, '<strong>1</strong> published places')
+        self.assertContains(response, '<strong>1</strong> published place')
 
     def test_landing_search_and_main_links_use_existing_routes(self):
         response = self.render_home()
@@ -118,6 +117,36 @@ class HomepageTests(TestCase):
         self.assertContains(response, 'data-carousel-toggle')
         self.assertContains(response, 'landing-carousel.js')
         self.assertNotContains(response, "Unverified place")
+
+    def test_landing_map_uses_only_published_real_coordinates(self):
+        self.place.latitude = 9.9889
+        self.place.longitude = 122.8142
+        self.place.save()
+        Place.objects.create(city=self.city, title="Not public", address="Local",
+                             latitude=9.98, longitude=122.8, is_active=False, is_verified=True)
+        response = self.render_home()
+        self.assertContains(response, 'id="landing-map-places"')
+        self.assertContains(response, 'Existing local place')
+        self.assertNotContains(response, 'Not public')
+        self.assertContains(response, 'js/landing-map.js')
+
+    def test_landing_map_is_bounded_and_safely_serialized(self):
+        self.place.title = '</script><script>alert(1)</script>'
+        self.place.latitude = 9.9889
+        self.place.longitude = 122.8142
+        self.place.save()
+        Place.objects.bulk_create([
+            Place(city=self.city, title=f'Public {number:02}', address='Local',
+                  latitude=9.98, longitude=122.8, is_active=True, is_verified=True)
+            for number in range(30)
+        ])
+        import json
+
+        response = self.render_home()
+        payload = response.content.decode().split('<script id="landing-map-places" type="application/json">', 1)[1].split('</script>', 1)[0]
+        self.assertEqual(len(json.loads(payload)), 24)
+        self.assertContains(response, r'\u003C/script\u003E')
+        self.assertNotContains(response, '</script><script>alert(1)</script>')
 
     def test_landing_place_links_still_point_to_the_record(self):
         response = self.render_home()
