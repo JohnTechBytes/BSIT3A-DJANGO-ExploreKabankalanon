@@ -130,6 +130,15 @@ class HomepageTests(TestCase):
         self.assertNotContains(response, 'Not public')
         self.assertContains(response, 'js/landing-map.js')
 
+    def test_landing_osm_tiles_send_only_origin_as_referrer(self):
+        from django.contrib.staticfiles import finders
+        from pathlib import Path
+
+        script = Path(finders.find('js/landing-map.js')).read_text(encoding='utf-8')
+        self.assertIn("https://tile.openstreetmap.org/{z}/{x}/{y}.png", script)
+        self.assertIn("referrerPolicy: 'origin'", script)
+        self.assertContains(self.render_home(), 'js/landing-map.js?v=20261104-3')
+
     def test_landing_map_is_bounded_and_safely_serialized(self):
         self.place.title = '</script><script>alert(1)</script>'
         self.place.latitude = 9.9889

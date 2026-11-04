@@ -40,6 +40,9 @@
             if (!valid.length || !window.L) throw new Error('No mapped places');
             const map = L.map(container, { scrollWheelZoom: false, attributionControl: true });
             const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                // OSM requires a Referer. Django's default strips it cross-origin;
+                // send only this site's origin for tile requests, not the page URL.
+                referrerPolicy: 'origin',
                 maxZoom: 19, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
             });
             let failedTiles = 0;
