@@ -57,6 +57,21 @@ class EditorialScreenTests(TestCase):
         self.assertContains(self.client.get(reverse("visits:check_in", args=[self.place.pk])), 'name="visit_note"')
         self.assertContains(self.client.get(reverse("evaluation:sus_survey")), 'name="q10"')
 
+    def test_public_navigation_keeps_mobile_controls_and_links(self):
+        public = self.client.get(reverse("info:city_information"))
+        self.assertContains(public, 'id="public-menu-toggle"')
+        self.assertContains(public, 'aria-controls="public-nav-links"')
+        self.assertContains(public, 'aria-expanded="false"')
+        self.assertContains(public, reverse("login"))
+        self.client.force_login(self.user)
+        member = self.client.get(reverse("places:attraction_carousel") + "?browse=all")
+        for route in ("home", "info:city_information", "places:saved_places",
+                      "places:journey_dashboard", "itineraries:list", "visits:list"):
+            with self.subTest(route=route):
+                self.assertContains(member, reverse(route))
+        self.assertContains(member, 'class="ea-nav-more"')
+        self.assertContains(member, 'name="csrfmiddlewaretoken"')
+
     def test_discovery_screens_opt_in_without_changing_routes_or_actions(self):
         self.client.force_login(self.user)
         for url in (reverse('places:attraction_carousel') + '?browse=all',

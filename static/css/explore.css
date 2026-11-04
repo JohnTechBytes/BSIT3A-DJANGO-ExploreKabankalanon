@@ -1297,3 +1297,40 @@ body.site-dark.refresh-page.ek-discovery-theme.ek-journey-theme .easus-page .eas
 body.site-dark.refresh-page.ek-discovery-theme.ek-journey-theme .eath-page .eath-actions .eath-btn-soft,
 body.site-dark.refresh-page.ek-discovery-theme.ek-journey-theme .ea-checkin .ea-checkin-actions .ea-checkin-btn.secondary,
 body.site-dark.refresh-page.ek-discovery-theme.ek-journey-theme .ea-visits .ea-visits-link.alt { border-color: #aec4b6 !important; border-radius: 10px; background: #fff !important; color: #176249 !important; }
+
+/* Public navigation must remain legible when the mobile menu opens. The
+   legacy dark header used pale links, which do not work on this light shell. */
+@media (max-width: 900px) {
+  body.ek-discovery-theme .ea-site-header.menu-open .ea-nav-links a,
+  body.ek-discovery-theme .ea-site-header.menu-open .ea-nav-more summary {
+    color: #30493c;
+  }
+  body.ek-discovery-theme .ea-site-header.menu-open .ea-nav-links a:hover,
+  body.ek-discovery-theme .ea-site-header.menu-open .ea-nav-links a.active,
+  body.ek-discovery-theme .ea-site-header.menu-open .ea-nav-more summary:hover,
+  body.ek-discovery-theme .ea-site-header.menu-open .ea-nav-more[open] summary {
+    color: #176249;
+    border-color: var(--ek-primary);
+  }
+}
+
+/* A quiet, map-inspired contour instead of the older moving blue light bands.
+   The decoration alone arrives once; controls and text remain fully visible.
+   With reduced motion or without JavaScript, the warm solid panel remains. */
+body.ek-discovery-theme .public-motion-surface.has-motion-layer {
+  background: #e9f1e6 !important;
+}
+body.ek-discovery-theme .public-motion-layer {
+  inset: 0;
+  background: url('../img/patterns/terrain-lines.svg') center / cover no-repeat;
+  animation: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  body.ek-discovery-theme .public-motion-layer {
+    animation: ek-contour-arrive 480ms var(--ek-ease-enter) both;
+  }
+  @keyframes ek-contour-arrive {
+    from { opacity: 0; transform: translateX(12px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+}
