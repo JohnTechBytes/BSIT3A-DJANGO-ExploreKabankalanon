@@ -72,6 +72,57 @@ class EditorialScreenTests(TestCase):
         self.assertContains(detail, reverse('places:submit_review', args=[self.place.pk]))
         self.assertContains(detail, 'name="csrfmiddlewaretoken"')
 
+    def test_journey_planning_and_public_information_use_warm_theme(self):
+        self.client.force_login(self.user)
+        routes = (
+            reverse("places:journey_dashboard"), reverse("places:saved_places"),
+            reverse("places:my_reviews"), reverse("itineraries:list"),
+            reverse("itineraries:create"), reverse("itineraries:builder", args=[self.trip.pk]),
+            reverse("itineraries:choose_for_place", args=[self.place.pk]),
+            reverse("info:city_information"), reverse("visits:list"),
+            reverse("visits:check_in", args=[self.place.pk]),
+            reverse("evaluation:sus_survey"), reverse("evaluation:sus_thanks"),
+            reverse("core:privacy_notice"),
+        )
+        for url in routes:
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertContains(response, 'ek-journey-theme')
+                self.assertContains(response, 'css/explore.css')
+        journey = self.client.get(reverse("places:journey_dashboard"))
+        self.assertContains(journey, reverse("itineraries:builder", args=[self.trip.pk]))
+        self.assertContains(journey, '</main>')
+        builder = self.client.get(reverse("itineraries:builder", args=[self.trip.pk]))
+        self.assertContains(builder, reverse("itineraries:update", args=[self.trip.pk]))
+        self.assertContains(builder, reverse("itineraries:add_stop", args=[self.trip.pk]))
+        self.assertContains(builder, 'name="csrfmiddlewaretoken"')
+        survey = self.client.get(reverse("evaluation:sus_survey"))
+        for i in range(1, 11):
+            self.assertContains(survey, f'name="q{i}"')
+        self.assertContains(survey, 'name="csrfmiddlewaretoken"')
+
+    def test_error_pages_use_warm_theme_without_promising_data_was_saved(self):
+        from django.test import RequestFactory
+        from mysite.views import error_404, error_500
+        request = RequestFactory().get("/unavailable/")
+        for view, code in ((error_404, 404), (error_500, 500)):
+            with self.subTest(code=code):
+                response = view(request)
+                self.assertEqual(response.status_code, code)
+                self.assertContains(response, 'ek-error-theme', status_code=code)
+                self.assertContains(response, 'css/explore.css', status_code=code)
+                self.assertNotContains(response, 'Nothing you saved has been lost', status_code=code)
+
+    def test_privacy_and_survey_describe_implemented_behavior(self):
+        privacy = self.client.get(reverse("core:privacy_notice"))
+        self.assertContains(privacy, 'locally bundled Leaflet')
+        self.assertNotContains(privacy, 'Nearby map also loads')
+        self.assertContains(privacy, 'account reference cleared')
+        self.client.force_login(self.user)
+        self.client.post(reverse("evaluation:sus_survey"), {f'q{i}': '3' for i in range(1, 11)})
+        survey = self.client.get(reverse("evaluation:sus_survey"))
+        self.assertContains(survey, 'Earlier submissions remain stored')
+
     def test_city_discovery_keeps_its_listing_and_pagination(self):
         Place.objects.create(city=self.place.city, title="Unpublished candidate",
                              slug="unpublished-candidate", is_active=False, is_verified=False)

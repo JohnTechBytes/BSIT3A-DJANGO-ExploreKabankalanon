@@ -31,12 +31,13 @@
 </style>
 {% endblock %}
 {% block title %}Survey Result · ExploreKabankalan{% endblock %}
-{% block body_class %}site-dark refresh-page{% endblock %}
+{% block body_class %}site-dark refresh-page ek-discovery-theme ek-journey-theme{% endblock %}
 {% block skip_link %}<a class="sd-skip" href="#main-content">Skip to content</a>{% endblock %}
 {% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
 {% block extra_css_after %}<link rel="stylesheet" href="{% static 'css/site-dark.css' %}">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-11">{% endblock %}
 
 {% block content %}
 <main class="eath-page" id="main-content">
@@ -80,7 +81,7 @@
 
     <p class="eath-foot">
       Submitted {{ response.created_at|date:"M j, Y, H:i" }}.
-      The response keeps your account reference and the ten answers only.
+      The response stores the ten answers, calculated score, submission time and, when signed in, your account reference.
     </p>
   {% else %}
     <header class="eath-hero">

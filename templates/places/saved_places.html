@@ -90,12 +90,13 @@
 </style>
 {% endblock %}
 {% block title %}Saved Places · ExploreKabankalan{% endblock %}
-{% block body_class %}site-dark saved-page{% endblock %}
+{% block body_class %}site-dark saved-page ek-discovery-theme ek-journey-theme{% endblock %}
 {% block skip_link %}<a class="sd-skip" href="#main-content">Skip to content</a>{% endblock %}
 {% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
 {% block extra_css_after %}<link rel="stylesheet" href="{% static 'css/site-dark.css' %}">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-11">{% endblock %}
 
 {% block content %}
 <main class="ea-saved" id="main-content">
@@ -127,7 +128,7 @@
           <img src="{% static entry.place.sample_image %}" alt="Illustrative category sample, not an actual photo of {{ entry.place.title }}" loading="lazy" decoding="async">
           <span class="ea-saved-sample">Illustrative category sample</span>
         {% else %}
-          <div class="ea-c-photo-empty"><span class="ea-c-photo-icon" aria-hidden="true">&#128205;</span><span>No destination photo available</span></div>
+          <div class="ea-c-photo-empty"><span class="ea-c-photo-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span>No destination photo available</span></div>
         {% endif %}
       </div>
       {% if entry.place.cover_image or entry.place.cover_image_url %}
@@ -144,7 +145,7 @@
       <a class="ea-action ea-action-secondary" href="{% url 'itineraries:choose_for_place' entry.place.pk %}">Add to Itinerary</a>
       <form method="post" action="{% url 'places:unsave_place' entry.place.pk %}">
         {% csrf_token %}
-        <button class="ea-unsave" type="submit" aria-label="Remove {{ entry.place.title }} from saved places">Remove from Saved</button>
+        <button class="ea-unsave" type="submit" aria-label="Remove from Saved — Remove {{ entry.place.title }} from saved places">Remove from Saved</button>
       </form>
     </article>
     {% endfor %}

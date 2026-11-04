@@ -28,12 +28,13 @@
 </style>
 {% endblock %}
 {% block title %}Privacy Notice · ExploreKabankalan{% endblock %}
-{% block body_class %}site-dark refresh-page{% endblock %}
+{% block body_class %}site-dark refresh-page ek-discovery-theme ek-journey-theme{% endblock %}
 {% block skip_link %}<a class="sd-skip" href="#main-content">Skip to content</a>{% endblock %}
 {% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
 {% block extra_css_after %}<link rel="stylesheet" href="{% static 'css/site-dark.css' %}">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-11">{% endblock %}
 
 {% block content %}
 <main class="eapriv-page" id="main-content">
@@ -62,7 +63,7 @@
     <ul>
       <li><strong>Your live GPS position.</strong> The distance between you and a destination is calculated inside your browser. The coordinates are not sent to the server and are not written to the database.</li>
       <li><strong>Your precise location history.</strong> The system keeps no trail of where you have been.</li>
-      <li><strong>Advertising or third-party tracking.</strong> The project sets no advertising cookies and shares nothing with advertisers.</li>
+      <li><strong>Advertising cookies.</strong> The project does not intentionally set advertising cookies. External services may receive connection information as described below.</li>
     </ul>
   </section>
 
@@ -70,32 +71,31 @@
     <h2 id="eapriv-who">Who can see it</h2>
     <p>
       You see your own saved places, plans, reviews, visits, searches and survey
-      answers on your own pages. Staff of the city administration see the
-      destination records, the visit reports that still need a decision, the
-      survey answers and anonymous search statistics in the staff dashboard.
-      Nobody else receives your data, and nothing is sold.
+      answers on your own pages. Authorized staff can access records according to
+      their dashboard permissions. Your username, rating and review appear on
+      the destination page for other signed-in visitors to see.
     </p>
   </section>
 
   <section class="eapriv-card" aria-labelledby="eapriv-map">
     <h2 id="eapriv-map">Maps and external services</h2>
     <p>
-      The interactive maps load tiles from MapTiler. The Nearby map also loads
-      its code from a public content delivery network. Tile requests reveal the map area you
-      are looking at, in the same way as any website that shows a map. They do
-      not receive your account, your searches or your saved places.
+      The interactive maps use locally bundled Leaflet code and load tiles from
+      MapTiler or OpenStreetMap, depending on the map. Tile requests reveal the
+      map area and ordinary connection information, such as your IP address, to
+      the tile provider. Tile requests do not include your account, searches or
+      saved places. External destination images may also contact their host.
     </p>
   </section>
 
   <section class="eapriv-card" aria-labelledby="eapriv-keep">
     <h2 id="eapriv-keep">How long it is kept and what you can do</h2>
     <p>
-      Your data stays on the project database until you ask for it to be
-      removed, or until the project ends. You can ask the project
-      administrator to delete your account; the saved places, plans, reviews,
-      visit reports, searches and survey answers that belong to that account
-      are removed with it. You can also ask for a copy of the data that is
-      stored about you.
+      You can ask the project administrator to delete your account or provide a
+      copy of your data. Saved places, plans, reviews and visit reports are
+      deleted with the account. Search, relevance and survey records may remain
+      with the account reference cleared. Ask the administrator about retention
+      and any further removal requests.
     </p>
   </section>
 
