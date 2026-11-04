@@ -27,11 +27,9 @@ class EditorialScreenTests(TestCase):
         for name in ("login", "register"):
             with self.subTest(name=name):
                 response = self.client.get(reverse(name))
-                self.assertContains(response, "css/auth-editorial.css")
-                self.assertContains(response, "css/auth-guide.css")
-                self.assertContains(response, "css/design-craft.css")
-                self.assertContains(response, "css/public-night.css")
-                self.assertContains(response, "js/public-motion.js")
+                self.assertContains(response, "css/explore.css")
+                self.assertContains(response, "js/motion.js")
+                self.assertContains(response, 'class="auth-page ek-theme"')
                 self.assertContains(response, 'name="csrfmiddlewaretoken"')
 
     def test_public_screens_retain_their_editorial_scope(self):

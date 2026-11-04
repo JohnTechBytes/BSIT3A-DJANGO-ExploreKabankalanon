@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f8f6f1">
+    <title>{% block title %}{% endblock %} | ExploreKabankalan</title>
+    <link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-5">
+    <script src="{% static 'js/motion.js' %}?v=20261104-3" defer></script>
+</head>
+<body class="auth-page ek-theme">
+<a class="auth-skip" href="#auth-main">Skip to sign in or registration</a>
+<div class="auth-shell">
+    <aside class="auth-brand-panel" aria-label="Explore Kabankalan">
+        <a href="{% url 'home' %}" class="auth-logo"><span class="auth-logo-mark" aria-hidden="true">ek<span>.</span></span><span>Explore<strong>Kabankalan</strong></span></a>
+        <div class="auth-brand-content">
+            <p class="auth-eyebrow">A LOCAL GUIDE, MADE FOR YOU</p>
+            <h2>{% block brand_heading %}{% endblock %}</h2>
+            <p class="auth-brand-description">{% block brand_description %}{% endblock %}</p>
+            <figure class="auth-landmark">
+                <img src="{% static 'img/places/new-kabankalan-cathedral.jpg' %}" width="1378" height="767" loading="lazy" alt="The new Saint Francis Xavier Cathedral in Kabankalan">
+                <figcaption><div><span>LOCAL LANDMARK</span><strong>New Kabankalan Cathedral</strong><small>Talubangi, Kabankalan City</small></div><p>Photo: <a href="https://commons.wikimedia.org/wiki/File:New_Kabankalan_Cathedral.jpg" target="_blank" rel="noopener noreferrer">Lightningscale / Wikimedia Commons</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a> · Unmodified</p></figcaption>
+            </figure>
+        </div>
+        <p class="auth-panel-note">KABANKALAN CITY <span aria-hidden="true">·</span> NEGROS OCCIDENTAL</p>
+    </aside>
+    <main class="auth-panel" id="auth-main" tabindex="-1">
+        <div class="auth-main-top"><a href="{% url 'home' %}"><span aria-hidden="true">←</span> Back to home</a></div>
+        <div class="auth-card">
+            {% block content %}{% endblock %}
+        </div>
+        <p class="auth-panel-footer">ExploreKabankalan <span aria-hidden="true">·</span> Your local guide</p>
+    </main>
+</div>
+</body>
+</html>

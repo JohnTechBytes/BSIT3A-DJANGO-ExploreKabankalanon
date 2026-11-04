@@ -1,5 +1,33 @@
 /* Small, progressive motion layer. Content and controls work without JS. */
 (() => {
+    // Password visibility is optional enhancement; without JS fields stay masked.
+    document.querySelectorAll('[data-password-toggle]').forEach(button => {
+        const field = document.getElementById(button.getAttribute('aria-controls'));
+        if (!field || field.type !== 'password') return;
+        button.hidden = false;
+        button.addEventListener('click', () => {
+            const showing = field.type === 'password';
+            field.type = showing ? 'text' : 'password';
+            button.setAttribute('aria-pressed', String(showing));
+            button.textContent = showing ? 'Hide' : 'Show';
+        });
+    });
+    // Associate visible Django help/errors even on versions that do not add
+    // aria-describedby automatically, without replacing existing references.
+    document.querySelectorAll('.auth-page .auth-field').forEach(group => {
+        const input = group.querySelector('input:not([type=hidden])');
+        if (!input) return;
+        const ids = (input.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+        group.querySelectorAll('.auth-help[id], .auth-field-error[id]').forEach(note => {
+            const alreadyCovered = ids.some(id => {
+                const described = document.getElementById(id);
+                return described && (described === note || note.contains(described));
+            });
+            if (!alreadyCovered) ids.push(note.id);
+        });
+        if (ids.length) input.setAttribute('aria-describedby', ids.join(' '));
+        if (group.classList.contains('has-error')) input.setAttribute('aria-invalid', 'true');
+    });
     const header = document.querySelector('.site-header');
     if (header) {
         let scheduled = false;

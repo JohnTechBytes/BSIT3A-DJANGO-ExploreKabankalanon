@@ -1,98 +1,30 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#080d14">
-    <title>Create Account | ExploreKabankalan</title>
-    <link rel="stylesheet" href="{% static 'css/auth.css' %}?v=20261031-1">
-    <link rel="stylesheet" href="{% static 'css/auth-editorial.css' %}?v=20261031-1">
-    <link rel="stylesheet" href="{% static 'css/auth-guide.css' %}?v=20261101-1">
-    <link rel="stylesheet" href="{% static 'css/design-craft.css' %}?v=20261101-2">
-    <link rel="stylesheet" href="{% static 'css/public-night.css' %}?v=20261101-3">
-    <script src="{% static 'js/public-motion.js' %}?v=20261101-1" defer></script>
-</head>
-<body class="auth-body">
-<div class="auth-shell">
-
-    <aside class="auth-brand-panel">
-        <a href="{% url 'home' %}" class="auth-logo">
-            <span class="auth-logo-mark" aria-hidden="true">EK</span>
-            <span class="auth-logo-name">
-                <b>Explore<span>Kabankalan</span></b>
-                <small>LOCAL PLACES. YOUR ADVENTURE.</small>
-            </span>
-        </a>
-
-        <div class="auth-route" aria-hidden="true"><span></span><span></span><span></span></div>
-
-        <div class="auth-brand-copy">
-            <p class="auth-eyebrow">START YOUR JOURNEY</p>
-            <h2>Keep every Kabankalan find in one place.</h2>
-            <p>Create a free account to save destinations, plan itineraries and report the places you have actually visited.</p>
-        </div>
-
-        <ul class="auth-points">
-            <li><strong>Published</strong> destinations only</li>
-            <li><strong>Personal</strong> trip plans</li>
-            <li><strong>Reviewed</strong> visit records</li>
-        </ul>
-
-        <p class="auth-panel-note">Kabankalan City · Negros Occidental</p>
-    </aside>
-
-    <main class="auth-panel">
-        <div class="auth-card">
-            <div class="auth-icon" aria-hidden="true">✦</div>
-
-            <h1>Create your account</h1>
-            <p class="auth-description">It only takes a minute. Your saved places and itineraries stay private to you.</p>
-
-            {% if form.non_field_errors %}
-            <div class="auth-error" role="alert">
-                {{ form.non_field_errors }}
-            </div>
-            {% endif %}
-
-            <form method="post" novalidate>
-                {% csrf_token %}
-
-                {% for field in form %}
-                <div class="auth-field{% if field.errors %} has-error{% endif %}">
-                    {% if field.name == "consent_privacy" %}
-                    <label class="auth-consent" for="{{ field.id_for_label }}">
-                        {{ field }}
-                        <span>I have read and accept the <a href="{% url 'core:privacy_notice' %}" target="_blank" rel="noopener">Privacy Notice</a></span>
-                    </label>
-                    {% else %}
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-
-                    {{ field }}
-                    {% endif %}
-
-                    {% if field.help_text %}
-                    <div class="auth-help">{{ field.help_text }}</div>
-                    {% endif %}
-
-                    {% if field.errors %}
-                    <div class="auth-error" role="alert">{{ field.errors }}</div>
-                    {% endif %}
-                </div>
-                {% endfor %}
-
-                <button type="submit" class="auth-button">Create Account →</button>
-            </form>
-
-            <div class="auth-footer">
-                Already have an account?
-                <a href="{% url 'login' %}">Sign in</a>
-            </div>
-        </div>
-
-        <p><a class="auth-back" href="{% url 'home' %}">← Back to ExploreKabankalan</a></p>
-    </main>
-
-</div>
-</body>
-</html>
+{% extends 'registration/auth_base.html' %}
+{% block title %}Create Account{% endblock %}
+{% block brand_heading %}Make more of your time close to home.{% endblock %}
+{% block brand_description %}Discover local places, save your favorites and make plans for the days ahead.{% endblock %}
+{% block content %}
+<p class="auth-form-kicker">START YOUR JOURNEY</p>
+<h1>Create your account</h1>
+<p class="auth-description">Join to save places and make your own Kabankalan itineraries.</p>
+{% if form.non_field_errors %}<div class="auth-error-summary" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+{% if form.errors %}<div class="auth-error-summary" role="alert">Please review the highlighted fields below.</div>{% endif %}
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="auth-field{% if field.errors %} has-error{% endif %}">
+        {% if field.name == 'consent_privacy' %}
+        <label class="auth-consent" for="{{ field.id_for_label }}">{{ field }}<span>I have read and accept the <a href="{% url 'core:privacy_notice' %}" target="_blank" rel="noopener noreferrer">Privacy Notice <span class="auth-external">(opens in a new tab)</span></a></span></label>
+        {% else %}
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {% if field.name == 'password1' or field.name == 'password2' %}
+        <div class="auth-password">{{ field }}<button type="button" data-password-toggle aria-controls="{{ field.id_for_label }}" aria-label="Show {{ field.label|lower }}" aria-pressed="false" hidden>Show</button></div>
+        {% else %}{{ field }}{% endif %}
+        {% endif %}
+        {% if field.help_text %}<div id="{{ field.id_for_label }}_helptext" class="auth-help">{{ field.help_text }}</div>{% endif %}
+        {% if field.errors %}<div id="field-error-{{ field.name }}" class="auth-field-error" role="alert">{{ field.errors }}</div>{% endif %}
+    </div>
+    {% endfor %}
+    <button type="submit" class="auth-button">Create account <span aria-hidden="true">→</span></button>
+</form>
+<div class="auth-footer">Already have an account? <a href="{% url 'login' %}">Sign in</a></div>
+{% endblock %}
