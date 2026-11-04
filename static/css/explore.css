@@ -1,3 +1,86 @@
+/* Explore Kabankalan design-system foundation.
+   Namespaced tokens are available now; .ek-theme is opt-in so existing
+   Bootstrap, Tabler and legacy pages keep their current rendering until each
+   screen is migrated. Do not edit vendor stylesheets. */
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  src: url("../fonts/plus-jakarta-sans-variable.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter EK";
+  src: url("../fonts/inter-variable.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+:root {
+  --ek-bg: #f8f6f1;
+  --ek-surface: #ffffff;
+  --ek-ink: #16231d;
+  --ek-muted: #5f6f67;
+  --ek-line: #e6e2d8;
+  --ek-primary: #1e7a5c;
+  --ek-primary-hover: #176249;
+  --ek-primary-tint: #e6f3ee;
+  --ek-accent: #f28c38;
+  --ek-success: #2e9e6b;
+  --ek-warning: #e0a100;
+  --ek-danger: #d64545;
+  /* Use the darker text variant on light surfaces; white on --ek-danger is
+     below the 4.5:1 threshold for normal-size text. */
+  --ek-danger-text: #a32d2d;
+  --ek-font-heading: "Plus Jakarta Sans", system-ui, sans-serif;
+  --ek-font-body: "Inter EK", system-ui, sans-serif;
+  --ek-text-12: .75rem;
+  --ek-text-14: .875rem;
+  --ek-text-16: 1rem;
+  --ek-text-18: 1.125rem;
+  --ek-text-20: 1.25rem;
+  --ek-text-24: 1.5rem;
+  --ek-text-32: 2rem;
+  --ek-text-44: 2.75rem;
+  --ek-text-60: 3.75rem;
+  --ek-leading-body: 1.6;
+  --ek-tracking-display: -.02em;
+  --ek-space-1: 4px;
+  --ek-space-2: 8px;
+  --ek-space-3: 12px;
+  --ek-space-4: 16px;
+  --ek-space-6: 24px;
+  --ek-space-8: 32px;
+  --ek-space-12: 48px;
+  --ek-space-16: 64px;
+  --ek-space-24: 96px;
+  --ek-radius-input: 10px;
+  --ek-radius-card: 16px;
+  --ek-radius-hero: 24px;
+  --ek-radius-chip: 999px;
+  --ek-shadow-sm: 0 2px 10px rgba(22, 35, 29, .06);
+  --ek-shadow-md: 0 8px 24px rgba(22, 35, 29, .09);
+  --ek-shadow-lg: 0 20px 48px rgba(22, 35, 29, .14);
+  --ek-content-max: 1200px;
+  --ek-focus: #176249;
+  --ek-motion-feedback: 200ms;
+  --ek-motion-reveal: 400ms;
+  --ek-ease-enter: cubic-bezier(.22, 1, .36, 1);
+}
+/* Bootstrap aliases are enabled only on screens explicitly opting into the
+   new system. Aliases do not change the legacy landing or admin views. */
+.ek-theme {
+  --bs-body-font-family: var(--ek-font-body);
+  --bs-body-color: var(--ek-ink);
+  --bs-body-bg: var(--ek-bg);
+  --bs-primary: var(--ek-primary);
+  --bs-primary-rgb: 30, 122, 92;
+  --bs-border-color: var(--ek-line);
+  --bs-border-radius: var(--ek-radius-input);
+  --bs-link-color: var(--ek-primary);
+  --bs-link-hover-color: var(--ek-primary-hover);
+}
+
 
 /* EXPLOREANYWHERE CITY SELECTION */
 

@@ -46,6 +46,21 @@ class HomepageTests(TestCase):
         self.assertNotContains(response, "Inactive place")
         self.assertNotContains(response, "Outside city")
 
+    def test_landing_loads_opt_in_design_token_foundation(self):
+        from django.contrib.staticfiles import finders
+        from pathlib import Path
+
+        response = self.render_home()
+        self.assertContains(response, 'css/explore.css')
+        css = Path(finders.find('css/explore.css')).read_text()
+        self.assertIn('--ek-primary: #1e7a5c', css)
+        self.assertIn('--ek-bg: #f8f6f1', css)
+        self.assertIn('.ek-theme {', css)
+        self.assertNotContains(response, 'class="landing-page ek-theme"')
+        for asset in ('plus-jakarta-sans-variable.ttf', 'inter-variable.ttf',
+                      'PLUS-JAKARTA-SANS-OFL.txt', 'INTER-OFL.txt'):
+            self.assertIsNotNone(finders.find('fonts/' + asset))
+
     def test_city_hall_background_is_local_and_featured_cathedral_remains(self):
         from django.contrib.staticfiles import finders
         from pathlib import Path
