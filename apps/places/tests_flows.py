@@ -316,6 +316,12 @@ class NearbyPageTests(FlowFixture):
         self.assertContains(response, 'id="ea6-voice-status"')
         self.assertContains(response, "js/ea-voice.js")
 
+    def test_nearby_map_uses_bundled_leaflet(self):
+        response = self.client.get(self.url, {"mode": "nearby"})
+        self.assertContains(response, 'vendor/leaflet/leaflet.js')
+        self.assertContains(response, 'vendor/leaflet/leaflet.css')
+        self.assertNotContains(response, 'unpkg.com/leaflet')
+
     def test_nearby_keeps_a_plain_grid_instead_of_a_marquee(self):
         response = self.client.get(self.url, {"mode": "nearby"})
         self.assertNotContains(response, "data-marquee")
@@ -328,7 +334,7 @@ class NearbyPageTests(FlowFixture):
         self.assertContains(response, "ea6-drone-hud")
         self.assertContains(response, 'id="ea6-drone-target"')
         self.assertContains(response, "ea6-card-map-hint")
-        self.assertContains(response, 'aria-label="Fly to Published Falls on the map"')
+        self.assertContains(response, 'aria-label="View on map: Published Falls')
 
 class ScoringDisplayTests(FlowFixture):
     """Percentages and "not scored" labels are no longer shown to visitors."""

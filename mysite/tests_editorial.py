@@ -57,6 +57,21 @@ class EditorialScreenTests(TestCase):
         self.assertContains(self.client.get(reverse("visits:check_in", args=[self.place.pk])), 'name="visit_note"')
         self.assertContains(self.client.get(reverse("evaluation:sus_survey")), 'name="q10"')
 
+    def test_discovery_screens_opt_in_without_changing_routes_or_actions(self):
+        self.client.force_login(self.user)
+        for url in (reverse('places:attraction_carousel') + '?browse=all',
+                    reverse('places:attraction_carousel') + '?mode=nearby',
+                    reverse('places:place_detail', args=[self.place.pk]),
+                    reverse('places:city_discover')):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertContains(response, 'ek-discovery-theme')
+                self.assertContains(response, 'css/explore.css')
+        detail = self.client.get(reverse('places:place_detail', args=[self.place.pk]))
+        self.assertContains(detail, reverse('places:save_place', args=[self.place.pk]))
+        self.assertContains(detail, reverse('places:submit_review', args=[self.place.pk]))
+        self.assertContains(detail, 'name="csrfmiddlewaretoken"')
+
     def test_city_discovery_keeps_its_listing_and_pagination(self):
         Place.objects.create(city=self.place.city, title="Unpublished candidate",
                              slug="unpublished-candidate", is_active=False, is_verified=False)

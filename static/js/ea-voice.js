@@ -61,8 +61,10 @@
     var triedFallbackLanguage = false;
 
     function label(text) {
-      var element = button.querySelector(".ea-voice-text");
+      var element = button.querySelector(".ea-voice-text, .ea6-voice-text");
       if (element) element.textContent = text;
+      button.setAttribute("aria-label", text === "Listening"
+        ? "Listening, tap to stop voice search" : "Speak to search by voice");
     }
 
     function start() {

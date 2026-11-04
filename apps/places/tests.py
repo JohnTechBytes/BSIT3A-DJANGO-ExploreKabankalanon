@@ -63,7 +63,7 @@ class NearbyRedesignTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "places/nearby_places.html")
         for content in [
-            'class="nearby-page"', 'css/nearby.css', 'css/editorial.css', 'class="ek-brand-name"',
+            'class="nearby-page ek-theme ek-discovery-theme"', 'css/nearby.css', 'css/editorial.css', 'css/explore.css', 'class="ek-brand-name"',
             'Find places near you.', 'Find your next stop',
             'id="ea6-search-form"', 'id="ea6-use-gps"', 'id="ea6-origin"',
             'id="ea6h-distance"', 'id="ea6g-toggle"', 'id="ea6g-map-shell"',
@@ -74,6 +74,14 @@ class NearbyRedesignTests(TestCase):
         self.assertContains(response, "CPSU Museum")
         for private in ("Unverified Café", "Inactive Café", "Other City Café"):
             self.assertNotContains(response, private)
+
+    def test_nearby_unmapped_photo_does_not_claim_to_open_a_map(self):
+        Place.objects.create(city=self.city, title="Unmapped Bookstore", address="Kabankalan",
+                             is_verified=True, is_active=True)
+        response = self.client.get(self.url, {"mode": "nearby", "q": "Unmapped Bookstore"})
+        self.assertContains(response, "Unmapped Bookstore")
+        self.assertNotContains(response, 'aria-label="View on map: Unmapped Bookstore')
+        self.assertNotContains(response, 'aria-label="Show on map: Unmapped Bookstore')
 
     def test_service_search_retains_matching_and_selected_filter(self):
         response = self.client.get(self.url, {"mode": "nearby", "service": "coffee"})

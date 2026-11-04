@@ -1,11 +1,12 @@
 {% extends "theme/public_base.html" %}
-{% load attraction_photos %}
+{% load attraction_photos static %}
 
 {% block title %}Discover {{ city_name }} · ExploreKabankalan{% endblock %}
-{% block body_class %}browse-page discovery-page{% endblock %}
+{% block body_class %}browse-page discovery-page ek-theme ek-discovery-theme{% endblock %}
 {% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-8">{% endblock %}
 {% block content %}
 <style>
 .discovery{max-width:1300px;margin:auto;padding:36px 20px}

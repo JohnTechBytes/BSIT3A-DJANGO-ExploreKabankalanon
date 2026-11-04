@@ -61,3 +61,13 @@ Sign-in and registration now use the same opt-in cream and green system as the l
 The retired hobby-selection template was not reactivated: doing so would change the existing route and user flow rather than simply restyle it. If a weighted hobby-selection step is wanted, its behavior and the earlier decision to remove match percentages need separate confirmation before implementation.
 
 Chromium checks covered the account screens at 320, 375, 768 and 1280px, initial and invalid form states, CSRF, password toggle and no-JavaScript behavior. Automated axe checks found no violations on the initial account screens; this does not replace screen-reader or device testing. Existing registration and login behavior was additionally tested using isolated Django test databases. No live MySQL data was accessed or modified.
+
+## Discovery, nearby, map and place details
+
+The user confirmed keeping the existing `/hobbies/` redirect to Explore Places. This remains the current decision; no separate selection wizard or ranking changes were introduced.
+
+The Explore Places carousel, Nearby, map views, destination details and legacy paginated catalogue now opt into the warm system. The existing all-places / nearby / map navigation is visible again and stays in sync with the list/map buttons. Search, category and hobby filters, recommendation order, review and save forms, visitor-provided location, labelled illustrative images and real published records remain intact. Unmapped Nearby photos no longer advertise an unavailable map interaction. Nearby's microphone keeps live transcription but has no looping microphone animation.
+
+Both maps now load the project's bundled Leaflet files; Nearby previously requested the library from an external CDN. Existing MapTiler tile layers, credits and photo-to-map interactions are unchanged. In the sandbox, external map tiles are blocked, so the map reports that failure while listing cards and detail links remain usable. The QA server used a separate copy of the October 30 snapshot and a temporary account; neither the user's MySQL nor the original snapshot was modified.
+
+Chromium checks covered 320, 375, 768 and 1280px, no horizontal overflow, search redirection, the mobile menu, list/map toggles, photo-to-map selection, simulated live speech, reduced motion and automated axe scans of the initial four screens. Automated tests use isolated databases. This does not certify a Lighthouse score, real microphone hardware, MapTiler access, or the user's Windows/MariaDB installation. Journey, itineraries, city information, staff, SUS and error pages remain for their later phases.
