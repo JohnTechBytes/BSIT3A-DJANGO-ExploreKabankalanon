@@ -28,3 +28,10 @@ record separately. A failed batch rolls back database changes and attempts to
 remove files created by that batch; keep your backup and read error messages.
 After a successful import, move imported originals out of the images folder
 before the next batch, or the importer will stop on the existing covers.
+
+To replace an existing local cover, the separate replace_cover helper requires a
+place ID, matching image filename, and exact place name. It previews by default,
+retains the original media file, and refuses existing rights metadata or an
+external cover URL. Use --apply only after reviewing the target and image.
+For example:
+ .\.venv\Scripts\python.exe .\photo_import\replace_cover 7638 7638.png --expected-name '7-Eleven - Guanzon Street'

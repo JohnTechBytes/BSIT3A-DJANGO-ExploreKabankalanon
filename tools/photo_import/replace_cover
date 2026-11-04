@@ -1,0 +1,112 @@
+#!/usr/bin/env python3
+"""Replace one reviewed cover; preview by default and never delete the old file."""
+import argparse
+import hashlib
+import io
+import os
+import re
+import sys
+import warnings
+from pathlib import Path
+
+parser = argparse.ArgumentParser(description='Review a cover replacement; use --apply to save.')
+parser.add_argument('place_id', type=int)
+parser.add_argument('image_name', help='Image filename in photo_import/images, named with the place ID.')
+parser.add_argument('--expected-name', required=True, help='Exact existing place name.')
+parser.add_argument('--apply', action='store_true')
+args = parser.parse_args()
+
+if not (Path.cwd() / 'manage.py').is_file():
+    raise SystemExit('Stopped: run from the project folder containing manage.py.')
+sys.path.insert(0, str(Path.cwd()))
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
+import django
+django.setup()
+from django.conf import settings
+from django.core.files.base import ContentFile
+from django.core.files.storage import FileSystemStorage
+from django.db import transaction
+from apps.places.models import Place
+from PIL import Image, UnidentifiedImageError
+
+db = settings.DATABASES['default']
+if (db['ENGINE'] != 'django.db.backends.mysql' or db['NAME'] != 'exploreanywhere'
+        or str(db.get('HOST', '')).lower() not in ('localhost', '127.0.0.1', '::1')):
+    raise SystemExit('Stopped: expected the local MySQL exploreanywhere database.')
+
+formats = {'.jpg': 'JPEG', '.jpeg': 'JPEG', '.png': 'PNG', '.webp': 'WEBP'}
+name = args.image_name
+image_name = Path(name)
+if (name != image_name.name or image_name.stem != str(args.place_id)
+        or image_name.suffix.lower() not in formats or not re.fullmatch(r'[1-9][0-9]*', image_name.stem)):
+    raise SystemExit('Stopped: provide a filename such as 7638.png, using the same ID.')
+images = Path(__file__).resolve().parent / 'images'
+source = images / name
+if source.is_symlink() or not source.is_file():
+    raise SystemExit('Stopped: the image was not found as a regular file in photo_import/images.')
+if source.stat().st_size > 20 * 1024 * 1024:
+    raise SystemExit('Stopped: image is larger than 20 MB.')
+try:
+    data = source.read_bytes()
+    Image.MAX_IMAGE_PIXELS = 50_000_000
+    warnings.simplefilter('error', Image.DecompressionBombWarning)
+    with Image.open(io.BytesIO(data)) as im:
+        width, height = im.size
+        if im.format != formats[image_name.suffix.lower()]:
+            raise ValueError(f'extension does not match actual {im.format} format')
+        im.verify()
+except (OSError, ValueError, UnidentifiedImageError, Image.DecompressionBombWarning, Image.DecompressionBombError) as exc:
+    raise SystemExit(f'Stopped: invalid image ({exc}).')
+digest = hashlib.sha256(data).hexdigest()
+
+
+def check(p):
+    if p.city_id != 2 or not p.is_active or not p.is_verified or p.title != args.expected_name:
+        raise SystemExit('Stopped: the place ID, name, city or publication status did not match.')
+    if not p.cover_image or p.cover_image_url:
+        raise SystemExit('Stopped: this tool requires an existing local cover and no external cover URL.')
+    if any((p.photo_credit, p.photo_source_url, p.photo_license, p.photo_license_url)):
+        raise SystemExit('Stopped: existing attribution details require manual review before replacement.')
+    if not isinstance(p.cover_image.storage, FileSystemStorage):
+        raise SystemExit('Stopped: this tool requires local file storage.')
+    if not p.cover_image.storage.exists(p.cover_image.name):
+        raise SystemExit('Stopped: the existing local image file was not found.')
+
+try:
+    place = Place.objects.get(pk=args.place_id)
+except Place.DoesNotExist:
+    raise SystemExit('Stopped: place ID was not found.')
+check(place)
+old_name = place.cover_image.name
+print(f'ID {place.pk}: {place.title}')
+print(f'Current cover: {old_name}')
+print(f'New image: {name} [{width}x{height}], SHA256: {digest}')
+print('Verify the image shows this exact place; source and reuse rights are not verified.')
+if not args.apply:
+    print('Dry run: nothing changed. The old image file will be kept if you apply.')
+    raise SystemExit(0)
+
+saved_name = None
+storage = None
+try:
+    with transaction.atomic():
+        place = Place.objects.select_for_update().get(pk=args.place_id)
+        check(place)
+        if place.cover_image.name != old_name:
+            raise ValueError('the existing cover changed during this operation')
+        if hashlib.sha256(source.read_bytes()).hexdigest() != digest:
+            raise ValueError('the replacement file changed during this operation')
+        storage = place.cover_image.storage
+        place.cover_image.save(f'place-{place.pk}-replacement{image_name.suffix.lower()}', ContentFile(data), save=False)
+        saved_name = place.cover_image.name
+        place.save(update_fields=['cover_image'])
+except BaseException:
+    if saved_name and storage:
+        try:
+            storage.delete(saved_name)
+        except Exception as exc:
+            print(f'WARNING: could not remove temporary media file {saved_name}: {exc}', file=sys.stderr)
+    raise
+print(f'Updated cover for ID {args.place_id}: {saved_name}')
+print(f'Previous file retained: {old_name}')
+print('No credit or license was invented; admin photo-rights validation was not applied.')
