@@ -94,6 +94,7 @@ No import should take place without a later explicit approval.
 - Clearly disclose unverified information and photo rights, incomplete OSM
   coverage, browser/network dependencies, and that search is rule-based—not a
   language model.
-- The open pull request is not automatically merged. Public internet deployment
-  requires a supported software stack, production security configuration and a
-  separate deployment review; a local runserver demo is not that review.
+- A merged pull request does not update an existing laptop project automatically;
+  confirm the installed code version. Public internet deployment requires a
+  supported software stack, production security configuration and a separate
+  deployment review; a local runserver demo is not that review.
