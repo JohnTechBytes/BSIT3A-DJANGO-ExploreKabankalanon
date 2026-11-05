@@ -1,8 +1,7 @@
 {% extends "theme/public_base.html" %}
-{% load static l10n %}
+{% load static %}
 
 {% block extra_css %}
-{% if place.latitude != None and place.longitude != None %}<link rel="stylesheet" href="{% static 'vendor/leaflet/leaflet.css' %}">{% endif %}
 <style>
 /* ExploreAnywhere Phase 5B: destination-detail presentation only. */
 .ea-place-v2{--pd-navy:#102b53;--pd-blue:#075ee4;--pd-text:#1e3958;--pd-muted:#60758e;--pd-line:#dce7f4;max-width:1190px;margin:auto;padding:30px 24px 82px;color:var(--pd-text);font-size:15px}
@@ -74,8 +73,7 @@
 .pd-hours li{display:flex;justify-content:space-between;gap:14px;border-top:1px solid #eff3f8;padding:9px 0;font-size:13px;color:#536b84}
 .pd-hours li:first-child{border-top:0}
 .pd-hours .pd-hours-day{font-weight:750;color:#2d527b}
-.pd-map{width:100%;height:240px;display:block;border:0;border-radius:12px;background:#e7eef6;z-index:0}
-.pd-map-status{font-size:12px;color:#516c89;line-height:1.5;margin:8px 0 0}.pd-map-external{display:inline-block;font-size:13px;font-weight:700;margin-top:8px}
+.pd-map{width:100%;height:240px;display:block;border:0;border-radius:12px;background:#e7eef6}
 .pd-coordinates{font-size:12px!important;line-height:1.55;color:var(--pd-muted)!important;margin:10px 0 0!important}
 .pd-map-missing{border:1px dashed #b9cde6;border-radius:13px;padding:20px;background:#f4f8fd;color:#57718b;font-size:13px;line-height:1.65}
 .pd-map-missing strong{display:block;color:#244f7b;margin-bottom:4px}
@@ -282,12 +280,15 @@
       <section class="pd-card" id="place-location">
         <h2>Location &amp; directions</h2>
         {% if place.latitude != None and place.longitude != None %}
-          <div id="pd-place-map" class="pd-map" role="region" aria-label="Map showing {{ place.title }}" data-lat="{{ place.latitude|unlocalize }}" data-lng="{{ place.longitude|unlocalize }}" data-title="{{ place.title }}"></div>
-          <p id="pd-map-status" class="pd-map-status" role="status">Loading map…</p>
-          <noscript><p class="pd-map-status">JavaScript is needed for the interactive map. Use the links below instead.</p></noscript>
-          <p class="pd-coordinates">Destination coordinates: {{ place.latitude|unlocalize }}, {{ place.longitude|unlocalize }}</p>
-          <a class="pd-map-external" href="https://www.google.com/maps/search/?api=1&amp;query={{ place.latitude|unlocalize }},{{ place.longitude|unlocalize }}" target="_blank" rel="noopener noreferrer">Open the map in Google Maps ↗</a>
-          <a class="pd-cta" href="https://www.google.com/maps/dir/?api=1&amp;destination={{ place.latitude|unlocalize }},{{ place.longitude|unlocalize }}" target="_blank" rel="noopener noreferrer">Get directions ↗</a>
+          <div class="pd-map-frame">
+            <a class="pd-map-load" href="https://maps.google.com/maps?q={{ place.latitude }},{{ place.longitude }}" target="_blank" rel="noopener noreferrer">
+              <span class="pd-map-pin" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" fill="currentColor"/></svg></span>
+              <strong>Open the map in Google Maps ↗</strong>
+              <span>{{ place.latitude }}, {{ place.longitude }} · opens in a new tab</span>
+            </a>
+          </div>
+          <p class="pd-coordinates">Destination coordinates: {{ place.latitude }}, {{ place.longitude }}</p>
+          <a class="pd-cta" href="https://www.google.com/maps/dir/?api=1&amp;destination={{ place.latitude }},{{ place.longitude }}" target="_blank" rel="noopener noreferrer">Get directions ↗</a>
         {% else %}
           <div class="pd-map-missing"><strong>Location not mapped yet</strong>Coordinates have not been added. Directions will be available when a location is recorded.</div>
         {% endif %}
@@ -387,10 +388,6 @@
 {% endblock %}
 
 {% block extra_js %}
-{% if place.latitude != None and place.longitude != None %}
-<script src="{% static 'vendor/leaflet/leaflet.js' %}"></script>
-<script src="{% static 'js/place-detail-map.js' %}?v=20261105"></script>
-{% endif %}
 <script>
 (function () {
   "use strict";
