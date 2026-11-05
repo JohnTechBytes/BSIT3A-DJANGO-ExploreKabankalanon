@@ -7,24 +7,34 @@
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
 {% block extra_css_after %}<link rel="stylesheet" href="{% static 'css/site-dark.css' %}">{% endblock %}
-{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-12">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261105-city-directory-1">{% endblock %}
 
 {% block content %}
 <main class="eainfo-page" id="main-content">
   <header class="eainfo-hero">
     <h1>City Information</h1>
-    <p>Explore practical notes about Kabankalan, published by staff.</p>
+    <p>Discover Kabankalan places and practical city guides in one place.</p>
     <form class="eainfo-search" method="get" action="{% url 'info:city_information' %}" role="search">
+      {% if selected_directory != "all" %}<input type="hidden" name="directory" value="{{ selected_directory }}">{% endif %}
       <input type="search" name="q" value="{{ search_query }}" placeholder="Search city information…" aria-label="Search city information">
       {% if selected_type %}<input type="hidden" name="type" value="{{ selected_type }}">{% endif %}
       <button type="submit">Search</button>
     </form>
   </header>
 
-  <nav class="eainfo-chips" aria-label="City information categories">
-    <a class="eainfo-chip{% if not selected_type %} active{% endif %}"{% if not selected_type %} aria-current="page"{% endif %} href="{% url 'info:city_information' %}{% if search_query %}?q={{ search_query|urlencode }}{% endif %}">All<span>{{ total_count }}</span></a>
+  <nav class="eainfo-directory-nav" aria-label="Explore city information by category">
+    {% for link in directory_links %}
+      <a href="{{ link.url }}" class="eainfo-directory-link{% if link.active %} is-active{% endif %}"{% if link.active %} aria-current="page"{% endif %}>{{ link.label }}</a>
+    {% endfor %}
+  </nav>
+
+  {% if show_guides %}
+  <section class="eainfo-guides" aria-labelledby="city-guides-heading">
+  <div class="eainfo-section-heading"><div><p class="eainfo-eyebrow">Local knowledge</p><h2 id="city-guides-heading">City guides</h2><p>Staff-published notes about Kabankalan.</p></div></div>
+  <nav class="eainfo-chips" aria-label="City guide types">
+    <a class="eainfo-chip{% if not selected_type %} active{% endif %}"{% if not selected_type %} aria-current="page"{% endif %} href="?directory=guides{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}">All<span>{{ total_count }}</span></a>
     {% for link in type_links %}
-      <a class="eainfo-chip{% if link.active %} active{% endif %}"{% if link.active %} aria-current="page"{% endif %} href="?type={{ link.type }}{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}">{{ link.label }}<span>{{ link.count }}</span></a>
+      <a class="eainfo-chip{% if link.active %} active{% endif %}"{% if link.active %} aria-current="page"{% endif %} href="?directory=guides&amp;type={{ link.type }}{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}">{{ link.label }}<span>{{ link.count }}</span></a>
     {% endfor %}
   </nav>
   <p class="eainfo-meta">
@@ -81,8 +91,54 @@
     </section>
   {% endif %}
 
-  <p class="eainfo-note">
-    Information on this page is published by staff. Details can change; confirm important information before visiting.
-  </p>
+  </section>
+  {% endif %}
+
+  {% if show_places %}
+  <section class="eainfo-directory" aria-labelledby="city-places-heading">
+    <div class="eainfo-section-heading">
+      <div><p class="eainfo-eyebrow">The shared place catalogue</p>
+        <h2 id="city-places-heading">{% if selected_directory == "all" %}Places in Kabankalan{% else %}{{ directory_label }}{% endif %}</h2>
+        <p>Browse existing published places. Some also appear in hobby discovery.</p>
+      </div>
+      <span class="eainfo-directory-count">{{ place_page.paginator.count }} {{ place_page.paginator.count|pluralize:"place,places" }}</span>
+    </div>
+    <p class="eainfo-directory-note">Groups use existing categories and some place names; they may need review. A missing hobby tag does not mean a place is irrelevant.</p>
+    {% if place_page.object_list %}
+    <div class="eainfo-grid eainfo-place-grid">
+      {% for place in place_page %}
+      <article class="eainfo-card eainfo-place-card">
+        {% if place.cover_image %}<img src="{{ place.cover_image.url }}" alt="{{ place.title }}" loading="lazy">
+        {% elif place.cover_image_url %}<img src="{{ place.cover_image_url }}" alt="{{ place.title }}" loading="lazy">
+        {% else %}<div class="eainfo-place-placeholder">Photo not yet available</div>{% endif %}
+        <div class="eainfo-place-content">
+          <p class="eainfo-place-category">{{ place.category.name|default:"Category not assigned" }}</p>
+          <h3>{{ place.title }}</h3>
+          {% if place.address %}<p>{{ place.address }}</p>{% endif %}
+          {% with hobbies=place.hobbies.all %}
+            <p class="eainfo-place-hobbies">{% if hobbies %}Hobbies: {% for hobby in hobbies %}{{ hobby.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}No hobby tags assigned{% endif %}</p>
+          {% endwith %}
+          {% if place.photo_credit or place.photo_source_url or place.photo_license %}
+          <p class="eainfo-credit">Photo{% if place.photo_credit %} by {{ place.photo_credit }}{% endif %}{% if place.photo_source_url %} · <a href="{{ place.photo_source_url }}" target="_blank" rel="noopener noreferrer">Source</a>{% endif %}{% if place.photo_license %} · {% if place.photo_license_url %}<a href="{{ place.photo_license_url }}" target="_blank" rel="noopener noreferrer">{{ place.photo_license }}</a>{% else %}{{ place.photo_license }}{% endif %}{% endif %}</p>
+          {% endif %}
+          <a class="eainfo-place-detail" href="{% url 'places:place_detail' place.pk %}">View place details <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% if place_page.has_other_pages %}
+      <nav class="eainfo-pagination" aria-label="Place directory pages">
+        {% if previous_page_url %}<a href="{{ previous_page_url }}">← Previous</a>{% endif %}
+        <span>Page {{ place_page.number }} of {{ place_page.paginator.num_pages }}</span>
+        {% if next_page_url %}<a href="{{ next_page_url }}">Next →</a>{% endif %}
+      </nav>
+    {% endif %}
+    {% else %}
+      <div class="eainfo-empty"><h3>No matching places</h3><p>Try another category or search term. Unclassified places remain under All.</p><a class="eainfo-btn eainfo-btn-teal" href="{% url 'info:city_information' %}">View all</a></div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  <p class="eainfo-note">Place listings and city guides can describe the same location. Details and publication status do not guarantee independent verification; confirm important information before visiting.</p>
 </main>
 {% endblock %}

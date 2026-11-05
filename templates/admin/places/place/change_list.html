@@ -20,7 +20,7 @@
 .ea-dest-heading .ea-dest-object-tools:empty {display:none;}
 
 #ea-dest-filter-form {background:#fff;border:1px solid #dbe6f3;border-radius:14px;padding:18px;margin-bottom:12px;box-shadow:0 5px 24px rgba(20,50,95,.03);}
-.ea-dest-filter-grid {display:grid;grid-template-columns:minmax(200px,2fr) repeat(3,minmax(125px,1fr));gap:12px;align-items:end;}
+.ea-dest-filter-grid {display:grid;grid-template-columns:minmax(200px,2fr) repeat(4,minmax(125px,1fr));gap:12px;align-items:end;}
 .ea-dest-filter-grid label {display:block;margin:0 0 6px;color:#305175;font-size:12px;font-weight:750;}
 .ea-dest-filter-grid input,.ea-dest-filter-grid select {box-sizing:border-box;width:100%;max-width:none;min-width:0;min-height:40px;border-radius:9px;border:1px solid #cbd9e9;background:white;color:#15385c;font-size:13px;padding:7px 10px;}
 .ea-dest-filter-grid input:focus-visible,.ea-dest-filter-grid select:focus-visible {outline:2px solid #1260db;outline-offset:1px;}
@@ -92,6 +92,13 @@
           <option value="0"{% if ea_filters.active == '0' %} selected{% endif %}>Inactive</option>
         </select>
       </div>
+      <div><label for="ea-dest-hobbies">Hobby tags</label>
+        <select id="ea-dest-hobbies" name="hobby_assignment">
+          <option value="">All hobby states</option>
+          <option value="missing"{% if ea_filters.hobby_assignment == 'missing' %} selected{% endif %}>No hobbies assigned (review)</option>
+          <option value="assigned"{% if ea_filters.hobby_assignment == 'assigned' %} selected{% endif %}>Has hobby tags</option>
+        </select>
+      </div>
     </div>
     <div class="ea-dest-filter-actions">
       <button type="submit">Apply filters</button>
@@ -99,7 +106,7 @@
       <span class="ea-dest-filter-note">{{ cl.result_count }} of {{ cl.full_result_count }} Kabankalan destinations shown</span>
     </div>
   </form>
-  <p class="ea-dest-help">Unverified imported businesses are managed separately in the Business review queue. Select a destination name to edit its content. Use the checkboxes for authorized bulk publication actions. Cover-photo labels indicate whether an image is set, not whether its usage rights have been verified.</p>
+  <p class="ea-dest-help">Unverified imported businesses are managed separately in the Business review queue. A missing hobby tag means the place needs review, not that it is irrelevant. Select a destination name to edit its content. Use the checkboxes for authorized bulk publication actions. Cover-photo labels indicate whether an image is set, not whether its usage rights have been verified.</p>
 </section>
 {% endblock %}
 

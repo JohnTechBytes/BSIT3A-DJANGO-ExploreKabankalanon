@@ -1334,3 +1334,32 @@ body.ek-discovery-theme .public-motion-layer {
     to { opacity: 1; transform: translateX(0); }
   }
 }
+
+/* City Information: one read-only directory over the existing place records. */
+body.city-info-page .eainfo-directory-nav { display:flex; flex-wrap:wrap; gap:9px; padding:18px 0 8px; }
+body.city-info-page.ek-journey-theme .eainfo-directory-link { display:inline-flex; align-items:center; min-height:44px; padding:9px 16px; border:1px solid #c5d5c8; border-radius:999px; background:#fff; color:#31584a; font-weight:700; text-decoration:none; }
+body.city-info-page.ek-journey-theme .eainfo-directory-link:hover { border-color:#007b5c; color:#00684e; }
+body.city-info-page.ek-journey-theme .eainfo-directory-link.is-active { background:#007b5c; border-color:#007b5c; color:#fff; }
+body.city-info-page .eainfo-directory-link:focus-visible,body.city-info-page .eainfo-pagination a:focus-visible,body.city-info-page .eainfo-place-detail:focus-visible { outline:3px solid #e3a424; outline-offset:3px; }
+body.city-info-page .eainfo-guides,body.city-info-page .eainfo-directory { margin-top:30px; }
+body.city-info-page .eainfo-section-heading { display:flex; align-items:end; justify-content:space-between; gap:16px; margin-bottom:16px; }
+body.city-info-page .eainfo-section-heading h2 { margin:0 0 5px; font-size:clamp(1.4rem,2vw,1.75rem); }
+body.city-info-page .eainfo-section-heading p { margin:0; }
+body.city-info-page .eainfo-section-heading .eainfo-eyebrow { margin:0 0 5px; color:#007b5c; font-size:.72rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+body.city-info-page .eainfo-directory-count { white-space:nowrap; color:#526b5c; font-size:.875rem; font-weight:700; }
+body.city-info-page .eainfo-directory-note { margin:0 0 18px; color:#526b5c; font-size:.875rem; }
+body.city-info-page .eainfo-place-card { overflow:hidden; padding:0; display:flex; flex-direction:column; }
+body.city-info-page .eainfo-place-card img { display:block; width:100%; height:175px; object-fit:cover; border-radius:0; }
+body.city-info-page .eainfo-place-placeholder { display:grid; place-items:center; min-height:175px; background:#edf2ea; color:#435f50; font-size:.8rem; font-weight:700; }
+body.city-info-page .eainfo-place-content { display:flex; flex-direction:column; flex:1; gap:8px; padding:17px; }
+body.city-info-page .eainfo-place-content h3,body.city-info-page .eainfo-place-content p { margin:0; }
+body.city-info-page .eainfo-place-content .eainfo-place-category { color:#007b5c; font-size:.72rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; }
+body.city-info-page .eainfo-place-content .eainfo-place-hobbies,body.city-info-page .eainfo-place-content .eainfo-credit { font-size:.8rem; }
+body.city-info-page.ek-journey-theme .eainfo-place-detail { display:inline-flex; align-items:center; min-height:44px; margin-top:auto; color:#006c50; font-size:.88rem; font-weight:800; text-decoration:none; }
+body.city-info-page .eainfo-pagination { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:16px; margin:22px 0; }
+body.city-info-page .eainfo-pagination a { display:inline-flex; align-items:center; min-height:44px; padding:8px 14px; border:1px solid #bfd0c4; border-radius:9px; font-weight:700; text-decoration:none; }
+@media(max-width:600px) { body.city-info-page .eainfo-section-heading { align-items:start; flex-direction:column; gap:8px; } body.city-info-page .eainfo-directory-nav { gap:7px; } body.city-info-page .eainfo-directory-link { padding-inline:12px; } }
+/* More specific than the legacy generic link/card overrides above. */
+body.site-dark.ek-journey-theme.city-info-page .eainfo-page .eainfo-directory-nav a.eainfo-directory-link.is-active { color:#fff; }
+body.site-dark.ek-journey-theme.city-info-page .eainfo-place-card { padding:0; gap:0; }
+body.site-dark.ek-journey-theme.city-info-page .eainfo-place-card img { border-radius:0; }
