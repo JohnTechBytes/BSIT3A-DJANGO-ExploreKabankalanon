@@ -223,6 +223,18 @@ class DiscoveryFlowTests(FlowFixture):
         response = self.client.get(reverse("places:place_detail", args=[self.place.pk]))
         self.assertContains(response, "Open the map in Google Maps")
         self.assertContains(response, "9.876392")
+        self.assertContains(response, 'id="pd-place-map"')
+        self.assertContains(response, 'data-lat="9.876392"')
+        self.assertContains(response, 'data-lng="122.840476"')
+        self.assertContains(response, 'destination=9.876392,122.840476')
+        self.assertContains(response, 'js/place-detail-map.js')
+
+    def test_place_detail_without_coordinates_does_not_show_false_map(self):
+        response = self.client.get(reverse("places:place_detail", args=[self.cafe.pk]))
+        self.assertContains(response, "Location not mapped yet")
+        self.assertNotContains(response, 'id="pd-place-map"')
+        self.assertNotContains(response, 'js/place-detail-map.js')
+        self.assertNotContains(response, 'Get directions')
 
 
 class CarouselLoopTests(FlowFixture):
