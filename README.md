@@ -73,16 +73,17 @@ Specifically, the project accomplishes the following technical objectives:
    fit and average rating, using a rule-based scoring function.
 2. **Natural-language search.** Interpret queries such as "coffee shops",
    "mag aso falls" or "places in Kabankalan" with a local intent-and-keyword
-   parser, ignoring filler words and recognizing named places. The optional
-   Claude API interpretation layer is specified as the next enhancement; the
-   local parser that it would fall back to is already in use.
+   parser, ignoring filler words and recognizing supported named places. Search
+   is rule-based and does not call an external AI service; it does not understand
+   every possible question.
 3. **Interactive map and nearby search.** Integrate Leaflet with tiles built
    from OpenStreetMap data, live GPS positioning in the browser, in-browser
    distance filtering and sorting, place details, and a landmark reference for
    visitors who decline location access.
 4. **Places directory with reviews.** Present published Kabankalan
-   places with descriptions, categories, hobbies, coordinates, photos and
-   visitor ratings, with one review per user per place.
+   places and their available descriptions, categories, hobbies, coordinates,
+   photos and visitor ratings, with one review per user per place. Listing data
+   can be incomplete or require independent verification.
 5. **Itinerary builder.** Let visitors create trips, add stops from the
    directory, set arrival times, reorder or remove stops, and delete trips.
    Stops are chosen manually; the system does not generate suggested
@@ -96,11 +97,11 @@ Specifically, the project accomplishes the following technical objectives:
    review queue for OSM imports, and city information records, together with
    management commands that import PSGC codes, an OSM extract and Wikimedia
    imagery.
-8. **Role-based access control.** Define the four roles required by the system
-   (user, business owner, city administrator, system administrator) on a custom
-   user model, and enforce access through Django's staff, superuser and model
-   permissions so that administrative screens are restricted to authorized
-   accounts.
+8. **Accounts and administrative access.** Define four roles on the custom
+   user model (user, business owner, city administrator, system administrator).
+   Administrative access is controlled by Django's staff, superuser and model
+   permissions, not automatically granted by the role field. A business-owner
+   portal and role-based city scoping are not implemented.
 9. **Evaluation instruments.** Build the System Usability Scale (SUS)
    instrument and a recommendation-relevance instrument into the system's data
    model, including the standard 0–100 SUS scoring, so that a usability
@@ -155,15 +156,17 @@ development and verification process.
 
 | Component | Description and Coverage |
 |---|---|
-| **Setting and Coverage** | Kabankalan City, Negros Occidental only. `KabankalanOnlyMiddleware` pins every session to Kabankalan (city pk 2), and the public and administrative querysets filter to that city. Places, information, users and evaluation activities are limited to Kabankalan. |
+| **Setting and Coverage** | The directory and public city information focus on Kabankalan City, Negros Occidental (city pk 2). `KabankalanOnlyMiddleware` pins the session to this city, and the Place admin is city-scoped. Accounts and survey respondents are not restricted by their physical location. |
 | **Accounts and Roles** | Custom user model with the four roles required by the system — user, business owner, city administrator, system administrator — plus a managed-city field, avatar, bio and coordinates. Registration creates a `user`. Administrative access is governed by Django's staff, superuser and model permissions. |
 | **Kabankalan City Information** | `/info/` combines a browsable directory of existing published Places with separate staff-published `CityInformation` guides. A relevant Place can appear both here and in hobby search without duplicating it. Grouping is a search aid, not independent verification. Staff can publish and unpublish guides. |
 | **Hobbies and Hobby Selection** | Hobbies are attached to places. Visitors filter the directory by category and by a single hobby from the search panel, and the chosen hobby is kept in the session, so it also shapes the recommendation score on later pages and is listed in My Journey. The earlier standalone hobby-selection route now redirects to the place directory. |
 | **Places Directory with Details and Map Location** | Active places with the `is_verified` publication flag are publicly listed. Category, hobbies, descriptions, coordinates and photographs may be missing or need confirmation. The flag is not proof of independent verification or photo rights. The public listing is a looping carousel with list and map views and a details panel. |
-| **Natural-Language Search** | A local intent-and-keyword parser handles queries such as "coffee shops", "mag aso falls" or "places in Kabankalan", ignoring filler words and matching named Kabankalan places. A query that names a place ("Kabankalan Plaza") returns that place only; a buying question ("where to buy a phone case") returns a possible business category and discloses that inventory is unconfirmed. Clear hobby phrases use existing assigned tags and disclose that untagged places may also be relevant. No external AI service is called. |
-| **Content Scope and Guardrail** | The shared directory covers real Kabankalan places for hobbies or local needs; educational institutions are excluded. Missing hobby tags are a review item, not proof that a place is irrelevant. `check_content_scope` is a read-only audit using narrow title patterns; it cannot find every school. `purge_off_scope_places` is a separate potentially destructive action and must not be applied without review, explicit approval and backup. |
+| **Natural-Language Search** | A local intent-and-keyword parser handles supported queries such as "coffee shops", "mag aso falls" or "places in Kabankalan". Exact-title matches take priority, but duplicate names can match multiple records and other queries may be ambiguous. A buying question such as "where to buy a phone case" suggests a business category and discloses that inventory is unconfirmed. Clear hobby phrases use existing assigned tags and disclose that untagged places may also be relevant. Search does not call an external AI service or understand every possible question. |
+| **Content Scope and Guardrail** | The shared directory is intended for Kabankalan places relevant to hobbies or local needs; educational institutions are outside the intended scope. Existing records still require review, and missing hobby tags are not proof that a place is irrelevant. `check_content_scope` is a read-only audit using narrow title patterns and cannot find every school. `purge_off_scope_places` is a separate potentially destructive action and must not be applied without review, explicit approval and backup. |
 | **Recommendation Engine** | Deterministic ranking: hobby fit 60%, average rating 20% where reviews exist; the hobby component remains in the denominator even when no hobby is selected. Results are ordered by score, then by number of matched hobbies, then by title. Match percentages are not displayed to visitors. |
-| **Interactive Map** | Leaflet 1.9.4, loaded on demand, with streets, satellite and hybrid layers from MapTiler (built on OpenStreetMap data) and OpenStreetMap/MapTiler attribution. Markers open a title and category popup; selecting a card flies the map to the place. |
+| **Interactive Map** | Browse and Nearby use Leaflet 1.9.4 with MapTiler streets, satellite and hybrid layers and attribution; the landing map uses OpenStreetMap tiles. Markers show place information. On Browse and Nearby, selecting a mapped photo/card can fly the map to the place. Maps require network access; MapTiler requires a client-visible key. |
+| **Voice Search** | Browse and Nearby use the browser speech-recognition API to enter search text. Availability depends on browser support, microphone permission and the browser's speech service; typing remains available. |
+| **Place Photos** | A recorded cover is displayed when available. Missing covers show a message or a clearly labelled illustrative category sample. If a marked cover cannot load, JavaScript shows a "Photo unavailable" message. A sample is not a photo of the place. |
 | **Nearby Search and Live GPS** | The Nearby view reads the browser's geolocation, computes straight-line distance to each place, and filters or sorts results by distance (any distance, 1, 3, 5, 10 or 25 km). A curated Kabankalan landmark can serve as the reference point when GPS is unavailable or declined. Distances are straight-line estimates, not driving routes or travel times. |
 | **Reviews and Ratings** | One review per user per place, 1–5 stars plus an optional comment; reviews can be updated or deleted; the average rating feeds both the place page and the recommender. Reviews are opinions and do not by themselves prove an in-person visit. |
 | **Saved Places** | Visitors save and unsave places; saved places appear on a dedicated page and on the My Journey dashboard. |
@@ -183,9 +186,11 @@ development and verification process.
 |---|---|---|
 | Places directory, carousel, details panel | Implemented | Active records with the publication flag; publication does not prove independent verification. Carousel capped at 500. |
 | Hobby filtering and recommendation engine | Implemented | Rule-based; 60% hobby, 20% rating |
-| Natural-language search (local parser) | Implemented | No external service; a named place returns that place, a buying question returns the business category and says so |
-| Claude API interpretation layer | Planned | Not present in the codebase |
+| Natural-language search (local parser) | Implemented | Rule-based, no external AI; exact titles take priority and buying questions disclose category-based matches |
+| External AI interpretation | Not implemented | No language-model API is called by search |
 | Leaflet map, drone fly-to | Implemented | Needs a network connection and a MapTiler key |
+| Voice search | Implemented | Browser speech-recognition support and microphone permission required; typing remains available |
+| Missing or failed place photos | Implemented | Missing covers show a message or labelled sample; failed marked covers show a message when JavaScript is available |
 | Nearby search, live GPS, radius filter | Implemented | Straight-line distance |
 | Reviews and ratings | Implemented | One review per user per place |
 | Saved places | Implemented | — |
@@ -200,11 +205,11 @@ development and verification process.
 | SUS instrument | Implemented | Public survey at `/evaluation/sus/` with the standard 0–100 scoring |
 | Recommendation relevance rating | Implemented | In-page control on a destination reached from a search |
 | Privacy notice and registration consent | Implemented | Public notice at `/privacy/`; the acceptance and its date are stored with the account |
-| Search history and remembered interests | Implemented | Every submitted search is logged with the account; the chosen hobby is kept in the session |
+| Search history and remembered interests | Implemented | Nonempty Browse and Nearby searches are logged; signed-in visitors can see their history. The chosen hobby is kept in the session. |
 | Account management in the staff dashboard | Implemented | Roles and managed city are editable at `/admin/users/user/` |
 | Environment-driven deployment configuration | Partially implemented | Secret, debug, hosts, database and map token can be configured; HTTPS, secure cookies and production deployment still require configuration and verification. |
 | Content scope guardrail | Partial | Narrow title-based audit only; manual review is required and deletion or unpublishing is never automatic. |
-| Distance in the ranking score | Planned | Distance is used by the Nearby view only |
+| Recommendation distance | Not used for ranking | Nearby uses straight-line distance separately for filtering and sorting. |
 
 ### Limitations
 
@@ -220,14 +225,17 @@ development and verification process.
   browser, permissions and provider.
 - **GPS accuracy depends on the user's device**, and all distances are
   straight-line estimates rather than driving distances or travel times.
+- **Voice input depends on the browser's speech-recognition service and
+  microphone permission.** It may require network access; typing remains
+  available when voice recognition is unsupported or denied.
 - **Recommendation quality depends on the completeness and accuracy of place
   data.** Public records and images can still be inaccurate or lack confirmed
   reuse rights. The admin bulk-approval action skips `osm-` slugs, but other
   publication paths or manual database updates can set flags without independent
   verification.
 - Recommendations and search are implemented with **rule-based logic, not
-  machine learning or a language model**. The Claude API layer described in the
-  project title is not yet implemented.
+  machine learning or a language model**. No external AI interpretation layer
+  is implemented.
 - The **City Information page** combines published Places with separate
   published guides. Guide content and individual listings require review;
   seed commands write to the database and should not be run on existing data
@@ -274,6 +282,26 @@ The environment defaults to local `exploreanywhere`, MySQL root, no password;
 these are development defaults and not secure for public deployment. Use the
 `DJANGO_DB_*` environment variables for the intended database and verify the
 connection before running commands.
+
+### Place photos and local test imports
+
+A cover is not proof of a place's identity, current operation or image reuse
+rights. Some local-test photos have unverified rights and must be removed or
+replaced with properly licensed or permitted images before public use. Do not
+remove watermarks without permission. Missing covers use a message or clearly
+labelled illustrative category sample; if a marked image fails to load, the
+browser shows a separate unavailable message when JavaScript is enabled.
+
+The optional local photo tools are described in
+[`tools/photo_import/README.txt`](tools/photo_import/README.txt). The reviewed
+batch tools save source links and rights notes in each batch's `sources.csv`;
+keep those files. The direct importer updates the cover field without the
+admin form's rights validation and does **not** populate blank photographer,
+source or licence fields. Verify identity, permission, attribution and any
+privacy concerns before publication; a source link alone is not a licence.
+Back up the database and media and review each candidate before applying any
+batch. Import results and remaining missing-cover counts must be checked on the
+actual database, not inferred from historical exports.
 
 ### Project layout
 
