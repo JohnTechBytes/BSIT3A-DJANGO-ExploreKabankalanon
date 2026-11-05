@@ -163,6 +163,8 @@ class SearchAccuracyTests(TestCase):
         self.assertIn("Matched by category", note)
         self.assertIn("shops and malls of Kabankalan", note)
         self.assertIn("No listing names a phone case directly", note)
+        self.assertIn("availability is not confirmed", note)
+        self.assertNotIn("are where a phone case is sold", note)
         self.assertContains(response, "ea-search-note")
 
     def test_plain_search_has_no_category_note(self):

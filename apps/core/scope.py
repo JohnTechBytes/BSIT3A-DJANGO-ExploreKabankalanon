@@ -1,26 +1,9 @@
-"""The content scope of ExploreKabankalan.
+"""Review rules for the shared Kabankalan directory.
 
-ExploreKabankalan serves **one city** with **two pillars** of public content:
-
-1. **Places** (``apps.places``) - a real, mapped destination a visitor can
-   choose *for a hobby or for a local errand*. Every published place carries
-   a category from the taxonomy and at least one hobby, because the
-   recommendation score is built on hobby fit.
-2. **City Information** (``apps.info``) - short editorial facts about the
-   city, written and published by staff.
-
-Anything that is not one of those two things is **out of scope**. The most
-common mistake is importing a whole class of civic institutions (schools,
-hospitals, government offices) as "places": they are not destinations a
-visitor picks for a hobby, they have no hobby, they cannot be recommended,
-and they dilute the catalogue with rows the recommendation engine can never
-surface.
-
-This module is the single place where that rule is written down, so it can be
-checked by code instead of remembered by a person. It is deliberately small
-and free of database access: :mod:`apps.core.checks` and the
-``check_content_scope`` / ``purge_off_scope_places`` commands use it to audit
-a live installation.
+Schools are outside the agreed catalogue scope. Other real places can serve a
+hobby, a practical errand, or both. Missing hobby tags are a review item, not
+proof that a place is irrelevant or outside the city directory. Publication
+status alone is not independent verification.
 """
 import re
 
@@ -30,8 +13,8 @@ SCOPE_CITY_PK = 2
 #: The system's purpose, in one sentence. Used by the audit commands so the
 #: operator always sees what the catalogue is *for* while judging records.
 SYSTEM_PURPOSE = (
-    "ExploreKabankalan is a hobby-weighted directory of real places to visit "
-    "in Kabankalan City, plus staff-published City Information notes."
+    "ExploreKabankalan is a shared directory of real Kabankalan places for "
+    "hobbies and local needs, plus staff-published City Information notes."
 )
 
 #: The two pillars of public content.
@@ -40,11 +23,8 @@ PILLARS = (
     "City Information: an editorial fact about the city, published by staff.",
 )
 
-#: Educational institutions are the canonical off-pillar record. They are not
-#: destinations a visitor selects for a hobby, they carry no hobby, and the
-#: recommendation score can never rank them. When the city administration
-#: wants to mention one, it belongs in City Information as a single curated
-#: fact - not as a bulk set of place rows.
+#: The agreed place-directory scope excludes educational institutions. This
+#: title matcher is intentionally narrow and is not a complete school audit.
 INSTITUTION_PATTERNS = (
     (re.compile(r"\belementary\s+school\b", re.IGNORECASE), "elementary school"),
     (re.compile(r"\bhigh\s*school\b", re.IGNORECASE), "high school"),
@@ -115,8 +95,8 @@ def place_violations(place):
     kind = institution_kind(getattr(place, "title", ""))
     if kind:
         reasons.append(
-            "educational institution (%s): not a destination a visitor picks "
-            "for a hobby, so it can never be recommended" % kind
+            "educational institution (%s): excluded from the place directory "
+            "under the agreed scope" % kind
         )
 
     if getattr(place, "category_id", None) is None:
@@ -124,8 +104,8 @@ def place_violations(place):
 
     if not hobby_slugs(place):
         reasons.append(
-            "no hobby: the recommendation score is 60% hobby fit, so the "
-            "record can never be surfaced for a visitor"
+            "no hobby tags: review whether a relevant activity applies; "
+            "the place remains visible in general browsing"
         )
 
     if not (getattr(place, "description", "") or "").strip():
@@ -135,5 +115,5 @@ def place_violations(place):
 
 
 def is_place_in_scope(place):
-    """True when a place satisfies the Places pillar of the system."""
-    return not place_violations(place)
+    """Scope and completeness are distinct; missing metadata needs review."""
+    return not bool(institution_kind(getattr(place, "title", "")))

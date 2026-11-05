@@ -3,10 +3,11 @@
 ``python manage.py check_content_scope`` prints what the system is *for* and
 then reports every published record that drifts away from the two pillars:
 
-* off-pillar records (educational institutions) - these can never be
-  recommended, because the score is built on hobby fit;
+* educational institutions matching the narrow title rules, excluded by the
+  agreed directory scope;
 * civic offices - reported for review only, they can be genuine landmarks;
-* incomplete records - no category, no hobby or no description.
+* incomplete records - missing category, hobby tags to review or description.
+  A missing hobby tag does not make a place irrelevant.
 
 The command never writes to the database. Use
 ``python manage.py purge_off_scope_places`` to act on the off-pillar rows.

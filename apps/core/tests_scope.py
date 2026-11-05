@@ -49,12 +49,12 @@ class ScopeRuleTests(TestCase):
         reasons = place_violations(place)
         self.assertIn("no category: the place is not filed in the taxonomy", reasons)
         self.assertIn(
-            "no hobby: the recommendation score is 60% hobby fit, so the "
-            "record can never be surfaced for a visitor",
+            "no hobby tags: review whether a relevant activity applies; "
+            "the place remains visible in general browsing",
             reasons,
         )
         self.assertIn("no description", reasons)
-        self.assertFalse(is_place_in_scope(place))
+        self.assertTrue(is_place_in_scope(place))
 
     def test_a_complete_place_is_in_scope(self):
         place = Place.objects.create(
@@ -109,7 +109,7 @@ class ScopeCommandTests(TestCase):
         call_command("check_content_scope", stdout=out)
 
         report = out.getvalue()
-        self.assertIn("ExploreKabankalan is a hobby-weighted directory", report)
+        self.assertIn("ExploreKabankalan is a shared directory", report)
         self.assertIn("Off-pillar (educational institutions): 1", report)
         self.assertIn("Kabankalan National High School", report)
 

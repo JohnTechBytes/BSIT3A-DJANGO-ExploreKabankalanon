@@ -50,7 +50,8 @@ def nearby_places(request, *, unified=False):
     query = (request.GET.get("q") or "").strip()[:160]
     selected_service = (request.GET.get("service") or "").strip()
     valid_services = dict(SERVICE_CATEGORIES)
-    if selected_service not in valid_services:
+    explicit_service = selected_service in valid_services
+    if not explicit_service:
         selected_service = detect_service_intent(query) or ""
 
     # Enforce publication AND city checks on every read, independently of session.
@@ -74,6 +75,22 @@ def nearby_places(request, *, unified=False):
         if exact:
             matched = iter(exact)
             selected_service = ""
+        elif selected_service and not explicit_service:
+            # A service keyword can also occur in an explicit hobby or buying
+            # question. Those retain their more specific meaning; a selected
+            # service filter, on the other hand, remains authoritative.
+            from .hobby_search import hobby_for_query
+            from .search_intents import maybe_buying, wants_to_buy, question_matches
+            if wants_to_buy(query) or maybe_buying(query) or hobby_for_query(query):
+                predicate, search_note = question_matches(query, published)
+            else:
+                predicate = None
+            if predicate is not None:
+                selected_service = ""
+                matched = iter(published.filter(predicate).distinct())
+            else:
+                full_published = list(published)
+                matched = (place for place in full_published if matches_service(place, selected_service))
         elif selected_service:
             full_published = list(published)
             matched = (

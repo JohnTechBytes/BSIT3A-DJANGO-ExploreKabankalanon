@@ -129,22 +129,22 @@ CATEGORY_GROUPS = {
         "label": "shops and malls",
         "slugs": ("malls-shopping-centers", "other-local-businesses"),
         "names": ("malls", "shopping centers", "other local businesses"),
-        "answer": "the shops and malls of Kabankalan are where {product} is sold",
-        "answer_plural": "the shops and malls of Kabankalan are where {product} are sold",
+        "answer": "the shops and malls of Kabankalan may be places to look for {product}",
+        "answer_plural": "the shops and malls of Kabankalan may be places to look for {product}",
     },
     "food": {
         "label": "restaurants and cafes",
         "slugs": ("restaurants-eateries", "coffee-shops-cafes"),
         "names": ("restaurants", "eateries", "coffee shops", "cafes"),
-        "answer": "the restaurants and cafes of Kabankalan are where {product} is served",
-        "answer_plural": "the restaurants and cafes of Kabankalan are where {product} are served",
+        "answer": "the restaurants and cafes of Kabankalan may be places to look for {product}",
+        "answer_plural": "the restaurants and cafes of Kabankalan may be places to look for {product}",
     },
     "grooming": {
         "label": "barbershops and salons",
         "slugs": ("barber-hair-salon",),
         "names": ("barber", "hair salon"),
-        "answer": "the barbershops and salons of Kabankalan are where {product} is done",
-        "answer_plural": "the barbershops and salons of Kabankalan are where {product} are done",
+        "answer": "the barbershops and salons of Kabankalan may offer {product}",
+        "answer_plural": "the barbershops and salons of Kabankalan may offer {product}",
     },
 }
 
@@ -341,7 +341,7 @@ def describe_search(group, product):
     answer = spec["answer_plural"] if _is_plural(product or "") else spec["answer"]
     sentence = answer.format(product=phrase)
     return (
-        "Matched by category: %s. No listing names %s directly."
+        "Matched by category: %s. No listing names %s directly; availability is not confirmed."
         % (sentence, phrase)
     )
 
@@ -501,6 +501,7 @@ def question_matches(query, queryset=None):
     * a query that names a place exactly returns that single place;
     * a buying question returns the business category that answers it and
       an honest note that says the match came from the category;
+    * a clear hobby phrase uses existing assigned tags, with a disclosure;
     * anything else returns ``(None, "")`` so the caller can fall back to
       the ordinary attraction filter.
     """
@@ -519,5 +520,16 @@ def question_matches(query, queryset=None):
         predicate = group_filter(group)
         if predicate is not None:
             return predicate, describe_search(group, product)
+
+    # A clear interest phrase uses existing staff-assigned hobby tags, not
+    # guesses based on a business category or generated place descriptions.
+    # Exact place names and buying intent above retain priority.
+    from .hobby_search import hobby_for_query
+
+    hobby_slug = hobby_for_query(query)
+    if hobby_slug:
+        return Q(hobbies__slug=hobby_slug), (
+            "Matched by assigned hobby tags. Untagged places may also be relevant."
+        )
 
     return None, ""
