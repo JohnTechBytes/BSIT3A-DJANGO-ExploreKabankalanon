@@ -90,6 +90,23 @@ class NearbyRedesignTests(TestCase):
         self.assertContains(response, reverse("places:saved_places"))
         self.assertContains(response, reverse("places:journey_dashboard"))
 
+    def test_missing_photos_have_clear_messages_and_real_photos_are_not_labelled_missing(self):
+        for url, params in [
+            (self.url, {"mode": "nearby", "place": self.cafe.pk}),
+            (reverse("places:place_detail", args=[self.cafe.pk]), {}),
+            (self.url, {"browse": "all"}),
+        ]:
+            response = self.client.get(url, params)
+            self.assertContains(response, "Photo not yet available · Illustrative category sample")
+            self.assertContains(response, "data-place-cover")
+            self.assertContains(response, "place-photo-fallback.js")
+
+        self.cafe.cover_image_url = "https://example.com/real-cafe.jpg"
+        self.cafe.save()
+        response = self.client.get(reverse("places:place_detail", args=[self.cafe.pk]))
+        self.assertContains(response, 'data-place-cover src="https://example.com/real-cafe.jpg"')
+        self.assertNotContains(response, "Photo not yet available · Illustrative category sample")
+
     def test_nearby_unmapped_photo_does_not_claim_to_open_a_map(self):
         Place.objects.create(city=self.city, title="Unmapped Bookstore", address="Kabankalan",
                              is_verified=True, is_active=True)

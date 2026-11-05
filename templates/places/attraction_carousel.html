@@ -887,7 +887,7 @@
             <div class="ea-card-image">
 
               {% if place.cover_image %}
-                <img
+                <img data-place-cover
                   src="{{ place.cover_image.url }}"
                   alt="{{ place.title }}"
                   loading="lazy"
@@ -897,18 +897,17 @@
                 >
 
               {% elif place.cover_image_url %}
-                <img
+                <img data-place-cover
                   src="{{ place.cover_image_url }}"
                   alt="{{ place.title }}"
                   loading="lazy"
                   decoding="async"
                   width="640"
                   height="360"
-                  onerror="this.closest('.ea-card-image').classList.add('ea-photo-failed'); this.remove();"
                 >
 
               {% elif place.sample_image %}
-                <img
+                <img data-place-cover
                   src="{% static place.sample_image %}"
                   alt="Illustrative category sample, not an actual photo of {{ place.title }}"
                   loading="lazy"
@@ -916,7 +915,7 @@
                   width="640"
                   height="360"
                 >
-                <span class="ea-card-sample">Illustrative category sample</span>
+                <span class="ea-card-sample">Photo not yet available · Illustrative category sample</span>
 
               {% else %}
                 <div class="ea-photo-empty" role="img" aria-label="No destination photo available for {{ place.title }}">

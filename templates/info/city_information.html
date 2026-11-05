@@ -108,8 +108,8 @@
     <div class="eainfo-grid eainfo-place-grid">
       {% for place in place_page %}
       <article class="eainfo-card eainfo-place-card">
-        {% if place.cover_image %}<img src="{{ place.cover_image.url }}" alt="{{ place.title }}" loading="lazy">
-        {% elif place.cover_image_url %}<img src="{{ place.cover_image_url }}" alt="{{ place.title }}" loading="lazy">
+        {% if place.cover_image %}<img data-place-cover src="{{ place.cover_image.url }}" alt="{{ place.title }}" loading="lazy">
+        {% elif place.cover_image_url %}<img data-place-cover src="{{ place.cover_image_url }}" alt="{{ place.title }}" loading="lazy">
         {% else %}<div class="eainfo-place-placeholder">Photo not yet available</div>{% endif %}
         <div class="eainfo-place-content">
           <p class="eainfo-place-category">{{ place.category.name|default:"Category not assigned" }}</p>
