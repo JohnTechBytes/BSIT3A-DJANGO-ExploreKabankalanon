@@ -28,11 +28,12 @@ coordinates, hours, inventory, or business operations were independently checked
    the limit is reached. Map tiles, GPS, voice input and browser permissions
    require real-device tests.
 4. **Place details.** See available information, photos, reviews, and links to
-   maps. Save the place, add it to an itinerary, write/update/delete a review,
-   or submit a visit report. These actions write to the connected database.
-5. **My Journey.** The signed-in user can revisit saved places, itineraries,
-   reviews, visits, session interests and recent searches. A visit report is
-   pending until staff review it; only approved visits count for points/badges.
+   maps. Signed-in users can save the place or write/update/delete a review;
+   these actions write to the connected database.
+5. **Saved Places and My Reviews.** Signed-in users can revisit their saved
+   places and reviews from the navigation. My Journey, itinerary and visit
+   features are hidden from the main interface but their direct URLs, behaviour
+   and existing data are retained. Hiding does not disable these features.
 6. **City Information.** Browse existing published Places by city-directory
    groups and read the separately published staff guides. Classification and
    publication do not guarantee up-to-date or independently verified facts.

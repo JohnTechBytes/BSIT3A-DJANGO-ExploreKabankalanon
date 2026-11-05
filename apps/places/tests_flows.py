@@ -444,13 +444,14 @@ class SavedPlacesFlowTests(FlowFixture):
         self.assertContains(response, "Published Falls")
         self.assertNotContains(response, "Published Cafe")
 
-    def test_saved_page_labels_remove_action_and_keeps_details_and_itinerary_links(self):
+    def test_saved_page_labels_remove_action_and_keeps_details_without_itinerary_link(self):
         SavedPlace.objects.create(user=self.user, place=self.place)
         response = self.client.get(reverse("places:saved_places"))
         self.assertContains(response, '1 saved destination')
         self.assertContains(response, f'Remove {self.place.title} from saved places')
         self.assertContains(response, reverse("places:place_detail", args=[self.place.pk]))
-        self.assertContains(response, reverse("itineraries:choose_for_place", args=[self.place.pk]))
+        self.assertNotContains(response, reverse("itineraries:choose_for_place", args=[self.place.pk]))
+        self.assertNotContains(response, f'href="{reverse("places:journey_dashboard")}"')
 
     def test_empty_saved_page_offers_a_way_to_explore(self):
         response = self.client.get(reverse("places:saved_places"))

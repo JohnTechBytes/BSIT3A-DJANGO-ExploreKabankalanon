@@ -641,7 +641,7 @@
 <link rel="stylesheet" href="{% static 'css/browse.css' %}?v=20261031-3">
 {% endblock %}
 
-{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-12">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261105-empty-results-1">{% endblock %}
 {% block content %}
 <style>
 .sample-photo-wrapper {
@@ -1015,33 +1015,19 @@
 
   {% else %}
 
-    <section class="ea-empty">
-      {% if search_note %}
-        <div class="ea-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></div>
-        <h2>No published place in that category yet</h2>
-        <p>{{ search_note }} No published Kabankalan place is filed under that category at the moment, so there is nothing to show for this question yet.</p>
-      {% elif search_query or selected_category or selected_hobby %}
-        <div class="ea-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></div>
-        <h2>No matching places found</h2>
-        <p>No published Kabankalan places matched the current search and filters. Try a different term or remove a filter.</p>
-      {% else %}
-        <div class="ea-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle></svg></div>
-        <h2>Get personalized recommendations</h2>
-        <p>Select a hobby above to see places that match your interests.</p>
-        <div class="ea-empty-suggestions">
-          <p style="font-size: 12px; color: #536a87; margin-bottom: 12px;">Popular hobbies:</p>
-          <div class="ea-empty-hobby-list">
-            <a href="{% url 'places:smart_search' %}?hobby=hiking" class="ea-empty-hobby-link">Hiking</a>
-            <a href="{% url 'places:smart_search' %}?hobby=cafes" class="ea-empty-hobby-link">Café Hopping</a>
-            <a href="{% url 'places:smart_search' %}?hobby=photography" class="ea-empty-hobby-link">Photography</a>
-            <a href="{% url 'places:smart_search' %}?hobby=food" class="ea-empty-hobby-link">Food Trips</a>
-          </div>
+    <section class="ea-empty" role="status">
+      <div class="ea-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></div>
+      {% if search_query or selected_category or selected_hobby %}
+        <h2>No matching places found yet</h2>
+        {% include 'components/search_no_match_message.html' %}
+        <div class="ea-empty-actions">
+          <a href="{% url 'places:attraction_carousel' %}?browse=all#ea-search-query" class="ea-empty-browse-btn ea-empty-clear">Clear search and filters</a>
+          <a href="{% url 'places:attraction_carousel' %}?browse=all" class="ea-empty-browse-btn">Browse all published places →</a>
         </div>
+      {% else %}
+        <h2>No published places available yet</h2>
+        <p>The directory does not currently have any published Kabankalan places to show.</p>
       {% endif %}
-
-      <a href="{% url 'places:attraction_carousel' %}?browse=all" class="ea-empty-browse-btn">
-        Browse all {{ published_total }} places →
-      </a>
     </section>
 
   {% endif %}

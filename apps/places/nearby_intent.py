@@ -37,7 +37,9 @@ ALIASES = {
     ),
 }
 
-HOBBY_ALIASES = {"billiards": ("billiards",), "coffee": ("cafe",)}
+# The seed taxonomy uses a longer slug for coffee/café hopping. Keep both
+# variants so the service filter treats the same staff-assigned tag consistently.
+HOBBY_ALIASES = {"billiards": ("billiards",), "coffee": ("cafe", "coffee-cafe-hopping")}
 
 
 def normalize_words(value):

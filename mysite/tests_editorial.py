@@ -65,12 +65,37 @@ class EditorialScreenTests(TestCase):
         self.assertContains(public, reverse("login"))
         self.client.force_login(self.user)
         member = self.client.get(reverse("places:attraction_carousel") + "?browse=all")
-        for route in ("home", "info:city_information", "places:saved_places",
-                      "places:journey_dashboard", "itineraries:list", "visits:list"):
+        for route in ("home", "info:city_information", "places:saved_places", "places:my_reviews", "evaluation:sus_survey"):
             with self.subTest(route=route):
                 self.assertContains(member, reverse(route))
+        for route in ("places:journey_dashboard", "itineraries:list", "visits:list"):
+            with self.subTest(hidden_route=route):
+                self.assertNotContains(member, f'href="{reverse(route)}"')
+                # Existing bookmarks remain functional, but are no longer promoted.
+                self.assertEqual(self.client.get(reverse(route)).status_code, 200)
         self.assertContains(member, 'class="ea-nav-more"')
         self.assertContains(member, 'name="csrfmiddlewaretoken"')
+
+    def test_core_navigation_hides_planning_features_without_deleting_routes(self):
+        self.client.force_login(self.user)
+        for url in (reverse('home'), reverse('places:attraction_carousel') + '?browse=all',
+                    reverse('places:attraction_carousel') + '?mode=nearby',
+                    reverse('places:place_detail', args=[self.place.pk]),
+                    reverse('places:saved_places'), reverse('places:my_reviews'),
+                    reverse('info:city_information')):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, 200)
+                for route in ('places:journey_dashboard', 'itineraries:list', 'visits:list'):
+                    self.assertNotContains(response, f'href="{reverse(route)}"')
+                self.assertNotContains(response, f'href="{reverse("itineraries:choose_for_place", args=[self.place.pk])}"')
+                self.assertNotContains(response, f'href="{reverse("visits:check_in", args=[self.place.pk])}"')
+        for url in (reverse('places:journey_dashboard'), reverse('itineraries:list'),
+                    reverse('visits:list'), reverse('itineraries:choose_for_place', args=[self.place.pk]),
+                    reverse('visits:check_in', args=[self.place.pk])):
+            with self.subTest(retained_url=url):
+                self.assertEqual(self.client.get(url).status_code, 200)
+        self.assertTrue(Itinerary.objects.filter(pk=self.trip.pk).exists())
 
     def test_discovery_screens_opt_in_without_changing_routes_or_actions(self):
         self.client.force_login(self.user)

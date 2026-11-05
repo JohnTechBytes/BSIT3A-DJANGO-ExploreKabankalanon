@@ -11,7 +11,10 @@ What the command creates:
 2. the interest taxonomy (hobbies) and the place categories,
 3. the published, verified Kabankalan attractions from the OSM extract.
 
-It is idempotent: running it twice does not duplicate anything.
+Running it twice does not duplicate these records, but it is not read-only:
+it replaces hobby associations on matching existing places, and assigns the
+Photography hobby for categories without a mapped interest. Use only with an
+isolated fresh database or after explicit approval and a verified backup.
 
 Usage::
 
@@ -70,7 +73,9 @@ SOURCE_FILES = (
 
 
 class Command(BaseCommand):
-    help = "Seeds the Kabankalan city, the interest taxonomy and the published OSM places"
+    help = ("Seeds the Kabankalan city, taxonomy and published OSM places; "
+            "replaces hobby tags on matching existing places. Use an isolated fresh "
+            "database, or obtain approval and a verified backup first.")
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -98,6 +103,12 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
+        self.stdout.write(self.style.WARNING(
+            "WARNING: This command writes to the database and replaces hobby tags "
+            "on matching existing places. Unmapped categories receive a default "
+            "Photography tag. Use an isolated fresh database, or obtain approval "
+            "and a verified backup first. This warning does not stop the command."
+        ))
         self.stdout.write(self.style.WARNING("Seeding Kabankalan..."))
 
         city, created = City.objects.get_or_create(

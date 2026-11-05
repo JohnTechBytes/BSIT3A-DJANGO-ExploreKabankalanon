@@ -80,6 +80,52 @@ class HobbyQueryTests(TestCase):
         self.assertEqual(list(response.context['attractions']), [])
         self.assertContains(response, 'Untagged places may also be relevant')
 
+    def test_no_match_messages_are_honest_and_recovery_links_clear_filters(self):
+        self.client.force_login(self.user)
+        url = reverse('places:attraction_carousel')
+        for mode in ('browse', 'nearby'):
+            for query in ('bird watching', 'unfindableastronomical'):
+                params = {'q': query}
+                if mode == 'nearby':
+                    params['mode'] = 'nearby'
+                with self.subTest(mode=mode, query=query):
+                    response = self.client.get(url, params, follow=True)
+                    self.assertContains(response, 'No matching places found yet')
+                    self.assertContains(response, 'Our directory may be incomplete')
+                    self.assertContains(response, 'some places may not have hobby tags yet')
+                    self.assertContains(response, 'Clear search and filters')
+                    self.assertContains(response, 'Browse all published places')
+                    self.assertNotContains(response, 'No published place in that category yet')
+                    if query == 'bird watching':
+                        self.assertContains(response, 'Untagged places may also be relevant')
+                    if mode == 'nearby':
+                        self.assertContains(response, f'href="{url}?mode=nearby#ea6-query"')
+                        cleared = self.client.get(url, {'mode': 'nearby'})
+                        self.assertIn(self.match.pk, [p.pk for p in cleared.context['results']])
+                    else:
+                        self.assertContains(response, f'href="{url}?browse=all#ea-search-query"')
+                        cleared = self.client.get(url, {'browse': 'all'})
+                        self.assertIn(self.match.pk, [p.pk for p in cleared.context['attractions']])
+
+    def test_empty_catalogue_is_not_misrepresented_as_a_failed_search(self):
+        self.client.force_login(self.user)
+        Place.objects.filter(city=self.city).update(is_active=False)
+        for params in ({'browse': 'all'}, {'mode': 'nearby'}):
+            with self.subTest(params=params):
+                response = self.client.get(reverse('places:attraction_carousel'), params)
+                self.assertContains(response, 'No published places available yet')
+                self.assertNotContains(response, 'No matching places found yet')
+
+    def test_buying_no_match_keeps_unconfirmed_availability_note(self):
+        self.client.force_login(self.user)
+        for params in ({'q': 'where to buy a phone case'},
+                       {'mode': 'nearby', 'q': 'where to buy a phone case'}):
+            with self.subTest(params=params):
+                response = self.client.get(reverse('places:attraction_carousel'), params, follow=True)
+                self.assertContains(response, 'No matching places found yet')
+                self.assertContains(response, 'Product or service availability is not confirmed')
+                self.assertContains(response, 'Our directory may be incomplete')
+
     def test_nearby_uses_same_hobby_matching(self):
         self.client.force_login(self.user)
         response = self.client.get(reverse('places:attraction_carousel'), {'mode': 'nearby', 'q': 'photography'})

@@ -86,7 +86,7 @@ class HomepageTests(TestCase):
         self.assertIn('prefers-reduced-motion: reduce', stylesheet)
         self.assertIn('landing-reveal.is-reveal-pending', stylesheet)
         self.assertContains(response, 'aria-label="Ways to explore Kabankalan"')
-        self.assertContains(response, 'aria-label="Your journey links"')
+        self.assertContains(response, 'aria-label="Your places links"')
         self.assertContains(response, '<strong>1</strong> published place')
 
     def test_landing_search_and_main_links_use_existing_routes(self):
@@ -96,7 +96,7 @@ class HomepageTests(TestCase):
         self.assertContains(response, f'href="{reverse("info:city_information")}"')
         self.assertContains(response, f'href="{reverse("places:attraction_carousel")}?mode=nearby"')
         self.assertContains(response, f'href="{reverse("places:attraction_carousel")}?browse=all"')
-        self.assertContains(response, f'href="{reverse("itineraries:list")}"')
+        self.assertNotContains(response, f'href="{reverse("itineraries:list")}"')
         self.assertContains(response, f'href="{reverse("login")}"')
         self.assertContains(response, f'href="{reverse("register")}"')
 
