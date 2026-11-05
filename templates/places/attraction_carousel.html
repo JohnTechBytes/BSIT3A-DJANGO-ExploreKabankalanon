@@ -695,9 +695,9 @@
       {% endif %}
     </strong>
     {% if search_query or selected_category or selected_hobby %}
-      <p class="ea-summary-note">Filtered from {{ published_total }} verified, published Kabankalan places.</p>
+      <p class="ea-summary-note">Filtered from {{ published_total }} published Kabankalan places.</p>
     {% else %}
-      <p class="ea-summary-note">All verified, published Kabankalan places and businesses.</p>
+      <p class="ea-summary-note">Published Kabankalan places and businesses. Details may need confirmation.</p>
     {% endif %}
     {% if search_note %}
       <p class="ea-search-note" role="status">{{ search_note }}</p>
@@ -718,7 +718,7 @@
     <div class="ea-tools-heading">
       <div>
         <h2>Find your next stop</h2>
-        <p>Search and filter verified Kabankalan places.</p>
+        <p>Search and filter published Kabankalan places.</p>
       </div>
       <span class="ea-discovery-count">{{ total_attractions }} of {{ published_total }} published</span>
     </div>
@@ -919,7 +919,7 @@
                 <span class="ea-card-sample">Illustrative category sample</span>
 
               {% else %}
-                <div class="ea-photo-empty" role="img" aria-label="No verified photo available for {{ place.title }}">
+                <div class="ea-photo-empty" role="img" aria-label="No destination photo available for {{ place.title }}">
                   <span class="ea-photo-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8" cy="9" r="1.5"></circle><path d="m4 17 5-5 4 4 3-3 4 4"></path></svg></span>
                   <span>PHOTO NOT YET AVAILABLE</span>
                 </div>
@@ -1650,7 +1650,7 @@
                 coordinates.length + " of " + uniqueCards +
                 " destinations are mapped. " +
                 (uniqueCards > coordinates.length
-                    ? "Other results have no verified coordinates yet."
+                    ? "Other results have no recorded coordinates yet."
                     : "Pick any photo to fly the drone view in.");
         }
     }
@@ -1691,11 +1691,11 @@
             const heading = document.createElement("h3");
             heading.textContent = "Map location not available yet";
             const message = document.createElement("p");
-            message.textContent = "This result has no verified map coordinates. " +
+            message.textContent = "This result has no recorded map coordinates. " +
                 "You can still view the destination details and save it.";
             details.append(heading, message);
             if (mapNote) {
-                mapNote.textContent = "No results on this page have verified map coordinates.";
+                mapNote.textContent = "No results on this page have recorded map coordinates.";
             }
             return Promise.resolve(null); // No coordinates: skip the Leaflet download.
         }

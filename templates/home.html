@@ -70,7 +70,7 @@
         {% else %}
         <div class="empty-state"><h3>{% if selected_category %}No places in this category yet.{% else %}Find your kind of local adventure.{% endif %}</h3><p>Try searching by interest, or browse Kabankalan’s places.</p>{% include 'components/button.html' with href=browse_url|add:'?browse=all' label='Explore Kabankalan' arrow=True only %}</div>
         {% endif %}
-        {% if osm_count %}<p class="map-attribution">Map records © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>. Only active, verified places are shown.</p>{% endif %}
+        {% if osm_count %}<p class="map-attribution">Map records © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>. Only published places are shown; confirm details before visiting.</p>{% endif %}
         <div class="browse-more">{% include 'components/button.html' with href=browse_url|add:'?browse=all' label='Explore all places' variant='ek-button-outline' arrow=True only %}</div>
     </div></section>
 

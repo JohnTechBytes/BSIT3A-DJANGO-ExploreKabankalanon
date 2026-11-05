@@ -1,0 +1,6 @@
+# Local compatibility profile for Python 3.12 + MariaDB 10.4 (XAMPP).
+# Django 5.0 is no longer security-supported; do not use this for public hosting.
+Django==5.0.14
+PyMySQL==1.1.0
+openpyxl==3.1.5
+Pillow==13.0.0

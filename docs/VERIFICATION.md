@@ -1,3 +1,5 @@
+> **Historical document.** Historical verification record for an older build, not a guarantee for the current system. Use [the current local checklist](LOCAL_TEST_CHECKLIST.md) and [handoff guide](WORKFLOW_AND_HANDOFF.md). Do not run seed, import, bulk or destructive commands on an existing database without explicit approval and a backup.
+
 # Verification Record
 
 How this build was checked, what the numbers are, and how to reproduce every
@@ -103,8 +105,8 @@ What the optimisation pass changed:
 
 | Item | Status |
 |---|---|
-| Places | OpenStreetMap records under ODbL, imported through the review queue; unverified imports are never published |
-| Photos | Licensed Wikimedia Commons files with the author and licence stored per photo; sample images are labelled as samples |
+| Places | Historical OSM data under ODbL; publication flags do not prove independent verification |
+| Photos | Some records have attributed Wikimedia photos; not all existing photo rights or identities are verified. Samples are labelled. |
 | Reviews | Written by signed-in visitors, one review per user per place; they are opinions and do not prove an in-person visit |
 | Visits | Reported by visitors and approved by staff before they count toward points and badges |
 | Search history | Stored per account, shown only to that account, five entries on the dashboard |
@@ -119,7 +121,7 @@ What the optimisation pass changed:
 |---|---|---|
 | Named place (`"Kabankalan Plaza"`) | 1 match | A query that names a place returns that place, not every record that contains one of its words |
 | Named place with another spelling (`"Mag Aso Falls"`) | 1 match | The comparison ignores punctuation and spacing |
-| Buying question (`"where to buy a phone case"`) | the published shops and malls, with the note *"Matched by category: the shops and malls of Kabankalan are where a phone case is sold. No listing names a phone case directly."* | A question about a product is answered by the category that sells such things, and the page states where the answer came from |
+| Buying question (`"where to buy a phone case"`) | a historical category result (wording since corrected) | Current results disclose that availability is not confirmed |
 | Buying question for any other product | the same category | The answer does not depend on a hard-coded list of products |
 | Buying question for a haircut | the barbershop only | A product that belongs to one category uses that category |
 | Content scope (`check_content_scope`) | 0 off-pillar records | Records outside the two pillars (educational institutions, for example) are reported, and `purge_off_scope_places` unpublishes them |

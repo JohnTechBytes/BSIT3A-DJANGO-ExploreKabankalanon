@@ -77,7 +77,7 @@
         <span class="sample-photo-label">Illustrative category sample · Not actual destination</span>
     </div>
     {% else %}
-    <div class="discovery-empty" role="img" aria-label="No verified photo available for {{ place.title }}">Photo not yet available</div>
+    <div class="discovery-empty" role="img" aria-label="No destination photo available for {{ place.title }}">Photo not yet available</div>
     {% endif %}
 {% endif %}
 
@@ -85,28 +85,10 @@
                 <h3>{{ place.title }}</h3>
                 <p>{{ place.category.name|default:"Tourist attraction" }}</p>
 
-                {% if place.is_verified and place.is_active %}
-                    <span class="discovery-badge verified">Verified Attraction</span>
-                {% else %}
-                    <span class="discovery-badge">Unverified Map Discovery</span>
-                {% endif %}
-
-                {% if place.is_verified and place.is_active %}
-                    <div>
-                        <a class="discovery-link" href="{% url 'places:place_detail' place.pk %}">
-                            View Details
-                        </a>
-                    </div>
-                {% else %}
-                    <p>Information awaiting verification.</p>
-                    {% if place.latitude is not None and place.longitude is not None %}
-                    <a class="discovery-link"
-                       href="https://www.google.com/maps/search/?api=1&amp;query={{ place.latitude }},{{ place.longitude }}"
-                       target="_blank" rel="noopener noreferrer">
-                        View Map Location
-                    </a>
-                    {% endif %}
-                {% endif %}
+                <span class="discovery-badge verified">Published place</span>
+                <div>
+                    <a class="discovery-link" href="{% url 'places:place_detail' place.pk %}">View Details</a>
+                </div>
 
                 {% if place.photo_source_url %}
                     <p>

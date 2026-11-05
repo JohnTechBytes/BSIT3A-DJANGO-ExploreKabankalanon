@@ -181,7 +181,7 @@
         <div class="ea4b-rows">
           {% for visit in visits_preview %}
             <div class="ea4b-row"><div class="ea4b-row-main"><span>{{ visit.place.title }}</span><span>{{ visit.visited_on|date:"M j, Y" }}</span></div>
-              {% if visit.status == 'approved' %}<span class="ea4b-row-meta ea4b-visit-approved">Verified</span>
+              {% if visit.status == 'approved' %}<span class="ea4b-row-meta ea4b-visit-approved">Staff approved</span>
               {% elif visit.status == 'pending' %}<span class="ea4b-row-meta ea4b-visit-pending">Pending</span>
               {% else %}<span class="ea4b-row-meta ea4b-visit-rejected">{{ visit.get_status_display }}</span>{% endif %}
             </div>

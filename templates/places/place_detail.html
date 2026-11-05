@@ -173,8 +173,6 @@
     {% endif %}
     <a class="pd-action" href="{% url 'itineraries:choose_for_place' place.pk %}">＋ Add to Itinerary</a>
     <a class="pd-action" href="{% url 'visits:check_in' place.pk %}">Report a Visit</a>
-    <a class="pd-action" href="{% url 'places:saved_places' %}">Saved Places</a>
-    <a class="pd-action" href="{% url 'places:journey_dashboard' %}">My Journey</a>
     <p class="pd-actions-note">Visit reports require staff review before rewards are granted.</p>
   </nav>
 
@@ -204,8 +202,8 @@
           {% else %}
             <div class="pd-no-photo">
               <span class="pd-no-photo-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8" cy="9" r="1.5"></circle><path d="m4 17 5-5 4 4 3-3 4 4"></path></svg></span>
-              <strong>Destination photo coming soon</strong>
-              <small>A verified photo of this place has not been added yet.</small>
+              <strong>Destination photo not yet available</strong>
+              <small>A destination photo has not been added yet.</small>
             </div>
           {% endif %}
         </div>
@@ -250,7 +248,7 @@
         {% if place.description %}
           <p>{{ place.description|linebreaksbr }}</p>
         {% else %}
-          <p>Detailed information about this destination is being prepared and verified by the destination administrator.</p>
+          <p>Detailed information has not been added yet.</p>
         {% endif %}
       </section>
 
@@ -292,7 +290,7 @@
           <p class="pd-coordinates">Destination coordinates: {{ place.latitude }}, {{ place.longitude }}</p>
           <a class="pd-cta" href="https://www.google.com/maps/dir/?api=1&amp;destination={{ place.latitude }},{{ place.longitude }}" target="_blank" rel="noopener noreferrer">Get directions ↗</a>
         {% else %}
-          <div class="pd-map-missing"><strong>Location not mapped yet</strong>Verified coordinates have not been added. Directions will be available after an administrator confirms this location.</div>
+          <div class="pd-map-missing"><strong>Location not mapped yet</strong>Coordinates have not been added. Directions will be available when a location is recorded.</div>
         {% endif %}
       </section>
       <section class="pd-card">

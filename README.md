@@ -1,7 +1,7 @@
 # ExploreKabankalan — Kabankalan City
 
 A Django web system for exploring **Kabankalan City, Negros Occidental**: a
-hobby-weighted place directory, natural-language search, a Leaflet map with
+shared place directory, hobby-based matching, natural-language search, a Leaflet map with
 live GPS, reviews, itineraries, visit tracking and a customized administrative
 panel, backed by locally imported OpenStreetMap and PSGC data.
 
@@ -34,7 +34,7 @@ official city information.
 
 To address this need, **Explore Kabankalan** was developed as a web-based,
 single-city system built with the Django framework. A visitor can browse the
-verified, published places of Kabankalan, filter them by category and hobby,
+published places of Kabankalan, filter them by category and hobby,
 search in natural language, view results on an interactive map, sort and filter
 nearby places by straight-line distance from the device's GPS position or from a
 chosen city landmark, read and write reviews, save places, build itineraries,
@@ -42,27 +42,23 @@ read the city's public information page, answer a short usability survey, and
 track visits, interests and searches on a personal dashboard called
 **My Journey**. City staff
 manage the same records through a customized administrative panel that includes
-an OpenStreetMap review queue, so unverified imports never reach the public
-directory.
+an OpenStreetMap review queue. Public listing requires the active and
+`is_verified` flags, but the flags alone do not establish that the information,
+coordinates or photographs were independently checked.
 
 The recommendation engine is **deterministic and rule-based**, not
 machine-learning-based. It ranks places by hobby fit (60% weight) and average
-rating (20% weight, applied only where reviews exist). Missing signals are
-excluded from the denominator rather than treated as zero. Distance is not part
+rating (20% weight, applied only where reviews exist). The hobby component is
+always in the denominator; it is zero when no hobbies are selected. The rating
+component is excluded when there are no reviews. Distance is not part
 of the ranking score; it is used by the Nearby view for sorting and filtering.
 
-> **Implementation status of "AI-assisted".** The project title names an
-> AI-assisted recommendation system. In this build the AI-assisted layer is the
-> knowledge-based (rule-based) interpretation and scoring engine: the
-> natural-language search classifies the intent of a query and extracts the
-> entities it names (`apps/places/views.py`), and the recommender scores every
-> candidate place against the visitor's hobbies and average rating with a
-> documented weighted function (`apps/places/recommendations.py`). No external
-> or cloud-trained model is called — nothing in the repository talks to
-> Anthropic, OpenAI or any other API — so the system needs no API key, keeps
-> visitor data on its own server and costs nothing per query. Extending it with
-> a cloud model is identified as future work; the local parser it would fall
-> back to is already implemented and is what the system uses today.
+> **Implementation status of "AI-assisted".** Despite the project title,
+> search and recommendation currently use deterministic rules and database
+> metadata, not a language model or machine learning. Search does not call an
+> external AI API. Map tiles use external providers and MapTiler requires a
+> client-visible key. A language-model integration is only a possible future
+> enhancement, not a current feature.
 
 ### Statement of the Problem or Project Objectives
 
@@ -73,8 +69,8 @@ Kabankalan City that will help users find places that match their interests.
 Specifically, the project accomplishes the following technical objectives:
 
 1. **Hobby-based recommendation module.** Allow visitors to filter the place
-   directory by hobby and rank the matching places by hobby fit and average
-   rating, using a transparent, rule-based scoring function.
+   directory by staff-assigned hobby tags and rank the matching places by hobby
+   fit and average rating, using a rule-based scoring function.
 2. **Natural-language search.** Interpret queries such as "coffee shops",
    "mag aso falls" or "places in Kabankalan" with a local intent-and-keyword
    parser, ignoring filler words and recognizing named places. The optional
@@ -84,7 +80,7 @@ Specifically, the project accomplishes the following technical objectives:
    from OpenStreetMap data, live GPS positioning in the browser, in-browser
    distance filtering and sorting, place details, and a landmark reference for
    visitors who decline location access.
-4. **Places directory with reviews.** Present verified, published Kabankalan
+4. **Places directory with reviews.** Present published Kabankalan
    places with descriptions, categories, hobbies, coordinates, photos and
    visitor ratings, with one review per user per place.
 5. **Itinerary builder.** Let visitors create trips, add stops from the
@@ -124,7 +120,7 @@ The system provides practical value to the following beneficiaries:
   distance, details and maps in one platform, plan outings through itineraries,
   save places for later, and keep their reviews and verified visits together on
   the My Journey dashboard.
-- **Local Business Owners.** Gain visibility through verified, published
+- **Local Business Owners.** Gain visibility through published
   listings whose details can be corrected by city staff. A self-service
   interface for owners to edit their own listings is identified as future work.
 - **City Administrators and Tourism Personnel.** Have a central panel for
@@ -161,12 +157,12 @@ development and verification process.
 |---|---|
 | **Setting and Coverage** | Kabankalan City, Negros Occidental only. `KabankalanOnlyMiddleware` pins every session to Kabankalan (city pk 2), and the public and administrative querysets filter to that city. Places, information, users and evaluation activities are limited to Kabankalan. |
 | **Accounts and Roles** | Custom user model with the four roles required by the system — user, business owner, city administrator, system administrator — plus a managed-city field, avatar, bio and coordinates. Registration creates a `user`. Administrative access is governed by Django's staff, superuser and model permissions. |
-| **Kabankalan City Information** | `CityInformation` records (title, type, description, thumbnail, photo credit, display order) are maintained through the administrative panel and shown on the public City Information page (`/info/`), grouped by type with a type filter and a free-text search. Each entry carries a publish flag: staff publish and unpublish entries with the bulk actions in the staff dashboard, and only published entries are public. The page says so when nothing is published yet. |
+| **Kabankalan City Information** | `/info/` combines a browsable directory of existing published Places with separate staff-published `CityInformation` guides. A relevant Place can appear both here and in hobby search without duplicating it. Grouping is a search aid, not independent verification. Staff can publish and unpublish guides. |
 | **Hobbies and Hobby Selection** | Hobbies are attached to places. Visitors filter the directory by category and by a single hobby from the search panel, and the chosen hobby is kept in the session, so it also shapes the recommendation score on later pages and is listed in My Journey. The earlier standalone hobby-selection route now redirects to the place directory. |
-| **Places Directory with Details and Map Location** | Verified, published Kabankalan places with category, hobbies, description, address, coordinates, cover photo and gallery. The public listing is a looping carousel with list and map views and a details panel. Cover-photo labels indicate whether an image is set, not whether its usage rights were verified. |
-| **Natural-Language Search** | A local intent-and-keyword parser handles queries such as "coffee shops", "mag aso falls" or "places in Kabankalan", ignoring filler words and matching named Kabankalan places. A query that names a place ("Kabankalan Plaza") returns that place only; a question that asks for a product ("where to buy a phone case") is answered by the business category that sells such things, and the page states that the match came from the category instead of from a listing name. No external AI service is called. |
-| **Content Scope and Guardrail** | The catalogue has two pillars: **Places** (a real destination a visitor chooses for a hobby or a local errand, filed under an existing category and at least one hobby) and **City Information** (an editorial fact published by staff). The rules live in `apps/core/scope.py` and are enforced by code: `manage.py check_content_scope` audits the published catalogue, `manage.py purge_off_scope_places` unpublishes records outside the scope (dry run by default) and `manage.py check --database default` reports them as a system check. Records that are educational institutions are outside the scope: they are not destinations a visitor picks for a hobby and the recommendation score can never rank them, so they belong in City Information as a single curated fact instead. |
-| **Recommendation Engine** | Deterministic ranking: hobby fit 60%, average rating 20% where reviews exist, with missing signals excluded from the denominator. Results are ordered by score, then by number of matched hobbies, then by title. Match percentages are not displayed to visitors. |
+| **Places Directory with Details and Map Location** | Active places with the `is_verified` publication flag are publicly listed. Category, hobbies, descriptions, coordinates and photographs may be missing or need confirmation. The flag is not proof of independent verification or photo rights. The public listing is a looping carousel with list and map views and a details panel. |
+| **Natural-Language Search** | A local intent-and-keyword parser handles queries such as "coffee shops", "mag aso falls" or "places in Kabankalan", ignoring filler words and matching named Kabankalan places. A query that names a place ("Kabankalan Plaza") returns that place only; a buying question ("where to buy a phone case") returns a possible business category and discloses that inventory is unconfirmed. Clear hobby phrases use existing assigned tags and disclose that untagged places may also be relevant. No external AI service is called. |
+| **Content Scope and Guardrail** | The shared directory covers real Kabankalan places for hobbies or local needs; educational institutions are excluded. Missing hobby tags are a review item, not proof that a place is irrelevant. `check_content_scope` is a read-only audit using narrow title patterns; it cannot find every school. `purge_off_scope_places` is a separate potentially destructive action and must not be applied without review, explicit approval and backup. |
+| **Recommendation Engine** | Deterministic ranking: hobby fit 60%, average rating 20% where reviews exist; the hobby component remains in the denominator even when no hobby is selected. Results are ordered by score, then by number of matched hobbies, then by title. Match percentages are not displayed to visitors. |
 | **Interactive Map** | Leaflet 1.9.4, loaded on demand, with streets, satellite and hybrid layers from MapTiler (built on OpenStreetMap data) and OpenStreetMap/MapTiler attribution. Markers open a title and category popup; selecting a card flies the map to the place. |
 | **Nearby Search and Live GPS** | The Nearby view reads the browser's geolocation, computes straight-line distance to each place, and filters or sorts results by distance (any distance, 1, 3, 5, 10 or 25 km). A curated Kabankalan landmark can serve as the reference point when GPS is unavailable or declined. Distances are straight-line estimates, not driving routes or travel times. |
 | **Reviews and Ratings** | One review per user per place, 1–5 stars plus an optional comment; reviews can be updated or deleted; the average rating feeds both the place page and the recommender. Reviews are opinions and do not by themselves prove an in-person visit. |
@@ -178,14 +174,14 @@ development and verification process.
 | **Data Import** | Management commands import PSA PSGC codes, an OpenStreetMap extract and Wikimedia imagery, and enrich, categorize or attach photos to imported places. |
 | **Evaluation Instruments** | The public System Usability Scale survey (`/evaluation/sus/`) asks the ten standard items on a 1–5 scale and scores them with the standard 0–100 formula, then shows the score and the interpretation band. `RecommendationRating` stores relevant, partially relevant or irrelevant ratings for a query and place; a destination reached from a search offers that control. Both records are also managed in the administrative panel. |
 | **Privacy and Data Protection** | A public privacy notice (`/privacy/`) states what the system stores, what it never stores (the live GPS position is calculated in the browser and never sent to the server), who can see the data and how to have it deleted. Creating an account requires accepting the notice, and the acceptance and its date are stored with the account. |
-| **Technology Stack** | Python 3 and Django 5.2.18 for the server; MySQL for storage, accessed through the PyMySQL driver; HTML5, CSS3 and JavaScript with Bootstrap 5.3.3 for the interface; Leaflet 1.9.4 with MapTiler tiles for maps; Pillow for image handling. Deployment values (secret key, debug flag, allowed hosts, database credentials, MapTiler token) are read from environment variables with development defaults. |
+| **Technology Stack** | Python and Django (see the compatibility profiles below) for the server; MySQL or compatible MariaDB for storage, accessed through the PyMySQL driver; HTML5, CSS3 and JavaScript with Bootstrap 5.3.3 for the interface; Leaflet 1.9.4 with MapTiler tiles for maps; Pillow for image handling. Deployment values (secret key, debug flag, allowed hosts, database credentials, MapTiler token) are read from environment variables with development defaults. |
 | **Target Users** | Residents, visitors and tourists who look for places that match their hobbies; business owners whose listings appear in the directory; city administrators and tourism personnel who verify and publish places and maintain city information records; and system administrators. |
 
 ### Implementation Status
 
 | Module | Status | Notes |
 |---|---|---|
-| Places directory, carousel, details panel | Implemented | Verified, published places only; the carousel loops through every match (capped at 500 as a guard) |
+| Places directory, carousel, details panel | Implemented | Active records with the publication flag; publication does not prove independent verification. Carousel capped at 500. |
 | Hobby filtering and recommendation engine | Implemented | Rule-based; 60% hobby, 20% rating |
 | Natural-language search (local parser) | Implemented | No external service; a named place returns that place, a buying question returns the business category and says so |
 | Claude API interpretation layer | Planned | Not present in the codebase |
@@ -199,41 +195,43 @@ development and verification process.
 | Visit check-ins and rewards | Implemented | Staff approval required |
 | Administrative panel and OSM review queue | Implemented | Bulk approval refuses unverified OSM imports |
 | Data import commands | Implemented | PSGC, OSM extract, Wikimedia imagery |
-| City information records | Implemented | Public page at `/info/`; entries are published and unpublished with the bulk actions in the admin panel |
+| City Information | Implemented | Shared directory of published Places plus separately published guides at `/info/`. |
 | Roles and access control | Partially implemented | Four roles defined; enforced through Django permissions; no business-owner portal and no city-level scoping |
 | SUS instrument | Implemented | Public survey at `/evaluation/sus/` with the standard 0–100 scoring |
 | Recommendation relevance rating | Implemented | In-page control on a destination reached from a search |
 | Privacy notice and registration consent | Implemented | Public notice at `/privacy/`; the acceptance and its date are stored with the account |
 | Search history and remembered interests | Implemented | Every submitted search is logged with the account; the chosen hobby is kept in the session |
 | Account management in the staff dashboard | Implemented | Roles and managed city are editable at `/admin/users/user/` |
-| Environment-driven deployment configuration | Implemented | Secret key, debug flag, allowed hosts, database and MapTiler token come from environment variables |
-| Content scope guardrail | Implemented | `apps/core/scope.py` holds the two pillars; `check_content_scope`, `purge_off_scope_places` and a database-scoped system check enforce them |
+| Environment-driven deployment configuration | Partially implemented | Secret, debug, hosts, database and map token can be configured; HTTPS, secure cookies and production deployment still require configuration and verification. |
+| Content scope guardrail | Partial | Narrow title-based audit only; manual review is required and deletion or unpublishing is never automatic. |
 | Distance in the ranking score | Planned | Distance is used by the Nearby view only |
 
 ### Limitations
 
 - The system covers **Kabankalan City only**. Places, information and evaluation
   involving other cities are not included.
-- An **internet connection is required for the interactive map and live GPS**:
-  Browse loads a bundled copy of Leaflet on demand; other map pages may load
-  Leaflet from a CDN. Map tiles come from MapTiler and require connectivity.
-  Search and recommendation logic run on the server and need no external service.
-- Map tiles require a **MapTiler API key**, which is currently embedded in the
-  page template and should be moved to server-side configuration before public
-  deployment.
+- **Maps and GPS are browser-dependent**: external tiles require connectivity;
+  geolocation requires browser permission and a secure context (localhost may be
+  treated as secure). Availability and accuracy vary. Search and recommendation
+  logic run on the server without an external AI service.
+- Explore/Nearby maps use a client-visible **MapTiler API key** configured by
+  `MAPTILER_API_KEY`; apply provider-side restrictions. The landing map uses
+  OpenStreetMap tiles. Tile availability and geolocation depend on the network,
+  browser, permissions and provider.
 - **GPS accuracy depends on the user's device**, and all distances are
   straight-line estimates rather than driving distances or travel times.
 - **Recommendation quality depends on the completeness and accuracy of place
-  data.** The administrative panel reports missing cover photos and refuses to
-  publish unverified imports in bulk for this reason.
+  data.** Public records and images can still be inaccurate or lack confirmed
+  reuse rights. The admin bulk-approval action skips `osm-` slugs, but other
+  publication paths or manual database updates can set flags without independent
+  verification.
 - Recommendations and search are implemented with **rule-based logic, not
   machine learning or a language model**. The Claude API layer described in the
   project title is not yet implemented.
-- The public **City Information page** shows only what the city administration
-  has published, so it stays empty until entries are entered. The starter set
-  created by `manage.py seed_city_information` is published, because it is the
-  curated starter content of the city, and it still has to be reviewed against
-  the official city record before it is used.
+- The **City Information page** combines published Places with separate
+  published guides. Guide content and individual listings require review;
+  seed commands write to the database and should not be run on existing data
+  without explicit approval and backup.
 - The **SUS survey** can be answered more than once and an anonymous answer is
   not linked to a person. A signed-in answer is stored with the account.
 - The **chosen hobby is held in the browser session** and is lost when the
@@ -253,64 +251,29 @@ development and verification process.
 
 ### Requirements
 
-- Python 3
-- MySQL
-- Dependencies from `requirements.txt`: Django 5.2.18, PyMySQL, openpyxl,
-  Pillow 13 (`openpyxl` is retained for spreadsheet imports but is not imported
-  by the current code)
+- `requirements.txt` pins Django 5.2.18, PyMySQL, openpyxl and Pillow.
+- For the existing Windows/XAMPP MariaDB 10.4 local demo, use Python 3.12 and
+  `requirements-mariadb104.txt` (Django 5.0.14). Do not overwrite a working
+  environment without checking it first. Django 5.0 is no longer security
+  supported; this compatibility profile is **not suitable for public hosting**.
+- For public deployment, use a supported Django/database/Python combination,
+  run the tests against that exact stack, configure HTTPS/security settings,
+  and run `manage.py check --deploy` before launch.
 
-Django is pinned to 5.2.18 because earlier 5.x releases crash on
-`BaseContext.__copy__` under Python 3.13 and later (`'super' object has no
-attribute 'dicts'`). `mysite/compat.py` is imported from `mysite/__init__.py` as
-a safety net for environments still running an affected Django version.
+### Local setup and safety
 
-### Setup
+See [the Windows local test checklist](docs/LOCAL_TEST_CHECKLIST.md) and
+[workflow and handoff guide](docs/WORKFLOW_AND_HANDOFF.md). Existing database:
+back up database and media before any changes. **Do not run seed commands,
+imports, `migrate`, cleanup commands, or bulk actions on existing data unless
+explicitly approved.** Registration, login sessions, searching and visitor
+actions can write to the connected database. Tests should use isolated SQLite,
+not the existing MySQL/MariaDB database.
 
-```bash
-python -m venv .venv
-.venv\Scripts\activate            # macOS/Linux: source .venv/bin/activate
-pip install -r requirements.txt
-
-mysql -uroot -e "CREATE DATABASE exploreanywhere CHARACTER SET utf8mb4"
-
-python manage.py migrate
-python manage.py seed_cities           # provinces and cities
-python manage.py seed_kabankalan       # hobbies, categories and places
-python manage.py seed_city_information # the entries shown on /info/
-python manage.py createsuperuser       # staff login for /admin/
-python manage.py runserver
-```
-
-Three read-only audits keep the installation inside the scope of the system
-and show how a question is answered:
-
-```bash
-python manage.py check_content_scope   # the two pillars and any record outside them
-python manage.py verify_enrichment     # how complete the published catalogue is
-python manage.py check_search "where to buy a phone case"
-```
-
-`check_content_scope --strict` exits with status 1 when a published record is
-outside the scope, and `purge_off_scope_places` unpublishes those records
-(a dry run until `--apply` is given). `manage.py check --database default`
-reports the same records as a Django system check.
-
-Database settings come from the environment with development defaults
-(`exploreanywhere`, user `root`, no password, `127.0.0.1:3306`, `utf8mb4`).
-Set `DJANGO_DB_*` variables to point the project at a real MySQL server. To
-try the project without MySQL, use the SQLite fallback — the same code and
-migrations run against it:
-
-```bash
-export DJANGO_DB_ENGINE=django.db.backends.sqlite3
-export DJANGO_DB_NAME="$PWD/local.sqlite3"
-```
-
-Virtual environments are gitignored under any name (`venv*`, `.venv/`).
-
-`docs/LOCAL_TEST_CHECKLIST.md` walks through the whole local test: unpacking
-the archive, choosing the database, loading the data, the pages to open, the
-expected test result and what to do when something fails.
+The environment defaults to local `exploreanywhere`, MySQL root, no password;
+these are development defaults and not secure for public deployment. Use the
+`DJANGO_DB_*` environment variables for the intended database and verify the
+connection before running commands.
 
 ### Project layout
 
@@ -338,23 +301,17 @@ import commands need them to match Kabankalan records.
 | `data/osm/` | `philippines-261013.osm.pbf` (stored in Git LFS, so a clone needs `git lfs pull`) plus `extracted/`, `matching/`, `validation/` |
 | `data/psgc_2026_q3_exploreanywhere.csv` | PSA PSGC place codes |
 
-Loaded through management commands such as:
+Import and seed commands write records and can publish or update content. Do
+not run them against existing data without explicit approval, a recent backup,
+and review. OSM records are source data, not proof of verified facts.
 
-```bash
-python manage.py seed_kabankalan        # city, hobbies, categories, published places
-python manage.py seed_city_information   # starter City Information entries
-python manage.py load_psgc
-python manage.py categorize_osm_places
-python manage.py import_wikimedia_photos
-```
-
-`seed_kabankalan` loads the real Kabankalan attractions that ship in
-`data/osm/validation/` and publishes them, so a fresh installation shows
-verifiable records rather than invented sample names.
+For a read-only external candidate CSV covering malls, waterfalls, food/cafés,
+shops and services, see [candidate review](docs/KABANKALAN_CANDIDATE_REVIEW.md).
+It does not import or publish records and does not establish completeness.
 
 ### Environment variables
 
-Optional, read at runtime with safe defaults:
+Read at runtime. The defaults are for local development, not public hosting:
 
 | Variable | Used by |
 |----------|---------|
@@ -375,26 +332,18 @@ Optional, read at runtime with safe defaults:
 
 ### Tests
 
-```bash
-python manage.py test          # Django runner: 237 tests, 15 skipped
-```
-
-The suite covers the public flows (search, filters, save/unsave, reviews,
-itineraries, check-ins, nearby, the city information page, the usability
-survey and the relevance feedback), the discovery query behaviour, the
-accuracy of the question search (a named place returns that place, a buying
-question returns the business category), the content scope rules and the
-administrative screens. Fifteen tests for the retired legacy city-information
-CRUD routes are skipped: those routes were replaced by the public City
-Information page, and the tests are kept as the specification for that module.
-
-A `pytest.ini` is included for tooling that expects it, but pytest is not a
-project dependency; use the Django runner.
+Run tests against isolated SQLite, never the existing MariaDB database. See
+[local test checklist](docs/LOCAL_TEST_CHECKLIST.md) for PowerShell commands.
+The suite covers account, search, map page, reviews, saved places, itinerary,
+visits, administration, directory and survey flows. Automated tests do not
+prove that the laptop database, real map tiles, GPS or photo rights are correct.
 
 ### Documentation
 
-- `docs/LOCAL_TEST_CHECKLIST.md` — unpack, run and verify the project locally
-- `docs/VERIFICATION.md` — the verification record: test suite, browser audits, query and timing budget
-- `docs/QUICK_REFERENCE.md` — day-to-day commands and troubleshooting
+- `docs/LOCAL_TEST_CHECKLIST.md` — safely test the existing Windows installation
+- `docs/WORKFLOW_AND_HANDOFF.md` — workflow, limitations and submission checklist
+- `docs/KABANKALAN_CANDIDATE_REVIEW.md` — read-only OSM candidate report
+- `docs/VERIFICATION.md` — historical verification record; not a current guarantee
+- `docs/QUICK_REFERENCE.md` — historical photo-tool notes, not the submission checklist
 - `docs/PHASE6P_OPTIMIZATION_GUIDE.md` — photo discovery setup
 - `docs/PHASE7_FEATURES_PLAN.md` — feature roadmap

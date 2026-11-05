@@ -48,7 +48,7 @@
       <div class="grid"><div class="field"><label for="initial-place">First destination (optional)</label>
         <select id="initial-place" name="initial_place"><option value="">Create an empty itinerary</option>
           {% for place in places %}<option value="{{ place.pk }}" {% if selected_place == place.pk|stringformat:"s" %}selected{% endif %}>{{ place.title }}</option>{% endfor %}
-        </select><small>Only active, verified Kabankalan destinations are listed.</small></div>
+        </select><small>Only published Kabankalan destinations are listed.</small></div>
       <div class="field"><label for="first-time">Planned arrival time (when selecting a destination)</label><input id="first-time" type="time" name="start_time" value="{{ input_time }}"></div></div>
       <div class="actions"><button class="btn" type="submit">Create Itinerary</button><a class="btn outline" href="{% url 'itineraries:list' %}">Cancel</a></div>
     </form>

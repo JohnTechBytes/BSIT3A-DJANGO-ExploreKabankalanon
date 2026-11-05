@@ -341,8 +341,8 @@ def describe_search(group, product):
     answer = spec["answer_plural"] if _is_plural(product or "") else spec["answer"]
     sentence = answer.format(product=phrase)
     return (
-        "Matched by category: %s. No listing names %s directly; availability is not confirmed."
-        % (sentence, phrase)
+        "Matched by category: %s. Product or service availability is not confirmed."
+        % sentence
     )
 
 

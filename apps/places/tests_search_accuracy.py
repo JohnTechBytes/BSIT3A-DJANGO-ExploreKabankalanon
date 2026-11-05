@@ -162,7 +162,6 @@ class SearchAccuracyTests(TestCase):
         note = response.context["search_note"]
         self.assertIn("Matched by category", note)
         self.assertIn("shops and malls of Kabankalan", note)
-        self.assertIn("No listing names a phone case directly", note)
         self.assertIn("availability is not confirmed", note)
         self.assertNotIn("are where a phone case is sold", note)
         self.assertContains(response, "ea-search-note")
@@ -197,7 +196,6 @@ class SearchAccuracyTests(TestCase):
     def test_describe_search_is_honest_about_the_source(self):
         note = describe_search("shopping", "phone case")
         self.assertTrue(note.startswith("Matched by category:"))
-        self.assertIn("No listing names a phone case directly", note)
 
     # -- named places -----------------------------------------------------
 

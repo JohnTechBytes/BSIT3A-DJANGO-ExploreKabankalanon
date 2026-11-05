@@ -108,7 +108,7 @@ class JourneyDashboardPanelTests(TestCase):
         self.assertContains(response, "Mag Aso Falls")
         self.assertContains(response, "Test plan")
         self.assertContains(response, "4 / 5 stars")
-        self.assertContains(response, "Verified")
+        self.assertContains(response, "Staff approved")
         self.assertEqual(response.context["saved_count"], 1)
         self.assertEqual(response.context["itinerary_count"], 1)
         self.assertEqual(response.context["review_count"], 1)

@@ -35,7 +35,7 @@
           </svg>
           <span class="ea6-voice-text">Speak</span>
         </button>
-        <div id="ea6-suggestions" class="ea6-autocomplete" role="listbox" aria-label="Suggested verified Kabankalan places" hidden></div>
+        <div id="ea6-suggestions" class="ea6-autocomplete" role="listbox" aria-label="Suggested published Kabankalan places" hidden></div>
         <p class="ea6-voice-status" id="ea6-voice-status" role="status" aria-live="polite"></p>
       </div>
       <div class="ea6-field">
@@ -69,7 +69,7 @@
     </div>
     <details class="ea6k-landmark" {% if selected_origin %}open{% endif %}>
       <summary>Can't use GPS? Choose a Kabankalan landmark instead</summary>
-      <p>Optional: choose a familiar published Kabankalan landmark as a <strong>distance reference</strong>, not your current location. Only curated landmarks with staff-verified map coordinates are listed.</p>
+      <p>Optional: choose a familiar published Kabankalan landmark as a <strong>distance reference</strong>, not your current location. Only selected landmarks with recorded map coordinates are listed. Confirm the location before travelling.</p>
       {% if landmarks %}
       <form method="get" action="{% url 'places:attraction_carousel' %}" id="ea6-landmark-form" class="ea6k-landmark-form">
         <input type="hidden" name="mode" value="nearby">
@@ -85,7 +85,7 @@
         <button type="submit" class="ea6-btn ea6-plain">Sort from landmark</button>
       </form>
       {% else %}
-      <p>There are currently no mapped, verified reference landmarks available. You can still browse verified Kabankalan places and use GPS when supported.</p>
+      <p>There are currently no mapped reference landmarks available. You can still browse published Kabankalan places and use GPS when supported.</p>
       {% endif %}
     </details>
     <div class="ea6h-radius" id="ea6h-radius" aria-label="Filter results by distance" hidden>
@@ -133,13 +133,13 @@
             {% if place.cover_image %}<img loading="lazy" decoding="async" width="640" height="360" alt="{{ place.title }}" src="{{ place.cover_image.url }}">
             {% elif place.cover_image_url %}<img loading="lazy" decoding="async" width="640" height="360" alt="{{ place.title }}" src="{{ place.cover_image_url }}" onerror="this.closest('.ea6-cover').classList.add('ea6-photo-failed'); this.remove();">
             {% elif place.sample_image %}<img loading="lazy" decoding="async" width="640" height="360" alt="Illustrative category sample, not an actual photo of {{ place.title }}" src="{% static place.sample_image %}"><span class="ea6-sample-badge">Illustrative category sample</span>
-            {% else %}<span class="ea6n-no-photo" role="img" aria-label="No verified photograph available"><span class="ea6n-no-photo-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8" cy="9" r="1.5"></circle><path d="m4 17 5-5 4 4 3-3 4 4"></path></svg></span><span>PHOTO NOT YET AVAILABLE</span></span>{% endif %}
+            {% else %}<span class="ea6n-no-photo" role="img" aria-label="No destination photograph available"><span class="ea6n-no-photo-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8" cy="9" r="1.5"></circle><path d="m4 17 5-5 4 4 3-3 4 4"></path></svg></span><span>PHOTO NOT YET AVAILABLE</span></span>{% endif %}
             {% if place.latitude != None and place.longitude != None %}<span class="ea6-card-map-hint" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" fill="currentColor"/></svg>View on map</span>{% endif %}
           </div>
           <div class="ea6-card-body">
             <div class="ea6n-badges">
               <span class="ea6-category">{% if place.category %}{{ place.category.name }}{% else %}Place in Kabankalan{% endif %}</span>
-              <span class="ea6-public-badge" title="Reviewed and published by ExploreKabankalan staff">✓ Staff verified listing</span>
+              <span class="ea6-public-badge" title="Published in the directory; confirm details before visiting">Published listing</span>
             </div>
             <h3><a href="{% url 'places:place_detail' place.pk %}">{{ place.title }}</a></h3>
             {% if place.review_count %}<p class="ea6-meta">★ {{ place.avg_rating|floatformat:1 }} / 5 · {{ place.review_count }} visitor review{{ place.review_count|pluralize }}</p>{% endif %}
@@ -172,19 +172,19 @@
         <strong id="ea6-drone-target">Kabankalan</strong>
         <span class="ea6-drone-scan"></span>
       </div>
-      <div id="ea6g-map" class="ea6g-map" role="region" aria-label="Interactive map of verified nearby result pins"></div>
+      <div id="ea6g-map" class="ea6g-map" role="region" aria-label="Interactive map of nearby result pins"></div>
       <p id="ea6g-map-status" class="ea6g-map-status" role="status" aria-live="polite">Map loading will begin when you open this panel.</p>
-      <p class="ea6g-map-status">Only this search's published, verified Kabankalan listings with coordinates are pinned. Map marker colors indicate selected or unselected locations—not hobby scores or business quality. Map tiles © <a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener noreferrer">MapTiler</a>; map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>.</p>
+      <p class="ea6g-map-status">Only this search's published Kabankalan listings with recorded coordinates are pinned. Locations may need confirmation. Map marker colors indicate selected or unselected locations—not hobby scores or business quality. Map tiles © <a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener noreferrer">MapTiler</a>; map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>.</p>
     </aside>
     </div>
   {% else %}
     <section class="ea6-empty" role="status">
-      <h2>No verified matches yet</h2>
-      <p>{% if search_note %}{{ search_note }} No published Kabankalan place is filed under that category at the moment, so there is nothing to show for this question yet.{% elif selected_service_label %}There are currently no verified {{ selected_service_label|lower }} in ExploreKabankalan's database matching this search.{% else %}No published Kabankalan places matched that search.{% endif %} Nearby business results will become available as administrators add and verify real establishments and coordinates.</p>
+      <h2>No published matches yet</h2>
+      <p>{% if search_note %}{{ search_note }} No published Kabankalan places matched this search.{% elif selected_service_label %}There are currently no published {{ selected_service_label|lower }} in ExploreKabankalan's database matching this search.{% else %}No published Kabankalan places matched that search.{% endif %} Listings may be incomplete or outdated; confirm details before visiting.</p>
       <a class="ea6-back" href="{% url 'places:attraction_carousel' %}?browse=all">Browse existing destinations →</a>
     </section>
   {% endif %}
-  <p class="ea6-notice">Only staff-verified, published Kabankalan listings appear here. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>. Details can change — confirm before visiting.</p>
+  <p class="ea6-notice">Only published Kabankalan listings appear here. Publication does not guarantee independent verification. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>. Details can change — confirm before visiting.</p>
 </main>
 {% endblock %}
 {% block extra_js %}
@@ -248,7 +248,7 @@
       const name = document.createElement("strong");
       name.textContent = place.title;
       const subtitle = document.createElement("small");
-      subtitle.textContent = (place.category__name || "Kabankalan place") + " · Staff verified";
+      subtitle.textContent = (place.category__name || "Kabankalan place") + " · Published listing";
       option.append(name,subtitle);
       option.addEventListener("click", () => choosePlace(place));
       listbox.append(option);
@@ -369,7 +369,7 @@
       const text = card.querySelector(".ea6-distance");
       if (text) text.textContent = Number.isFinite(distance)
         ? "Approx. " + distance.toFixed(1) + " km straight-line from " + label
-        : "Distance unavailable — coordinates not verified";
+        : "Distance unavailable — no recorded coordinates";
       return {card,index,distance};
     });
     scored.sort((a,b) => a.distance - b.distance || a.index-b.index);
@@ -410,7 +410,7 @@
   if (mapToggle && mappedRows.length === 0) {
     mapToggle.disabled = true;
     mapToggle.textContent = "Map unavailable for these results";
-    if (mapCount) mapCount.textContent = "No displayed listing has recorded coordinates. Try another verified place.";
+    if (mapCount) mapCount.textContent = "No displayed listing has recorded coordinates. Try another published place.";
   }
   function loadNearbyLeaflet() {
     if (window.L?.map && window.L?.tileLayer) return Promise.resolve();
@@ -447,7 +447,7 @@
     const heading = document.createElement("strong");
     heading.textContent = card.dataset.title || "Kabankalan place";
     const category = document.createElement("small");
-    category.textContent = card.dataset.category || "Verified place";
+    category.textContent = card.dataset.category || "Published place";
     const info = document.createElement("div");
     info.textContent = card.querySelector(".ea6-distance")?.textContent || "Distance unavailable";
     const links = document.createElement("div");
@@ -572,7 +572,7 @@
           marker.openPopup();
         }
       } else fitResultPins();
-      if (mapStatus) mapStatus.textContent = visibleMappedRows().length + " verified location pin(s) shown for these search results. Select a pin or use Show on map on a card.";
+      if (mapStatus) mapStatus.textContent = visibleMappedRows().length + " location pin(s) shown for these search results. Select a pin or use Show on map on a card.";
       if (cardToFocus && window.matchMedia("(max-width:980px)").matches) mapShell.scrollIntoView({behavior:"smooth",block:"start"});
     } catch(error) {
       if (mapStatus) mapStatus.textContent = "Unable to load the map. Check your connection and click the map button again to retry. Your results list still works.";

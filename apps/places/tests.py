@@ -75,6 +75,21 @@ class NearbyRedesignTests(TestCase):
         for private in ("Unverified Café", "Inactive Café", "Other City Café"):
             self.assertNotContains(response, private)
 
+    def test_publication_does_not_claim_independent_verification(self):
+        response = self.client.get(self.url, {"mode": "nearby"})
+        self.assertContains(response, "Publication does not guarantee independent verification")
+        self.assertContains(response, "Published listing")
+        self.assertNotContains(response, "Staff verified listing")
+
+    def test_detail_actions_remain_available_without_duplicate_navigation(self):
+        response = self.client.get(reverse("places:place_detail", args=[self.cafe.pk]))
+        self.assertContains(response, reverse("places:save_place", args=[self.cafe.pk]))
+        self.assertContains(response, reverse("itineraries:choose_for_place", args=[self.cafe.pk]))
+        self.assertContains(response, reverse("visits:check_in", args=[self.cafe.pk]))
+        # The two global destinations still exist in the shared navigation.
+        self.assertContains(response, reverse("places:saved_places"))
+        self.assertContains(response, reverse("places:journey_dashboard"))
+
     def test_nearby_unmapped_photo_does_not_claim_to_open_a_map(self):
         Place.objects.create(city=self.city, title="Unmapped Bookstore", address="Kabankalan",
                              is_verified=True, is_active=True)
@@ -128,7 +143,7 @@ class NearbyRedesignTests(TestCase):
 
     def test_empty_search_stays_honest_and_usable(self):
         response = self.client.get(self.url, {"mode": "nearby", "q": "No such place at all"})
-        self.assertContains(response, "No verified matches yet")
+        self.assertContains(response, "No published matches yet")
         self.assertContains(response, "Browse existing destinations")
         self.assertNotContains(response, 'class="ea6-card"')
 
