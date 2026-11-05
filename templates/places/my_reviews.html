@@ -86,12 +86,12 @@
 {% block content %}
 <main class="ea-myreviews" id="main-content">
   <header class="ea-c-page-hero">
-    <p class="ea-c-eyebrow">MY KABANKALAN JOURNEY</p>
+    <p class="ea-c-eyebrow">YOUR REVIEWS</p>
     <h1>My Reviews</h1>
     <p>Your ratings and experiences with Kabankalan destinations.</p>
     <span class="ea-c-count">{{ reviews|length }} submitted review{{ reviews|length|pluralize }}</span>
   </header>
-  <nav class="ea-myr-actions"><a class="ea-myr-btn" href="{% url 'places:journey_dashboard' %}">My Journey</a><a class="ea-myr-btn secondary" href="{% url 'places:attraction_carousel' %}">Explore Places</a></nav>
+  <nav class="ea-myr-actions"><a class="ea-myr-btn" href="{% url 'places:saved_places' %}">Saved Places</a><a class="ea-myr-btn secondary" href="{% url 'places:attraction_carousel' %}">Explore Places</a></nav>
   {% if messages %}
   <div class="sd-flash" role="status" aria-live="polite">
     {% for message in messages %}<p class="sd-flash-item {{ message.tags }}">{{ message }}</p>{% endfor %}

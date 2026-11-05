@@ -26,6 +26,17 @@ HOBBY_ALIASES = {
     "others": ("others",),
 }
 
+# The fresh-install seed uses longer slugs than some older installations. Map
+# those slugs to the same phrase sets without changing any stored hobby tags.
+# If both variants exist, the normal ambiguity check below still avoids guessing.
+SEEDED_HOBBY_ALIASES = {
+    "hiking-eco-tourism": "hiking",
+    "coffee-cafe-hopping": "cafe",
+    "dining-foodie": "food",
+    "karaoke-nightlife": "music",
+    "culture-heritage": "culture",
+}
+
 _PREFIXES = (
     r"(?:show|find|recommend|suggest)(?: me)? (?:places|spots|destinations|activities) (?:for|to|with)",
     r"(?:places|spots|destinations|activities) (?:for|to|with)",
@@ -58,7 +69,8 @@ def hobby_for_query(query):
         return direct[0]
     if direct:
         return None
-    existing = {slug for slug, _ in hobbies}
-    matches = [slug for slug, aliases in HOBBY_ALIASES.items()
-               if slug in existing and phrase in aliases]
+    matches = [
+        slug for slug, _ in hobbies
+        if phrase in HOBBY_ALIASES.get(SEEDED_HOBBY_ALIASES.get(slug, slug), ())
+    ]
     return matches[0] if len(matches) == 1 else None

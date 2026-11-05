@@ -311,13 +311,10 @@
 
             {% if request.user.is_authenticated %}
                 <a href="{% url 'places:saved_places' %}">Saved Places</a>
-                <a href="{% url 'places:journey_dashboard' %}">My Journey</a>
                 <details class="ea-nav-more">
                     <summary>More <span aria-hidden="true">&#9662;</span></summary>
                     <div class="ea-nav-submenu">
-                        <a href="{% url 'itineraries:list' %}">My Itineraries</a>
                         <a href="{% url 'places:my_reviews' %}">My Reviews</a>
-                        <a href="{% url 'visits:list' %}">My Visits</a>
                         <a href="{% url 'evaluation:sus_survey' %}">Usability Survey</a>
                     </div>
                 </details>

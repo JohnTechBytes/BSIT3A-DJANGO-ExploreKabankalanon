@@ -106,7 +106,6 @@
     <span class="ea-c-count">{{ entries|length }} saved destination{{ entries|length|pluralize }}</span>
   </header>
   <nav class="ea-actions" aria-label="Saved places navigation">
-    <a class="ea-action" href="{% url 'places:journey_dashboard' %}">My Journey</a>
     <a class="ea-action ea-action-secondary" href="{% url 'places:attraction_carousel' %}?browse=all">Explore Places</a>
   </nav>
   {% if messages %}
@@ -142,7 +141,6 @@
       <p class="ea-muted">{% if entry.place.category %}{{ entry.place.category.name }} · {% endif %}Kabankalan, Negros Occidental</p>
       <p class="ea-muted">{{ entry.place.description|default:"Destination information coming soon."|truncatechars:130 }}</p>
       <a class="ea-action" href="{% url 'places:place_detail' entry.place.pk %}">View Details</a>
-      <a class="ea-action ea-action-secondary" href="{% url 'itineraries:choose_for_place' entry.place.pk %}">Add to Itinerary</a>
       <form method="post" action="{% url 'places:unsave_place' entry.place.pk %}">
         {% csrf_token %}
         <button class="ea-unsave" type="submit" aria-label="Remove from Saved — Remove {{ entry.place.title }} from saved places">Remove from Saved</button>

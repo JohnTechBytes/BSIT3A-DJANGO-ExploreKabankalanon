@@ -171,9 +171,6 @@
       <button class="pd-action pd-action-primary" type="submit">♡ Save Place</button>
     </form>
     {% endif %}
-    <a class="pd-action" href="{% url 'itineraries:choose_for_place' place.pk %}">＋ Add to Itinerary</a>
-    <a class="pd-action" href="{% url 'visits:check_in' place.pk %}">Report a Visit</a>
-    <p class="pd-actions-note">Visit reports require staff review before rewards are granted.</p>
   </nav>
 
   {% if messages %}
@@ -374,7 +371,7 @@
             <div class="pd-form-actions"><button class="pd-action pd-danger" type="submit">Delete My Review</button></div>
           </form>
         {% endif %}
-        <p class="pd-review-note">Reviews are opinions and do not prove an in-person visit. Visit rewards require a separately reviewed check-in.</p>
+        <p class="pd-review-note">Reviews are opinions and do not prove an in-person visit.</p>
         <a href="{% url 'places:my_reviews' %}" style="font-weight:750;font-size:13px">My Reviews →</a>
       </div>
     </div>

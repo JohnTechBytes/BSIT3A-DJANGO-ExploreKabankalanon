@@ -7,7 +7,7 @@
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby.css' %}">{% endblock %}
-{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-12">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261105-empty-results-1">{% endblock %}
 {% block content %}
 <main class="ea6-main" id="nearby-main">
   <header class="ea6-top">
@@ -116,6 +116,9 @@
   {% if search_note %}
     <p class="ea-search-note" role="status">{{ search_note }}</p>
   {% endif %}
+  {% if selected_service == 'coffee' or selected_service == 'billiards' %}
+    <p class="ea-search-note">Matches use listing names, categories, or assigned hobby tags. Confirm current services before visiting.</p>
+  {% endif %}
   {% if results %}
     <div class="ea6g-controls" aria-label="Nearby results viewing options">
       <button class="ea6g-map-button" id="ea6g-toggle" type="button" aria-controls="ea6g-map-shell" aria-expanded="false">View nearby results on map ↗</button>
@@ -179,9 +182,17 @@
     </div>
   {% else %}
     <section class="ea6-empty" role="status">
-      <h2>No published matches yet</h2>
-      <p>{% if search_note %}{{ search_note }} No published Kabankalan places matched this search.{% elif selected_service_label %}There are currently no published {{ selected_service_label|lower }} in ExploreKabankalan's database matching this search.{% else %}No published Kabankalan places matched that search.{% endif %} Listings may be incomplete or outdated; confirm details before visiting.</p>
-      <a class="ea6-back" href="{% url 'places:attraction_carousel' %}?browse=all">Browse existing destinations →</a>
+      {% if query or selected_service or request.GET.place %}
+        <h2>No matching places found yet</h2>
+        {% include 'components/search_no_match_message.html' %}
+        <div class="ea6-empty-actions">
+          <a class="ea6-back" href="{% url 'places:attraction_carousel' %}?mode=nearby#ea6-query">Clear search and filters</a>
+          <a class="ea6-back" href="{% url 'places:attraction_carousel' %}?browse=all">Browse all published places →</a>
+        </div>
+      {% else %}
+        <h2>No published places available yet</h2>
+        <p>The directory does not currently have any published Kabankalan places to show.</p>
+      {% endif %}
     </section>
   {% endif %}
   <p class="ea6-notice">Only published Kabankalan listings appear here. Publication does not guarantee independent verification. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>. Details can change — confirm before visiting.</p>

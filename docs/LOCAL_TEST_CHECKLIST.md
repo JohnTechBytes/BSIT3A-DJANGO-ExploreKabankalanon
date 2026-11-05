@@ -17,6 +17,9 @@ Only perform such actions on data you are authorized to change.
   profile; do not reinstall over a working environment just to test it. Django
   5.0 is no longer security-supported and is not appropriate for public hosting.
 - Make a recent database **and media folder** backup before approved changes.
+  `seed_kabankalan` is not a hobby-tag repair: it replaces tags on matching
+  existing places and may assign Photography by default. Its warning does not
+  stop it from writing.
   Do not run seed, import, purge, bulk publication, migration, or deletion
   commands on the existing database just because a checklist mentions them.
 
@@ -52,8 +55,10 @@ Places. Do not share passwords or database backups containing private data.
    Distances are straight-line estimates, not road travel times. Check real
    tiles on the laptop's network; unavailable tiles do not prove a code error.
 4. Open a place and check its details and photograph. Confirm that the image
-   actually depicts that place and that its reuse is permitted. Save/review,
-   itinerary and visit actions write to the connected database.
+   actually depicts that place and that its reuse is permitted. Saved-place and
+   review actions write to the connected database. Itinerary and
+   visit features remain available at direct URLs, although their main interface
+   links are hidden.
 5. Open City Information. Its directory reuses published Places; editorial
    guides are separate. A place may appear in both the directory and interests.
 6. If authorized, open the staff dashboard and inspect the place list, hobby

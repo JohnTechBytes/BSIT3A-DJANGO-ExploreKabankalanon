@@ -84,11 +84,11 @@ class NearbyRedesignTests(TestCase):
     def test_detail_actions_remain_available_without_duplicate_navigation(self):
         response = self.client.get(reverse("places:place_detail", args=[self.cafe.pk]))
         self.assertContains(response, reverse("places:save_place", args=[self.cafe.pk]))
-        self.assertContains(response, reverse("itineraries:choose_for_place", args=[self.cafe.pk]))
-        self.assertContains(response, reverse("visits:check_in", args=[self.cafe.pk]))
-        # The two global destinations still exist in the shared navigation.
+        self.assertContains(response, reverse("places:submit_review", args=[self.cafe.pk]))
         self.assertContains(response, reverse("places:saved_places"))
-        self.assertContains(response, reverse("places:journey_dashboard"))
+        self.assertNotContains(response, reverse("itineraries:choose_for_place", args=[self.cafe.pk]))
+        self.assertNotContains(response, reverse("visits:check_in", args=[self.cafe.pk]))
+        self.assertNotContains(response, f'href="{reverse("places:journey_dashboard")}"')
 
     def test_missing_photos_have_clear_messages_and_real_photos_are_not_labelled_missing(self):
         for url, params in [
@@ -160,8 +160,10 @@ class NearbyRedesignTests(TestCase):
 
     def test_empty_search_stays_honest_and_usable(self):
         response = self.client.get(self.url, {"mode": "nearby", "q": "No such place at all"})
-        self.assertContains(response, "No published matches yet")
-        self.assertContains(response, "Browse existing destinations")
+        self.assertContains(response, "No matching places found yet")
+        self.assertContains(response, "Our directory may be incomplete")
+        self.assertContains(response, "Clear search and filters")
+        self.assertContains(response, "Browse all published places")
         self.assertNotContains(response, 'class="ea6-card"')
 
     def test_browse_page_keeps_its_existing_theme(self):

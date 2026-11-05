@@ -4,6 +4,8 @@
 to create the city the whole site is locked to, the interest taxonomy and the
 published OpenStreetMap places that ship with the repository.
 """
+from io import StringIO
+
 from django.core.management import call_command
 from django.test import TestCase
 
@@ -39,7 +41,12 @@ class SeedKabankalanTests(TestCase):
                 self.assertTrue(place.category_id)
 
     def test_seed_can_be_run_twice_without_duplicating_anything(self):
-        call_command("seed_kabankalan", verbosity=0)
+        output = StringIO()
+        call_command("seed_kabankalan", verbosity=0, stdout=output)
+        warning = output.getvalue()
+        self.assertIn("replaces hobby tags on matching existing places", warning)
+        self.assertIn("Unmapped categories receive a default Photography tag", warning)
+        self.assertIn("This warning does not stop the command", warning)
         call_command("seed_kabankalan", verbosity=0)
 
         self.assertEqual(Place.objects.filter(city_id=2).count(), 6)

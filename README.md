@@ -2,8 +2,10 @@
 
 A Django web system for exploring **Kabankalan City, Negros Occidental**: a
 shared place directory, hobby-based matching, natural-language search, a Leaflet map with
-live GPS, reviews, itineraries, visit tracking and a customized administrative
-panel, backed by locally imported OpenStreetMap and PSGC data.
+live GPS, reviews, saved places and a customized administrative panel, backed by
+locally imported OpenStreetMap and PSGC data. Itinerary, journey and visit-reward
+features remain accessible through their existing URLs but are not promoted in
+the main navigation.
 
 > **Documentation note.** This document states what the system does today. A
 > feature that is only partly built, or that is planned but not yet written, is
@@ -37,10 +39,10 @@ single-city system built with the Django framework. A visitor can browse the
 published places of Kabankalan, filter them by category and hobby,
 search in natural language, view results on an interactive map, sort and filter
 nearby places by straight-line distance from the device's GPS position or from a
-chosen city landmark, read and write reviews, save places, build itineraries,
-read the city's public information page, answer a short usability survey, and
-track visits, interests and searches on a personal dashboard called
-**My Journey**. City staff
+chosen city landmark, read and write reviews, save places, read the city's
+public information page and answer a short usability survey. Previous journey,
+itinerary and visit-reward pages are retained at their existing URLs but are no
+longer linked from the main discovery interface. City staff
 manage the same records through a customized administrative panel that includes
 an OpenStreetMap review queue. Public listing requires the active and
 `is_verified` flags, but the flags alone do not establish that the information,
@@ -84,13 +86,12 @@ Specifically, the project accomplishes the following technical objectives:
    places and their available descriptions, categories, hobbies, coordinates,
    photos and visitor ratings, with one review per user per place. Listing data
    can be incomplete or require independent verification.
-5. **Itinerary builder.** Let visitors create trips, add stops from the
-   directory, set arrival times, reorder or remove stops, and delete trips.
-   Stops are chosen manually; the system does not generate suggested
-   itineraries.
-6. **My Journey dashboard.** Organize a visitor's saved places, itinerary
-   plans, reviews, verified visit check-ins, remembered interests and recent
-   searches in one page, with visit points and badges.
+5. **Saved places.** Let signed-in visitors keep a personal list of published
+   places and remove places from it.
+6. **Retained legacy features.** The existing itinerary builder, My Journey and
+   staff-reviewed visit rewards still work at their direct URLs, but are hidden
+   from main discovery navigation. Their records have not been deleted. Stops
+   are manual; the system does not generate suggested itineraries.
 7. **Administrative panel and data import.** Provide city administrators and
    staff with a customized Django admin for place listings, verification,
    photo management, bulk publication actions, visit moderation, a business
@@ -118,9 +119,9 @@ Specifically, the project accomplishes the following technical objectives:
 The system provides practical value to the following beneficiaries:
 
 - **Residents and Visitors.** Find places that match their hobbies, see
-  distance, details and maps in one platform, plan outings through itineraries,
-  save places for later, and keep their reviews and verified visits together on
-  the My Journey dashboard.
+  distance, details and maps in one platform, save places for later, and share
+  reviews. Previously available planning and visit pages remain at their direct
+  URLs but are not part of the main navigation.
 - **Local Business Owners.** Gain visibility through published
   listings whose details can be corrected by city staff. A self-service
   interface for owners to edit their own listings is identified as future work.
@@ -170,9 +171,9 @@ development and verification process.
 | **Nearby Search and Live GPS** | The Nearby view reads the browser's geolocation, computes straight-line distance to each place, and filters or sorts results by distance (any distance, 1, 3, 5, 10 or 25 km). A curated Kabankalan landmark can serve as the reference point when GPS is unavailable or declined. Distances are straight-line estimates, not driving routes or travel times. |
 | **Reviews and Ratings** | One review per user per place, 1–5 stars plus an optional comment; reviews can be updated or deleted; the average rating feeds both the place page and the recommender. Reviews are opinions and do not by themselves prove an in-person visit. |
 | **Saved Places** | Visitors save and unsave places; saved places appear on a dedicated page and on the My Journey dashboard. |
-| **Itinerary Builder** | Trips with a title and day number. Stops can be added from the directory, time-stamped, reordered and removed, and trips can be deleted. Itinerary suggestions are not generated by the system. |
-| **My Journey Dashboard** | One page aggregating saved places, itinerary plans, the visitor's reviews and visit check-ins, with visit points and badges, plus a panel with the visitor's interests, the five most recent searches and the relevance feedback given so far. |
-| **Visit Check-ins and Rewards** | A visitor reports a visit with a date and a corroborating note. Staff approve or reject the check-in in the administrative panel; only approved visits count toward points and badges. |
+| **Itinerary Builder** | Retained at existing direct URLs but hidden from main navigation and place/saved actions. Trips and manual stops can still be managed there; no itinerary suggestions are generated. Existing data is preserved. |
+| **My Journey Dashboard** | Retained at its existing direct URL but hidden from main navigation. It aggregates saved places, itineraries, reviews, visit check-ins, interests, recent searches and relevance feedback. |
+| **Visit Check-ins and Rewards** | Retained at existing direct URLs but hidden from main navigation and place actions. Staff can still approve or reject reports; only approved visits count toward points and badges. Data remains stored. |
 | **Administrative Panel** | Customized Django admin with destination management (search, category/verification/publication filters), bulk publication actions, per-place verification, photo actions, a business review queue for OSM imports, visit moderation, city information records, the evaluation records and account management (role and managed city). The index lists only the modules the city office uses; Django's own group editor stays reachable at `/admin/auth/group/` for a superuser. Native Django permissions and safeguards are preserved. |
 | **Data Import** | Management commands import PSA PSGC codes, an OpenStreetMap extract and Wikimedia imagery, and enrich, categorize or attach photos to imported places. |
 | **Evaluation Instruments** | The public System Usability Scale survey (`/evaluation/sus/`) asks the ten standard items on a 1–5 scale and scores them with the standard 0–100 formula, then shows the score and the interpretation band. `RecommendationRating` stores relevant, partially relevant or irrelevant ratings for a query and place; a destination reached from a search offers that control. Both records are also managed in the administrative panel. |
@@ -194,10 +195,10 @@ development and verification process.
 | Nearby search, live GPS, radius filter | Implemented | Straight-line distance |
 | Reviews and ratings | Implemented | One review per user per place |
 | Saved places | Implemented | — |
-| Itinerary builder | Implemented | Manual stops only |
+| Itinerary builder | Retained; hidden from main interface | Direct URLs and existing data remain; manual stops only |
 | Itinerary suggestions | Planned | Not present |
-| My Journey dashboard | Implemented | Saved places, trips, reviews, visits, interests, search history and relevance feedback |
-| Visit check-ins and rewards | Implemented | Staff approval required |
+| My Journey dashboard | Retained; hidden from main interface | Direct URL and existing data remain |
+| Visit check-ins and rewards | Retained; hidden from main interface | Direct URLs and existing data remain; staff approval required |
 | Administrative panel and OSM review queue | Implemented | Bulk approval refuses unverified OSM imports |
 | Data import commands | Implemented | PSGC, OSM extract, Wikimedia imagery |
 | City Information | Implemented | Shared directory of published Places plus separately published guides at `/info/`. |
@@ -368,6 +369,7 @@ prove that the laptop database, real map tiles, GPS or photo rights are correct.
 
 ### Documentation
 
+- `docs/CAPSTONE_DEFENSE_CHECKLIST.md` — objective-by-objective local defense walkthrough
 - `docs/LOCAL_TEST_CHECKLIST.md` — safely test the existing Windows installation
 - `docs/WORKFLOW_AND_HANDOFF.md` — workflow, limitations and submission checklist
 - `docs/KABANKALAN_CANDIDATE_REVIEW.md` — read-only OSM candidate report

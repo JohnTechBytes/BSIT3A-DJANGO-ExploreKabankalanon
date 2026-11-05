@@ -136,6 +136,15 @@ them.
 
 ## 6. Reproducing everything
 
+**Fresh, isolated database only:** the commands below create and modify data.
+Do not run them against the existing `exploreanywhere` laptop database as a
+search or data-quality fix. In particular, `seed_kabankalan` replaces hobby
+associations on matching existing places and assigns Photography by default
+when a category has no mapping. A no-duplicate rerun does not mean it preserves
+existing tags. Any changes to the laptop database require explicit approval
+and a verified database and media backup. The seed command's warning does not
+stop it from writing.
+
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt

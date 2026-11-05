@@ -1363,3 +1363,15 @@ body.city-info-page .eainfo-pagination a { display:inline-flex; align-items:cent
 body.site-dark.ek-journey-theme.city-info-page .eainfo-page .eainfo-directory-nav a.eainfo-directory-link.is-active { color:#fff; }
 body.site-dark.ek-journey-theme.city-info-page .eainfo-place-card { padding:0; gap:0; }
 body.site-dark.ek-journey-theme.city-info-page .eainfo-place-card img { border-radius:0; }
+
+/* Search empty states: keep both recovery actions usable on small screens. */
+body.ek-discovery-theme :is(.ea-empty-actions, .ea6-empty-actions) {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 16px;
+}
+body.ek-discovery-theme.browse-page .ea-empty-actions .ea-empty-browse-btn { margin-top: 0; }
+body.ek-discovery-theme.browse-page .ea-empty-actions .ea-empty-clear {
+  border: 1px solid #afc5b5; background: #fff; color: #176249;
+}
+body.ek-discovery-theme.browse-page .ea-empty-actions .ea-empty-clear:hover {
+  background: var(--ek-primary-tint); color: #176249;
+}
