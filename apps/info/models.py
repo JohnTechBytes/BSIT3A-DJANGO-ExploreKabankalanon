@@ -24,6 +24,22 @@ class CityInformation(models.Model):
     )
     description = models.TextField()
     thumbnail_url = models.URLField(blank=True)
+    photo_credit = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text=(
+            "Credit line for the thumbnail, e.g. "
+            "'Photo: Juan Dela Cruz / Wikimedia Commons (CC BY-SA 4.0)'."
+        ),
+    )
+    is_published = models.BooleanField(
+        default=False,
+        db_index=True,
+        help_text=(
+            "Only published entries are visible on the public City "
+            "Information page."
+        ),
+    )
     order = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -1,0 +1,161 @@
+/* Explore Places: a search-led companion to the Kabankalan local guide.
+   Presentation only. The carousel, voice input and Leaflet flight remain intact. */
+.browse-page {
+  --guide-ink: #153f43;
+  --guide-muted: #496361;
+  --guide-accent: #c5e69e;
+  --br-teal: #2d6a64;
+  background: #f8f8f2;
+}
+.browse-page .ea-attractions { padding-top: 42px; }
+.browse-page .ea-attractions-header {
+  align-items: end;
+  gap: 24px;
+  margin: 0;
+  padding: clamp(30px, 4vw, 54px);
+  background: var(--guide-ink);
+  color: #fff;
+}
+.browse-page .ea-guide-kicker {
+  margin: 0 0 22px;
+  color: #c5e69e;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: .08em;
+}
+.browse-page .ea-guide-kicker span { padding-inline: 6px; color: #a5c9b7; }
+.browse-page .ea-attractions-header h1 { max-width: 20ch; margin-bottom: 14px; color: #fff; }
+.browse-page .ea-attractions-header h1 span { color: #c5e69e; }
+.browse-page .ea-attractions-header h1 b { color: #fff; }
+.browse-page .ea-attractions-header .ea-subtitle { color: #deebe3; font-size: 16px; }
+.browse-page .ea-change-city {
+  min-height: 48px;
+  border: 1px solid #91b4a9;
+  border-radius: 4px;
+  background: transparent;
+  color: #fff;
+  font-size: 13px;
+}
+.browse-page .ea-change-city:hover { border-color: #c5e69e; background: #2b5c57; color: #fff; }
+.browse-page .ea-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 24px;
+  margin: 0 0 24px;
+  padding: 17px 24px;
+  border: 0;
+  background: #dcebe2;
+}
+.browse-page .ea-summary strong { margin: 0; color: #153f43; font-size: 18px; }
+.browse-page .ea-summary p, .browse-page .ea-summary-note { margin: 0 !important; color: #345a56 !important; font-size: 13px !important; }
+.browse-page .ea-summary .ea-search-note { flex-basis: 100%; color: #153f43 !important; }
+.browse-page .ea-discovery-tools {
+  margin-bottom: 38px;
+  padding: clamp(22px, 3vw, 38px);
+  border: 1px solid #cbdad1;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: none;
+}
+.browse-page .ea-tools-heading { gap: 12px 24px; margin-bottom: 25px; }
+.browse-page .ea-tools-heading h2 { margin-bottom: 6px; color: #153f43; font-size: clamp(25px, 2.5vw, 32px); }
+.browse-page .ea-tools-heading p { margin: 0; color: #496361; font-size: 15px; }
+.browse-page .ea-discovery-count { color: #41685e; font-size: 13px; }
+.browse-page .ea-tools-form { gap: 16px; }
+.browse-page .ea-tool-field label { color: #345a56; font-size: 13px; line-height: 1.4; }
+.browse-page .ea-tool-field :is(input, select) {
+  min-height: 52px;
+  border: 1px solid #a7bfb5;
+  border-radius: 4px;
+  background: #fff;
+  color: #153f43;
+  font-size: 16px;
+}
+.browse-page .ea-tool-field input::placeholder { color: #5e7670; }
+.browse-page .ea-tool-field :is(input, select):focus { border-color: #36756d; box-shadow: 0 0 0 3px #2d6a7220; }
+.browse-page .ea-voice-button { min-height: 42px; color: #153f43; border-color: #a7bfb5; background: #e8f2e9; font-size: 12px; }
+.browse-page .ea-voice-button.is-listening { color: #7d1b2b; background: #fbe8e9; border-color: #a34350; }
+.browse-page .ea-voice-status { color: #426a61; font-size: 12px; }
+.browse-page .ea-voice-status.is-error { color: #a32d42; }
+.browse-page .ea-tools-actions button {
+  min-height: 50px;
+  padding-inline: 26px;
+  border-radius: 4px;
+  background: #153f43;
+  color: #fff;
+  font-size: 14px;
+}
+.browse-page .ea-tools-actions button:hover { background: #285e58; }
+.browse-page .ea-section-heading { align-items: center; gap: 16px; margin-top: 0; }
+.browse-page .ea-section-heading h2 { color: #153f43; font-size: clamp(28px, 3vw, 38px); }
+.browse-page .ea-carousel-controls { gap: 8px; }
+.browse-page .ea-carousel-controls button,
+.browse-page .ea-carousel-controls .ea-marquee-toggle {
+  min-width: 46px;
+  min-height: 46px;
+  border: 1px solid #a7bfb5;
+  border-radius: 4px;
+  background: #fff;
+  color: #153f43;
+}
+.browse-page .ea-carousel-controls .ea-marquee-toggle { width: auto; padding-inline: 14px; font-size: 12px; }
+.browse-page .ea-carousel-controls button:hover,
+.browse-page .ea-carousel-controls .ea-marquee-toggle:hover { background: #153f43; color: #fff; border-color: #153f43; }
+.browse-page .ea-view-switch { gap: 8px; margin-bottom: 16px; padding-bottom: 18px; border-color: #cbdad1; }
+.browse-page .ea-view-button, .browse-page .ea-view-sort-group select {
+  min-height: 46px;
+  border-color: #a7bfb5;
+  border-radius: 4px;
+  background: #fff;
+  color: #153f43;
+  font-size: 13px;
+}
+.browse-page .ea-view-button[aria-pressed="true"] { border-color: #153f43; background: #153f43; color: #fff; }
+.browse-page .ea-view-sort-group label { color: #496361; font-size: 13px; }
+.browse-page .ea-card { border-color: #d2e0d6; border-radius: 4px; background: #eef3ed; }
+.browse-page .ea-card:hover { transform: none; border-color: #98b9ab; box-shadow: none; }
+.browse-page .ea-card h3 { color: #153f43; font-size: 23px; }
+.browse-page .ea-card-body { padding: 20px; }
+.browse-page .ea-category { margin-bottom: 12px; border: 0; border-radius: 3px; background: #dcebe2; color: #285e58; font-size: 11px; }
+.browse-page .ea-card-location { color: #496361; font-size: 13px; }
+.browse-page .ea-card-description { color: #395954; font-size: 14px; }
+.browse-page .ea-card-credit { color: #496361; font-size: 12px; }
+.browse-page .ea-card-sample { font-size: 11px; }
+.browse-page .ea-card-footer { border-color: #cbdad1; }
+.browse-page .ea-card-footer .ea-map-link { min-height: 46px; border-radius: 4px; color: #153f43; border-color: #a7bfb5; font-size: 13px; }
+.browse-page .ea-card-footer .ea-map-link.ea6n-primary { background: #153f43; color: #fff !important; }
+.browse-page .ea-carousel-caption, .browse-page .ea-map-note { color: #496361; font-size: 13px; line-height: 1.6; }
+.browse-page .ea-map-details { border-color: #cbdad1; background: #fff; }
+.browse-page .ea-map-details h3 { color: #153f43; }
+.browse-page .ea-map-details p { color: #496361; font-size: 14px; }
+.browse-page .ea-detail-button { min-height: 46px; background: #153f43; }
+.browse-page :focus-visible { outline: 3px solid #b6532c; outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .browse-page .ea-card-image img { transition: transform 200ms cubic-bezier(.23, 1, .32, 1); }
+  .browse-page .ea-card:hover .ea-card-image img { transform: scale(1.015); }
+}
+@media (hover: none) {
+  .browse-page .ea-card:hover .ea-card-image img { transform: none; }
+}
+@media (max-width: 700px) {
+  .browse-page .ea-attractions { padding-top: 24px; }
+  .browse-page .ea-attractions-header { align-items: flex-start; gap: 22px; padding: 28px 22px; }
+  .browse-page .ea-guide-kicker { margin-bottom: 18px; }
+  .browse-page .ea-attractions-header h1 { font-size: clamp(34px, 9vw, 46px); overflow-wrap: anywhere; }
+  .browse-page .ea-attractions-header .ea-subtitle { font-size: 15px; }
+  .browse-page .ea-summary { padding: 16px 18px; }
+  .browse-page .ea-discovery-tools { padding: 23px 18px; margin-bottom: 32px; }
+  .browse-page .ea-section-heading { flex-wrap: wrap; }
+  .browse-page .ea-view-switch { flex-direction: row; align-items: center; }
+  .browse-page .ea-view-sort-group { width: 100%; margin-left: 0; }
+  .browse-page .ea-view-sort-group select { font-size: 16px; }
+}
+/* Keep the flight label clear of Leaflet's zoom and layer controls. */
+.browse-page #ea-map-panel { --guide-map-height: 460px; }
+.browse-page #ea-attraction-map { height: var(--guide-map-height); }
+.browse-page .ea-drone-hud { top: calc(var(--guide-map-height) - 60px); pointer-events: none; }
+.browse-page .ea-drone-track { color: #a8e5d4; }
+@media (max-width: 700px) {
+  .browse-page #ea-map-panel { --guide-map-height: 350px; }
+}

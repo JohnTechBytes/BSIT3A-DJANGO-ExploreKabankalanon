@@ -1,8 +1,8 @@
 """Public pages of the core application (privacy notice)."""
 from django.shortcuts import render
 
-PRIVACY_NOTICE_VERSION = "1.0"
-PRIVACY_NOTICE_DATE = "October 2026"
+PRIVACY_NOTICE_VERSION = "1.1"
+PRIVACY_NOTICE_DATE = "November 2026"
 
 
 def privacy_notice(request):

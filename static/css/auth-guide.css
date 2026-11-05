@@ -1,0 +1,23 @@
+/* The account screens keep their original Django forms and validation. */
+body.auth-body { background: #f8f8f2; color: #153f43; }
+.auth-brand-panel { background: #153f43; border-color: #315c53; }
+.auth-brand-panel::after { display: none; }
+.auth-logo, .auth-logo-name b span { color: #fff; }
+.auth-logo-name small, .auth-brand-copy p, .auth-panel-note { color: #d6e7df; }
+.auth-logo-mark { background: #c5e69e; color: #153f43; border-radius: 4px; }
+.auth-brand-copy h2 { color: #fff; }
+.auth-eyebrow { color: #c5e69e !important; }
+.auth-points li { background: #285e58; border-color: #477b6f; color: #e0eee5; border-radius: 4px; }
+.auth-points li strong { color: #fff; }
+.auth-panel-note { border-color: #477b6f; }
+.auth-route::before { background: repeating-linear-gradient(180deg, #86b5a1 0 6px, transparent 6px 15px); }
+.auth-route span { border-color: #a0cdb6; background: #153f43; }
+.auth-route span:nth-child(2) { border-color: #c5e69e; box-shadow: 0 0 0 5px #285e58; }
+.auth-panel { background: #f8f8f2; }
+.auth-card { border-color: #cbdad1; border-radius: 4px; }
+.auth-icon { background: #e1eee2; border-color: #c5d9c9; color: #285e58; border-radius: 4px; }
+.auth-field input:not([type=checkbox]) { border-color: #a7bfb5; border-radius: 4px; font-size: 16px; }
+.auth-button { min-height: 48px; background: #153f43; border-radius: 4px; }
+.auth-button:hover { background: #285e58; }
+.auth-body :focus-visible { outline: 3px solid #b6532c; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .auth-body *, .auth-body *::before, .auth-body *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }

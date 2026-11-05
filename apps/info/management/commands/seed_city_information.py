@@ -3,7 +3,9 @@
 The entries describe widely documented, publicly known facts about
 Kabankalan City. They are a starting point for a new installation: review and
 edit them in the staff dashboard (Admin > City information) so that the public
-page matches the official city record before it is used in a deployment.
+page matches the official city record. The entries are created **published**,
+because they are the curated starter content of the city; unpublish any of
+them that should not be public.
 
     python manage.py seed_city_information           # only when the table is empty
     python manage.py seed_city_information --force   # replace the existing entries
@@ -30,7 +32,7 @@ STARTER_ENTRIES = [
         "title": "New Kabankalan Cathedral",
         "description": (
             "The Roman Catholic cathedral of Kabankalan City and one of the "
-            "recognisable landmarks of the city centre."
+            "recognisable landmarks in Barangay Talubangi."
         ),
         "order": 2,
     },
@@ -51,15 +53,6 @@ STARTER_ENTRIES = [
             "popular day-trip destination within the province."
         ),
         "order": 4,
-    },
-    {
-        "info_type": CityInformation.InfoType.ATTRACTION,
-        "title": "Central Philippine University",
-        "description": (
-            "A private university whose main campus is located in Kabankalan "
-            "City, Negros Occidental."
-        ),
-        "order": 5,
     },
     {
         "info_type": CityInformation.InfoType.FOOD,
@@ -124,12 +117,15 @@ class Command(BaseCommand):
 
         created = 0
         for entry in STARTER_ENTRIES:
-            CityInformation.objects.create(city=city, **entry)
+            CityInformation.objects.create(
+                city=city, is_published=True, **entry
+            )
             created += 1
 
         self.stdout.write(
             self.style.SUCCESS(
-                "Created %s City Information entries for %s. Review them in the "
-                "staff dashboard before publishing." % (created, city.name)
+                "Created %s published City Information entries for %s. Review "
+                "them in the staff dashboard and unpublish anything that should "
+                "not be public." % (created, city.name)
             )
         )

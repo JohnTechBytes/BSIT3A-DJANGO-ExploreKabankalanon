@@ -1,0 +1,99 @@
+/* Impeccable-led visual direction, with restrained design-engineering motion.
+   A local field guide for visitors; a calm, legible workspace for staff. */
+@font-face {
+  font-family: EKFraunces;
+  src: url('../fonts/fraunces-variable.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+/* Public headlines are editorial; controls and data keep their legible sans. */
+body.landing-page :is(.hero h1, .section-heading h2, .intro-heading h2, .workflow-heading h2),
+:is(.browse-page, .nearby-page, .site-dark) :is(.ea-attractions-header h1, .ea6-top h1, .eainfo-hero h1, .pd-heading h1, .ea4b-hero h1, .ea-c-page-hero h1, .ea-trip .hero h1, .ea-choose .hero h1, .ea-checkin .hero h1, .easus-hero h1, .eath-hero h1, .eapriv-hero h1),
+.auth-body .auth-brand-copy h2, .error-shell .error-title {
+  font-family: EKFraunces, Georgia, serif;
+  font-weight: 560;
+  letter-spacing: -.025em;
+  line-height: 1.06;
+  overflow-wrap: anywhere;
+}
+body.landing-page { --paper: #f8f6ef; --line: #d6dcd1; background: #f8f6ef; }
+body.landing-page .site-header { background: #fffefa; }
+body.landing-page .hero { background: #153f43; }
+body.landing-page .hero-copy { background: transparent; }
+body.landing-page .guide-heading span:first-child::before { background: #e8ad80; }
+body.landing-page .hero h1 { font-size: clamp(52px, 6vw, 88px); max-width: 11ch; }
+body.landing-page .hero h1 em { color: #d8eab5; }
+body.landing-page .hero-visual { background: #234e4b; border-radius: 2px; }
+body.landing-page .photo-index { border-top: 1px solid #6c9183; }
+body.landing-page .quick-explore { gap: 0; }
+body.landing-page .quick-explore a { border-left: 1px solid #729189; border-radius: 0; background: transparent; }
+body.landing-page .quick-explore a:hover { background: #285b59; }
+body.landing-page .quick-explore a:active { background: #39736a; }
+body.landing-page .discover { background: #f8f6ef; }
+body.landing-page .section-kicker { color: #376b5d; }
+body.landing-page .places-grid .place-card { background: #eff1e7; }
+body.landing-page .introduction { background: #e1ecdf; }
+body.landing-page .interest-links { gap: 0 28px; }
+body.landing-page .interest-links a { background: transparent; border-bottom: 1px solid #a9c2b1; border-radius: 0; padding-inline: 0; }
+body.landing-page .interest-links a:hover { background: transparent; color: #205e51; }
+body.landing-page .steps { gap: 0; }
+body.landing-page .steps > div, body.landing-page .steps > div:last-child { padding: 22px 0; border-top: 1px solid #c5d5c8; background: transparent; }
+body.landing-page .steps > div:last-child { border-bottom: 1px solid #c5d5c8; }
+body.landing-page .steps > div > span { color: #9e5838; }
+
+/* Shared public pages: warmer paper and a distinctive field-guide edge. */
+:is(.browse-page, .nearby-page, .detail-page, .saved-page, .journey-page, .itinerary-list-page, .refresh-page, .discovery-page) { background: #f8f6ef; }
+:is(.browse-page, .nearby-page, .site-dark) :is(.ea-attractions-header, .ea6-top, .eainfo-hero, .ea4b-hero, .ea-saved .ea-c-page-hero, .ea-trip .hero, .ea-choose .hero, .ea-checkin .hero, .ea-myreviews > .ea-c-page-hero, .ea-visits > .ea-c-page-hero, .easus-hero, .eath-hero, .eapriv-hero) {
+  border-left: 4px solid #dca47c;
+}
+:is(.browse-page, .nearby-page, .site-dark) :is(.ea-attractions-header h1, .ea6-top h1, .eainfo-hero h1, .pd-heading h1, .ea4b-hero h1, .ea-c-page-hero h1, .ea-trip .hero h1, .ea-choose .hero h1, .ea-checkin .hero h1, .easus-hero h1, .eath-hero h1, .eapriv-hero h1) { text-wrap: balance; }
+.site-dark.detail-page .pd-heading { background: #e7eee1; border-left: 4px solid #c57d57; }
+.browse-page .ea-guide-kicker { color: #e8d2b2; }
+.browse-page .ea-summary { background: #e4eddf; }
+:is(.browse-page, .nearby-page, .site-dark) :is(.ea-site-header) { background: #fffefa; }
+:is(.browse-page, .nearby-page, .site-dark) :is(.ea-nav-btn, .ea-mobile-menu) { border-radius: 3px; }
+
+/* Account and staff views favour clarity over decorative motion. */
+.auth-body, .auth-body .auth-panel { background: #f8f6ef; }
+.auth-body .auth-brand-panel { border-left: 4px solid #dca47c; }
+.auth-body .auth-brand-copy h2 { max-width: 17ch; }
+.auth-body .auth-card { border-color: #d3dcd0; }
+.error-shell { background: #f8f6ef; }
+body.ea-admin-home, html body[data-admin-utc-offset]:not(.login):not(.ea-admin-home) { background: #f8f7f1; }
+body.ea-admin-home .ea-dash-intro { border-left: 4px solid #dca47c; }
+body.ea-admin-home .ea-overview { border-color: #d2ded1; }
+body.ea-admin-home .ea-workspace-note { background: #e7efe1; }
+html body[data-admin-utc-offset]:not(.login):not(.ea-admin-home) :is(#content .module h2, #content .module caption, .inline-group h2) { background: #e9f0e5; }
+
+/* Only state feedback animates, never workflow data or keyboard actions. */
+@media (hover: hover) and (pointer: fine) {
+  body.landing-page .quick-explore a { transition: background-color 150ms ease-out; }
+  body.landing-page .interest-links a { transition: color 150ms ease-out; }
+}
+@media (hover: none) {
+  body.landing-page .quick-explore a:hover { background: transparent; }
+  body.landing-page .quick-explore a:active { background: #39736a; }
+}
+@media (max-width: 720px) {
+  body.landing-page .hero h1 { font-size: clamp(47px, 11vw, 64px); }
+  body.landing-page .quick-explore { gap: 0; }
+  body.landing-page .quick-explore a { border-left: 0; border-top: 1px solid #729189; padding-inline: 0; }
+  body.landing-page .quick-explore a:last-child { border-bottom: 1px solid #729189; }
+  body.landing-page .interest-links { gap: 0 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.landing-page .quick-explore a, body.landing-page .interest-links a { transition: none; }
+}
+/* Staff navigation keeps its established navy; the selected destination and
+   overview are visually connected to the visitor-facing field guide. */
+body.ea-admin-home #content .ea-dash-intro h1 {
+  font-family: EKFraunces, Georgia, serif;
+  font-weight: 560;
+  letter-spacing: -.025em;
+}
+body[data-admin-utc-offset] .ea-side-brand-mark { background: #d8eab5; border-color: #d8eab5; color: #173e3e; }
+body[data-admin-utc-offset] .ea-side-link.ea-side-active { box-shadow: inset 3px 0 0 #e8ad80; }
+body.ea-admin-home .ea-overview { background: #fcfdf9; }
+body.ea-admin-home .ea-metric strong { color: #214d45; }

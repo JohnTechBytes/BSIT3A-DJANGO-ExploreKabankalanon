@@ -4,8 +4,8 @@
 </style>
 <nav class="ea6f-nav" aria-label="Discover Kabankalan views">
   <div class="ea6f-tabs">
-    <a class="ea6f-tab" href="{% url 'places:attraction_carousel' %}?browse=all" {% if active_discovery_mode == 'browse' %}aria-current="page"{% endif %}>All Places</a>
-    <a class="ea6f-tab" href="{% url 'places:attraction_carousel' %}?mode=nearby" {% if active_discovery_mode == 'nearby' %}aria-current="page"{% endif %}>Near Me</a>
-    <a class="ea6f-tab" href="{% url 'places:attraction_carousel' %}?browse=all&amp;display=map" {% if active_discovery_mode == 'map' %}aria-current="page"{% endif %}>Map View</a>
+    <a class="ea6f-tab" data-discovery-mode="browse" href="{% url 'places:attraction_carousel' %}?browse=all" {% if active_discovery_mode == 'browse' %}aria-current="page"{% endif %}>All Places</a>
+    <a class="ea6f-tab" data-discovery-mode="nearby" href="{% url 'places:attraction_carousel' %}?mode=nearby" {% if active_discovery_mode == 'nearby' %}aria-current="page"{% endif %}>Near Me</a>
+    <a class="ea6f-tab" data-discovery-mode="map" href="{% url 'places:attraction_carousel' %}?browse=all&amp;display=map" {% if active_discovery_mode == 'map' %}aria-current="page"{% endif %}>Map View</a>
   </div>
 </nav>

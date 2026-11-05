@@ -14,9 +14,9 @@ def city_discover(request):
 
     places = (
         Place.objects
-        .filter(city_id=city_id)
+        .filter(city_id=city_id, is_active=True, is_verified=True)
         .select_related("city", "category")
-        .order_by("-is_verified", "-is_active", "title")
+        .order_by("title", "pk")
     )
 
     paginator = Paginator(places, 24)

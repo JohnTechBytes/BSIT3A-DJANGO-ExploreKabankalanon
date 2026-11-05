@@ -4,15 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#080d14">
+    <meta name="theme-color" content="#f8f6f1">
     <title>Something went wrong | ExploreKabankalan</title>
-    <link rel="stylesheet" href="{% static 'css/error.css' %}">
+    <link rel="stylesheet" href="{% static 'css/error.css' %}?v=20261031-1">
+    <link rel="stylesheet" href="{% static 'css/error-editorial.css' %}?v=20261101-1">
+    <link rel="stylesheet" href="{% static 'css/design-craft.css' %}?v=20261101-2">
+    <link rel="stylesheet" href="{% static 'css/public-night.css' %}?v=20261101-3">
+    <link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-12">
 </head>
-<body>
+<body class="ek-error-theme">
 <div class="error-shell">
 
     <a class="error-brand" href="{% url 'home' %}">
-        <span class="error-brand-mark" aria-hidden="true">✺</span>
+        <span class="error-brand-mark" aria-hidden="true">EK</span>
         <span><b>Explore<span>Kabankalan</span></b><small>LOCAL PLACES. YOUR ADVENTURE.</small></span>
     </a>
 
@@ -21,8 +25,8 @@
         <p class="error-code" aria-hidden="true">500</p>
         <h1 class="error-title">The map needs a moment.</h1>
         <p class="error-copy">
-            Something went wrong on our side while loading this page. Nothing you saved has been lost.
-            Try again in a moment, or continue browsing from the homepage.
+            Something went wrong on our side while loading this page. If you just submitted information, check whether it was saved before trying again.
+            You can also return to the homepage.
         </p>
         <div class="error-actions">
             <a class="error-btn primary" href="{% url 'home' %}">Back to homepage</a>

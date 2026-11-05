@@ -1,3 +1,5 @@
+> **Historical document.** Historical photo-tool reference for an older build, not a guarantee for the current system. Use [the current local checklist](LOCAL_TEST_CHECKLIST.md) and [handoff guide](WORKFLOW_AND_HANDOFF.md). Do not run seed, import, bulk or destructive commands on an existing database without explicit approval and a backup.
+
 # ExploreAnywhere - Quick Reference Card
 
 ## 🚀 Get Started (Right Now)

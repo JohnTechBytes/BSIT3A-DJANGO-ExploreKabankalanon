@@ -1,0 +1,39 @@
+/* Staff workspaces share the public guide's palette without changing Django's
+   permissions, native forms, actions, filtering or navigation mechanics. */
+body.ea-admin-home, html body:not(.login):not(.ea-admin-home) { background: #f6f8f2; }
+body.ea-admin-home .ea-dash-intro {
+  padding: 32px 34px;
+  border: 0;
+  border-radius: 4px;
+  background: #153f43;
+}
+.ea-admin-home .ea-dash-intro .ea-dash-kicker { color: #c5e69e; }
+.ea-admin-home .ea-dash-intro .ea-dash-kicker span { background: #c5e69e; }
+body.ea-admin-home #content .ea-dash-intro h1 { color: #fff; }
+.ea-admin-home .ea-dash-intro .ea-dash-intro-copy { color: #e0eee5; }
+.ea-admin-home .ea-dash-account { border: 1px solid #789d91; border-radius: 4px; background: #eff7ed; }
+.ea-admin-home .ea-overview, .ea-admin-home .ea-shortcut,
+.ea-admin-home .ea-modules { border-color: #cbdad1; border-radius: 4px; }
+.ea-admin-home .ea-overview { background: #fff; }
+.ea-admin-home .ea-metric .ea-metric-label { color: #3c615e; }
+.ea-admin-home .ea-shortcut .ea-shortcut-icon { background: #e0eee3; color: #285e58; }
+.ea-admin-home .ea-shortcut:hover, .ea-admin-home .ea-shortcut:focus-visible { background: #f4faf3; border-color: #82ae99; }
+.ea-admin-home .ea-workspace-note { border-color: #c5d9c9; border-radius: 4px; background: #e1eee2; }
+html body:not(.login):not(.ea-admin-home) #content h1 { color: #153f43; }
+html body:not(.login):not(.ea-admin-home) :is(#content .module, #content fieldset.module, .inline-group) { border-color: #cbdad1; border-radius: 4px; }
+html body:not(.login):not(.ea-admin-home) :is(#content .module h2, #content .module caption, .inline-group h2, fieldset h2, fieldset.module.aligned h2, .inline-related h3) { background: #e4f0e6; }
+html body:not(.login):not(.ea-admin-home) :is(.submit-row, #toolbar, #changelist .actions, .paginator) { border-color: #cbdad1 !important; background: #f8faf6 !important; }
+html body:not(.login):not(.ea-admin-home) :is(.results table thead th, #changelist table thead th, .module table thead th) { background: #e9f2e9 !important; }
+html body:not(.login):not(.ea-admin-home) :is(.button.default, input[type=submit].default, .submit-row input.default, .object-tools a, .ea-dest-filter-actions button, .ea-review-filter button) { border-color: #153f43 !important; background: #153f43 !important; color: #fff !important; }
+html body:not(.login):not(.ea-admin-home) :is(.button.default:hover, input[type=submit].default:hover, .object-tools a:hover, .ea-dest-filter-actions button:hover, .ea-review-filter button:hover) { background: #285e58 !important; color: #fff !important; }
+html body:not(.login):not(.ea-admin-home) #ea-dest-filter-form { border-color: #cbdad1; border-radius: 4px; }
+html body:not(.login):not(.ea-admin-home) .ea-review-hero { border-color: #cbdad1; background: #e1eee2; }
+html body:not(.login) :focus-visible { outline: 3px solid #b6532c; outline-offset: 2px; }
+@media (max-width: 650px) {
+  body.ea-admin-home .ea-dash-intro { padding: 25px 20px; }
+  html body:not(.login):not(.ea-admin-home) :is(input[type=text], input[type=search], input[type=email], input[type=url], input[type=number], select, textarea) { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body:not(.login) .ea-admin-sidebar, body:not(.login) .ea-side-scrim,
+  body:not(.login) .ea-shortcut { transition-duration: .01ms !important; }
+}

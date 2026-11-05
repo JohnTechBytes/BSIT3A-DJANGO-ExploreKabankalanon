@@ -1,0 +1,114 @@
+/* Presentation only for the remaining account, itinerary and information
+   screens. Existing Django forms, links and validation remain untouched. */
+.site-dark.refresh-page { --ek-ink:#173d50; --ek-paper:#f7faf8; --ek-line:#cfddda; --sd-muted:#4e6870; color-scheme:light; color:#0e3042; background:#f7faf8; }
+.refresh-page .ea-site-header { background:#fff; border-color:#e3eeeb; }
+.refresh-page .ek-brand-mark { background:#173d50; font-family:EKArchivo,system-ui,sans-serif; font-size:14px; }
+.refresh-page .ek-brand-name { color:#173d50; }
+.refresh-page .ea-nav-primary { background:#173d50; border-color:#173d50; }
+.refresh-page .ea-nav-primary:hover { background:#295b6c; }
+.refresh-page .ea-site-footer { background:#0e3042; color:#d3e2e1; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose,.ea-myreviews,.ea-visits,.ea-checkin,.ea-hobbies,.easus-page,.eath-page,.eapriv-page) { max-width:1180px; width:calc(100% - 80px); margin:0 auto; padding:62px 0 90px; color:#0e3042; }
+.site-dark.refresh-page :is(.easus-page,.eath-page,.eapriv-page,.ea-checkin,.ea-choose) { max-width:980px; }
+.site-dark.refresh-page :is(.hero,.ea-c-page-hero,.easus-hero,.eath-hero,.eapriv-hero) { padding:0 0 24px; margin:0 0 22px; border:0; border-bottom:1px solid #cfddda; border-radius:0; background:transparent; box-shadow:none; color:#0e3042; text-align:left; }
+.site-dark.refresh-page :is(.hero,.ea-c-page-hero,.easus-hero,.eath-hero,.eapriv-hero)::after { display:none; }
+.site-dark.refresh-page :is(.hero,.ea-c-page-hero,.easus-hero,.eath-hero,.eapriv-hero) h1,
+.site-dark.refresh-page .ea-hobbies h1 { margin:0 0 14px; color:#0e3042 !important; font-family:EKArchivo,system-ui,sans-serif; font-size:clamp(38px,4vw,58px); font-weight:680; line-height:1.08; letter-spacing:-.035em; overflow-wrap:anywhere; }
+.site-dark.refresh-page :is(.hero,.ea-c-page-hero,.easus-hero,.eath-hero,.eapriv-hero) p,
+.site-dark.refresh-page .ea-hobbies .subtitle { max-width:70ch; margin:0; color:#4e6870; font-size:15px; line-height:1.65; }
+.site-dark.refresh-page :is(.hero,.ea-c-page-hero) > :is(p:first-child,.eyebrow),
+.site-dark.refresh-page :is(.easus-kicker,.eath-kicker,.eapriv-kicker,.ea-hobbies .eyebrow) { display:block; margin:0 0 12px; color:#2d6a72; font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; }
+.site-dark.refresh-page :is(.ea-trip .panel,.ea-choose .card,.ea-choose .place,.ea-myr-card,.ea-visit-card,.ea-checkin-card,.eath-card,.eapriv-card,.easus-item) { border:1px solid #cfddda; border-radius:0; background:#fff; color:#0e3042; box-shadow:none; }
+.site-dark.refresh-page :is(.ea-trip .panel,.ea-choose .card,.ea-choose .place,.ea-myr-card,.ea-visit-card,.ea-checkin-card,.eath-card,.eapriv-card) { padding:24px; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose,.ea-myreviews,.ea-visits,.ea-checkin,.ea-hobbies,.eath-page,.eapriv-page) :is(h2,h3,.title) { color:#0e3042 !important; font-family:EKArchivo,system-ui,sans-serif; font-weight:680; letter-spacing:-.025em; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose,.ea-myreviews,.ea-visits,.ea-checkin,.ea-hobbies,.eath-page,.eapriv-page,.easus-page) :is(p,li,.muted,.subtitle) { color:#4e6870; line-height:1.7; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose,.ea-myreviews,.ea-visits,.ea-checkin,.ea-hobbies,.eath-page,.eapriv-page,.easus-page) strong { color:#173d50; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose,.ea-myreviews,.ea-visits,.ea-checkin,.ea-hobbies) :is(.empty,.ea-empty,.ea-myr-empty) { padding:28px; border:1px solid #cfddda; border-radius:0; background:#fff; text-align:left; box-shadow:none; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose,.ea-myreviews,.ea-visits,.ea-checkin,.ea-hobbies) :is(.empty,.ea-empty,.ea-myr-empty) p { margin:8px 0 0; color:#4e6870; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose,.ea-myreviews,.ea-visits,.ea-checkin,.ea-hobbies,.eath-page,.easus-page) :is(.btn,.ea-myr-btn,.ea-visits-link,.ea-checkin-btn,.ea-hobby-submit,.ea-hobby-back,.easus-btn,.eath-btn) { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:10px 16px; border:1px solid #173d50 !important; border-radius:0; background:#173d50 !important; color:#fff !important; font:inherit; font-size:12px; font-weight:700; text-decoration:none; box-shadow:none; cursor:pointer; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose,.ea-myreviews,.ea-visits,.ea-checkin,.ea-hobbies,.eath-page,.easus-page) :is(.btn,.ea-myr-btn,.ea-visits-link,.ea-checkin-btn,.ea-hobby-submit,.ea-hobby-back,.easus-btn,.eath-btn):hover { background:#295b6c !important; color:#fff !important; transform:none; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose,.ea-myreviews,.ea-visits,.ea-checkin,.ea-hobbies,.eath-page,.easus-page) :is(.outline,.secondary,.alt,.ea-hobby-back,.easus-btn-soft,.eath-btn-soft) { border-color:#a9c1bd !important; background:#fff !important; color:#173d50 !important; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose,.ea-myreviews,.ea-visits,.ea-checkin,.ea-hobbies,.eath-page,.easus-page) :is(.outline,.secondary,.alt,.ea-hobby-back,.easus-btn-soft,.eath-btn-soft):hover { border-color:#69978f !important; background:#e6f2ef !important; color:#173d50 !important; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose) .btn.danger { border-color:#c39098 !important; background:#fff !important; color:#8c2f3c !important; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose) .btn.danger:hover { border-color:#8c2f3c !important; background:#fbe8e9 !important; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose,.ea-checkin) label { color:#345960; font-size:13px; font-weight:700; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose,.ea-checkin) :is(input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=submit]):not([type=button]),select,textarea) { border:1px solid #a9c1bd !important; border-radius:0 !important; background:#fff !important; color:#0e3042 !important; }
+.site-dark.refresh-page input[type=time]::-webkit-calendar-picker-indicator { filter:none; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose,.ea-myreviews,.ea-visits) :is(.pill,.ea-c-count,.ea-myr-stars) { border:1px solid #c4dcd5; border-radius:0; background:#e6f2ef; color:#285b63; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose) .messages { border:0; padding:0; background:transparent; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose) .messages li,.site-dark.refresh-page .sd-flash-item { border:1px solid #c4dcd5; border-left:3px solid #2d6a72; border-radius:0; background:#edf5f3; color:#173d50; }
+.site-dark.refresh-page :is(.ea-trip,.ea-choose) .messages li.error,.site-dark.refresh-page .sd-flash-item.error { border-color:#d5a4aa; background:#fdf0f1; color:#8c2f3c; }
+.site-dark.refresh-page .ea-trip .stop { border:1px solid #cfddda; border-left:4px solid #2d6a72; border-radius:0; background:#f7faf8; }
+.site-dark.refresh-page .ea-trip > section.panel:last-of-type { border-color:#d5a4aa !important; background:#fff !important; }
+.site-dark.refresh-page .ea-trip > section.panel:last-of-type h2 { color:#8c2f3c !important; }
+.site-dark.refresh-page .ea-choose .place small { color:#4e6870 !important; }
+.site-dark.refresh-page .ea-choose .already,.site-dark.refresh-page .ea-checkin-note { border:1px solid #c4dcd5; border-radius:0; background:#edf5f3; color:#345960; }
+.site-dark.refresh-page .ea-visit-status { border-radius:0; background:#edf5f3; color:#285b63; }
+.site-dark.refresh-page .ea-visit-status.pending { background:#fdf7e8; color:#70510a; }
+.site-dark.refresh-page .ea-visit-status.rejected { background:#fdf0f1; color:#8c2f3c; }
+.site-dark.refresh-page :is(.ea-visits-stat,.ea-visit-badge) { border:1px solid #cfddda; border-radius:0; background:#fff; color:#173d50; box-shadow:none; }
+.site-dark.refresh-page .ea-visits-stat strong { color:#173d50; font-family:EKArchivo,system-ui,sans-serif; font-weight:680; }
+.site-dark.refresh-page .ea-visits-stat span,.site-dark.refresh-page .ea-visit-badge p { color:#4e6870; }
+.site-dark.refresh-page .ea-visit-badge strong { color:#173d50; }
+.site-dark.refresh-page .ea-visit-badge.earned { border-color:#9abeb2; background:#edf5f3; }
+.site-dark.refresh-page .ea-hobby-card { border:1px solid #cfddda; border-radius:0; background:#fff; color:#173d50; box-shadow:none; }
+.site-dark.refresh-page .ea-hobby-choice input:checked + .ea-hobby-card { border-color:#2d6a72; background:#e6f2ef; color:#173d50; box-shadow:0 0 0 2px #2d6a72; }
+.site-dark.refresh-page .ea-hobby-card:hover { transform:none; border-color:#69978f; }
+.site-dark.refresh-page .ea-hobby-footer { border-color:#cfddda; background:#fff; color:#173d50; }
+.site-dark.refresh-page .ea-hobby-submit:disabled { opacity:.5; cursor:not-allowed; }
+.site-dark.refresh-page :is(.easus-note,.eath-score span,.eapriv-version,.eapriv-never) { border:1px solid #c4dcd5; border-radius:0; background:#edf5f3; color:#345960; }
+.site-dark.refresh-page :is(.easus-note strong,.eath-score strong,.eath-answers b,.eapriv-card strong) { color:#173d50; }
+.site-dark.refresh-page .eath-score { justify-content:flex-start; }
+.site-dark.refresh-page .eath-score strong { font-family:EKArchivo,system-ui,sans-serif; }
+.site-dark.refresh-page .eath-answers li { border-color:#cfddda; color:#345960; }
+.site-dark.refresh-page .easus-item { border:1px solid #cfddda !important; }
+.site-dark.refresh-page .easus-item-head { color:#173d50; }
+.site-dark.refresh-page .easus-num { border-radius:0; background:#e6f2ef; color:#285b63; }
+.site-dark.refresh-page .easus-scale label { border-color:#a9c1bd; border-radius:0; background:#fff; color:#173d50; }
+.site-dark.refresh-page .easus-scale label:has(input:checked) { border-color:#2d6a72; background:#e6f2ef; color:#173d50; }
+.site-dark.refresh-page .easus-scale input { accent-color:#2d6a72; }
+.site-dark.refresh-page .easus-errors { border-color:#d5a4aa; border-radius:0; background:#fdf0f1; color:#8c2f3c; }
+.site-dark.refresh-page :is(.easus-foot,.eath-foot,.eapriv-foot) { color:#4e6870; font-size:12px; }
+.refresh-page :focus-visible { outline:2px solid #b6532c; outline-offset:3px; }
+@media(max-width:760px) {
+ .site-dark.refresh-page :is(.ea-trip,.ea-choose,.ea-myreviews,.ea-visits,.ea-checkin,.ea-hobbies,.easus-page,.eath-page,.eapriv-page) { width:calc(100% - 36px); padding:36px 0 70px; }
+ .site-dark.refresh-page :is(.hero,.ea-c-page-hero,.easus-hero,.eath-hero,.eapriv-hero) h1,.site-dark.refresh-page .ea-hobbies h1 { font-size:clamp(35px,9vw,46px); }
+ .site-dark.refresh-page :is(.ea-trip .panel,.ea-choose .card,.ea-choose .place,.ea-myr-card,.ea-visit-card,.ea-checkin-card,.eath-card,.eapriv-card) { padding:20px 18px; }
+}
+/* Legacy city discovery remains reachable and retains its verification labels,
+   pagination, source credits and existing map/detail destinations. */
+.discovery-page { --ek-ink:#173d50; --ek-paper:#f7faf8; --ek-line:#cfddda; background:#f7faf8; }
+.discovery-page .ea-site-header { background:#fff; }
+.discovery-page .ek-brand-mark { background:#173d50; font-family:EKArchivo,system-ui,sans-serif; font-size:14px; }
+.discovery-page .ea-site-footer { background:#0e3042; }
+.discovery-page .discovery { max-width:1180px; width:calc(100% - 80px); padding:62px 0 90px; color:#0e3042; }
+.discovery-page .discovery-header { padding:0 0 24px; border-radius:0; border-bottom:1px solid #cfddda; background:transparent; color:#0e3042; }
+.discovery-page .discovery-header h1 { color:#0e3042; font-family:EKArchivo,system-ui,sans-serif; font-size:clamp(38px,4vw,58px); font-weight:680; letter-spacing:-.035em; }
+.discovery-page .discovery-header p { color:#4e6870; }
+.discovery-page .discovery-card { border:1px solid #cfddda; border-radius:0; background:#fff; }
+.discovery-page .discovery-body h3 { color:#0e3042; font-family:EKArchivo,system-ui,sans-serif; }
+.discovery-page .discovery-body p { color:#4e6870; }
+.discovery-page .discovery-badge { border-radius:0; background:#fdf7e8; color:#70510a; }
+.discovery-page .discovery-badge.verified { background:#e6f2ef; color:#285b63; }
+.discovery-page .discovery-link { border-radius:0; background:#173d50; color:#fff; }
+.discovery-page .discovery-link:hover { background:#295b6c; color:#fff; }
+.discovery-page .discovery-pagination a,.discovery-page .discovery-body p a { color:#245c66; }
+@media(max-width:760px) { .discovery-page .discovery { width:calc(100% - 36px); padding:36px 0 70px; } }
+/* Dark-theme rules for these legacy elements have greater specificity. */
+.site-dark.refresh-page .ea-checkin .hero p:not(:first-child),
+.site-dark.refresh-page .ea-trip .hero p:not(:first-child),
+.site-dark.refresh-page .ea-choose .hero p { color:#4e6870 !important; opacity:1; }
+.site-dark.refresh-page .ea-trip .hero .ea-trip-hero-stats span { border:1px solid #c4dcd5; border-radius:0; background:#e6f2ef; color:#285b63; }
+.site-dark.refresh-page .ea-trip .actions[aria-label="Itinerary navigation"] .btn { border-color:#a9c1bd !important; background:#fff !important; color:#173d50 !important; }
+.site-dark.refresh-page .ea-trip .actions[aria-label="Itinerary navigation"] .btn:hover { border-color:#69978f !important; background:#e6f2ef !important; color:#173d50 !important; }
+.site-dark.refresh-page .ea-trip .stop:before { background:#2d6a72; }
+.site-dark.refresh-page .ea-trip .ea-trip-stops-count { border:1px solid #c4dcd5; border-radius:0; background:#e6f2ef; color:#285b63; }
+/* Restore the builder's wide stop layout after the older dark card grid. */
+.site-dark.refresh-page .ea-trip .trip-cards { grid-template-columns:minmax(0,1fr); }
+.site-dark.refresh-page .ea-trip .trip-cards .panel.stop { display:grid; grid-template-columns:minmax(0,.83fr) minmax(0,1.17fr); grid-template-areas:'head form' 'location form' 'actions actions'; gap:10px 30px; padding:25px 28px; }
+.site-dark.refresh-page .ea-trip .grid .muted,.site-dark.refresh-page .ea-trip .stop > .muted { color:#4e6870 !important; }
+.site-dark.refresh-page .ea-trip .stop > .actions .btn.danger,
+.site-dark.refresh-page .ea-trip > section.panel:last-of-type .btn.danger { border-color:#c39098 !important; background:#fff !important; color:#8c2f3c !important; }
+.site-dark.refresh-page .ea-trip .stop > .actions .btn.danger:hover,
+.site-dark.refresh-page .ea-trip > section.panel:last-of-type .btn.danger:hover { border-color:#8c2f3c !important; background:#fbe8e9 !important; color:#8c2f3c !important; }
+@media(max-width:1000px) { .site-dark.refresh-page .ea-trip .trip-cards .panel.stop { grid-template-columns:minmax(0,1fr); grid-template-areas:'head' 'location' 'form' 'actions'; gap:14px; } }
+@media(max-width:760px) { .site-dark.refresh-page .ea-trip .trip-cards .panel.stop { padding:20px 18px; } }

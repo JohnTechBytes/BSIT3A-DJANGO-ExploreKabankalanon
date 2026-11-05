@@ -1,0 +1,136 @@
+/* Landing-inspired chrome and entry panels. Forms and task surfaces remain
+   light so native controls and dense information retain their contrast. */
+body:is(.site-dark, .browse-page, .nearby-page) .ea-site-header {
+  background: #0d161a;
+  border-bottom: 1px solid #30434a;
+}
+body:is(.site-dark, .browse-page, .nearby-page) :is(.ea-site-logo, .ea-site-logo:hover, .ek-brand-name) { color: #f3f7f7; }
+body:is(.site-dark, .browse-page, .nearby-page) .ek-brand-mark { background: #a8e5ef; color: #102d35; }
+body:is(.site-dark, .browse-page, .nearby-page) :is(.ea-nav-links a, .ea-nav-more, .ea-nav-more summary) { color: #e5f1f3; }
+body:is(.site-dark, .browse-page, .nearby-page) :is(.ea-nav-links a:hover, .ea-nav-links a.active, .ea-nav-more summary:hover) { color: #fff; border-color: #a8e5ef; }
+body:is(.site-dark, .browse-page, .nearby-page) .ea-nav-submenu { background: #14242a; border-color: #527078; }
+body:is(.site-dark, .browse-page, .nearby-page) .ea-nav-submenu a:hover { background: #28464f; color: #fff; }
+body:is(.site-dark, .browse-page, .nearby-page) :is(.ea-nav-outline, .ea-mobile-menu) { border-color: #69858b; color: #f3f7f7; }
+body:is(.site-dark, .browse-page, .nearby-page) :is(.ea-nav-outline, .ea-mobile-menu):hover { background: #28464f; color: #fff; }
+body:is(.site-dark, .browse-page, .nearby-page) .ea-nav-primary { background: #a8e5ef; border-color: #a8e5ef; color: #102d35; }
+body:is(.site-dark, .browse-page, .nearby-page) .ea-nav-primary:hover { background: #d0f3f6; color: #102d35; }
+body:is(.site-dark, .browse-page, .nearby-page) .ea-site-footer { background: #0d161a; border-top: 1px solid #30434a; color: #d4e5e9; }
+body:is(.site-dark, .browse-page, .nearby-page) .ea-site-footer a { color: #d4e5e9; }
+@media (max-width: 900px) {
+  body:is(.site-dark, .browse-page, .nearby-page) .ea-site-header.menu-open .ea-nav-links a { color: #e5f1f3; }
+}
+
+/* Static layers avoid a perpetual animation on every destination/workflow. */
+body:is(.browse-page, .nearby-page, .site-dark) :is(.ea-attractions-header, .ea6-top, .eainfo-hero, .ea4b-hero, .ea-saved .ea-c-page-hero, .ea-trip .hero, .ea-choose .hero, .ea-checkin .hero, .ea-myreviews > .ea-c-page-hero, .ea-visits > .ea-c-page-hero, .easus-hero, .eath-hero, .eapriv-hero) {
+  background: radial-gradient(ellipse at 0% 0%, rgba(110,145,151,.22), transparent 65%), repeating-linear-gradient(135deg, transparent 0 110px, rgba(0,207,255,.13) 112px, rgba(0,207,255,.03) 145px, transparent 160px 275px), #091317 !important;
+  border-left-color: #87d9e7;
+  color: #f3f7f7;
+}
+body.browse-page .ea-attractions-header h1 span,
+body.browse-page .ea-guide-kicker { color: #a8e5ef; }
+body.site-dark.city-info-page .eainfo-hero .eainfo-search button { background: #a8e5ef !important; border-color: #a8e5ef !important; color: #102d35 !important; }
+body.site-dark.city-info-page .eainfo-hero .eainfo-search button:hover { background: #d0f3f6 !important; }
+body.nearby-page .ea-nav-links a:nth-child(2) { color: #e5f1f3; border-color: #a8e5ef; }
+body.site-dark.detail-page .pd-heading {
+  background: radial-gradient(ellipse at 0% 0%, rgba(110,145,151,.22), transparent 65%), repeating-linear-gradient(135deg, transparent 0 110px, rgba(0,207,255,.13) 112px, rgba(0,207,255,.03) 145px, transparent 160px 275px), #091317;
+  border-left-color: #87d9e7;
+}
+body.site-dark.detail-page .pd-heading h1 { color: #fff; }
+body.site-dark.detail-page .pd-heading :is(.pd-subtitle, .pd-hobbies-label) { color: #c5d9dc; }
+
+/* Primary public discovery pages carry the dark field through the records;
+   the search and map panels remain light, distinct and fully readable. */
+body:is(.browse-page:not(.discovery-page), .nearby-page, .city-info-page) { background: #081115; }
+body.browse-page:not(.discovery-page) .ea-attractions,
+body.nearby-page .ea6-main { color: #e6f1f3; }
+body.browse-page :is(.ea-section-heading h2, .ea-carousel-caption, .ea-view-sort-group label) { color: #dcebee; }
+body.browse-page .ea-view-switch { border-color: #466168; }
+body.browse-page .ea-map-note { color: #cadcdf; }
+body.nearby-page .ea6-main .ea6-heading h2 { color: #f3f7f7; }
+body.nearby-page :is(.ea6-heading p, .ea6g-small, .ea6-notice) { color: #c1d5d9; }
+body.nearby-page .ea6-notice a { color: #a8e5ef; }
+body.nearby-page .ea6g-controls .ea6g-map-button { color: #f3f7f7; border-color: #79959a; }
+body.nearby-page .ea6g-controls .ea6g-map-button:hover { background: #28464f; color: #fff; }
+body.site-dark.city-info-page :is(.eainfo-meta, .eainfo-note, .eainfo-group-head span) { color: #c1d5d9; }
+body.site-dark.city-info-page .eainfo-group-head { border-color: #526b70; }
+body.site-dark.city-info-page .eainfo-group-head h2 { color: #f3f7f7; }
+body.site-dark.city-info-page .eainfo-card { background: #17272c; border-color: #39545a; }
+body.site-dark.city-info-page .eainfo-card h3 { color: #f3f7f7; }
+body.site-dark.city-info-page .eainfo-card :is(p, .eainfo-credit) { color: #c5d9dc; }
+body.site-dark.city-info-page .eainfo-card a { color: #a8e5ef; }
+body.site-dark.city-info-page .eainfo-chip.active { background: #a8e5ef; border-color: #a8e5ef; color: #102d35; }
+body.site-dark.city-info-page .eainfo-chip.active span { color: #102d35; }
+
+/* Progressive, one-time section reveals; no continuous observers or timers. */
+body .public-reveal { transition: opacity 450ms ease-out, transform 450ms cubic-bezier(.22, 1, .36, 1); }
+body .public-reveal.is-reveal-pending { opacity: 0; transform: translateY(20px); }
+body .public-reveal.is-reveal-pending:focus-within { opacity: 1; transform: none; transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  body .public-reveal.is-reveal-pending { opacity: 1; transform: none; transition: none; }
+}
+
+/* Authentication keeps native validation and light input surfaces. */
+body.auth-body .auth-brand-panel {
+  background: radial-gradient(ellipse at 0% 0%, rgba(110,145,151,.22), transparent 65%), repeating-linear-gradient(135deg, transparent 0 110px, rgba(0,207,255,.13) 112px, rgba(0,207,255,.03) 145px, transparent 160px 275px), #091317;
+  border-color: #87d9e7;
+}
+body.auth-body .auth-logo-mark { background: #a8e5ef; color: #102d35; }
+body.auth-body .auth-eyebrow { color: #a8e5ef !important; }
+
+/* The remaining directory uses the same field-guide cover and readable cards. */
+body.discovery-page { background: #081115; }
+body.discovery-page .discovery { color: #e6f1f3; }
+body.discovery-page .discovery-header {
+  padding: clamp(28px, 4vw, 48px);
+  border: 0;
+  background: radial-gradient(ellipse at 0% 0%, rgba(110,145,151,.22), transparent 65%), repeating-linear-gradient(135deg, transparent 0 110px, rgba(0,207,255,.13) 112px, rgba(0,207,255,.03) 145px, transparent 160px 275px), #091317;
+}
+body.discovery-page .discovery-header h1 { color: #fff; font-family: EKFraunces, Georgia, serif; font-weight: 560; }
+body.discovery-page .discovery-header p { color: #d4e5e9; }
+body.discovery-page .discovery-header .discovery-link { background: #a8e5ef; color: #102d35; }
+body.discovery-page .discovery-header .discovery-link:hover { background: #d0f3f6; color: #102d35; }
+body.discovery-page .discovery-pagination a { color: #a8e5ef; }
+
+/* When motion is supported, only the decorative light moves; content and
+   native controls remain still. The static background is the no-JS fallback. */
+.public-motion-surface {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.public-motion-surface.has-motion-layer {
+  background: radial-gradient(ellipse at 0% 0%, rgba(110,145,151,.22), transparent 65%), #091317 !important;
+}
+.public-motion-layer {
+  position: absolute;
+  z-index: -1;
+  inset: -85px;
+  pointer-events: none;
+  background: repeating-linear-gradient(135deg, transparent 0 110px, rgba(0,207,255,.22) 112px, rgba(0,207,255,.06) 145px, transparent 160px 275px);
+  animation: public-light-drift 15s linear infinite alternate;
+}
+.public-motion-layer.is-motion-paused { animation-play-state: paused; }
+@keyframes public-light-drift {
+  from { transform: translate3d(-55px, -40px, 0); }
+  to { transform: translate3d(55px, 40px, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .public-motion-layer { animation: none; }
+}
+
+/* Error recovery should be calm and immediate, so it stays static. */
+body .error-shell {
+  background: radial-gradient(ellipse at 0% 0%, #1c3035, transparent 60%), #091317;
+  color: #f3f7f7;
+}
+body .error-shell::after { display: none; }
+body .error-shell :is(.error-brand, .error-brand b span, .error-title) { color: #f3f7f7; }
+body .error-shell :is(.error-brand small, .error-copy, .error-foot) { color: #c5d9dc; }
+body .error-shell :is(.error-code, .error-eyebrow) { color: #a8e5ef; }
+body .error-shell .error-brand-mark { background: #a8e5ef; border-color: #a8e5ef; color: #102d35; }
+body .error-shell .error-foot { border-color: #526b70; }
+body .error-shell .error-btn { background: transparent; border-color: #69858b; color: #f3f7f7; }
+body .error-shell .error-btn:hover { background: #28464f; border-color: #a8e5ef; color: #fff; }
+body .error-shell .error-btn.primary { background: #a8e5ef; border-color: #a8e5ef; color: #102d35; }
+body .error-shell .error-btn.primary:hover { background: #d0f3f6; color: #102d35; }
+body .error-shell :focus-visible { outline-color: #f6bd82; }

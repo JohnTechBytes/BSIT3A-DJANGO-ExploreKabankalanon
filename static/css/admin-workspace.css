@@ -1,0 +1,102 @@
+/* Shared light work surfaces for every staff module. Django retains control
+   of all fields, actions, permissions and popup behaviour. */
+html body:not(.login):not(.ea-admin-home) {
+  --ea-bg:#f4f8f6; --ea-bg-deep:#edf4f1; --ea-panel:#fff; --ea-panel-2:#f7faf8;
+  --ea-line:#d0e0da; --ea-line-soft:#e4eeea; --ea-text:#173d50; --ea-text-soft:#45676e;
+  --ea-muted:#637f80; --ea-teal:#26766d; --ea-teal-deep:#e2f1eb;
+  --ea-danger:#9e303c; --ea-danger-bg:#fff0ef; --ea-warn:#88551b; --ea-warn-bg:#fff4df;
+  background:#f4f8f6; color:#173d50; color-scheme:light;
+}
+html body:not(.login):not(.ea-admin-home) #content { max-width:1530px; padding:38px 40px 64px; }
+html body:not(.login):not(.ea-admin-home) :is(h1,h2,h3,h4,caption) { color:#173d50; }
+html body:not(.login):not(.ea-admin-home) #content h1 { color:#123448; font-size:clamp(27px,2.5vw,36px); letter-spacing:-.04em; line-height:1.15; margin-bottom:20px; }
+html body:not(.login):not(.ea-admin-home) :is(.breadcrumbs,#breadcrumbs) { padding:12px 40px; border-bottom:1px solid #dceae4; background:#edf5f1 !important; color:#587978; }
+html body:not(.login):not(.ea-admin-home) :is(.breadcrumbs,#breadcrumbs) a { color:#326a69; }
+html body:not(.login):not(.ea-admin-home) #content a { color:#286d68; }
+html body:not(.login):not(.ea-admin-home) #content a:hover { color:#123f43; }
+html body:not(.login):not(.ea-admin-home) :is(#content .module,#content fieldset.module,.inline-group) { border:1px solid #d2e1db; border-radius:3px; background:#fff; box-shadow:none; }
+html body:not(.login):not(.ea-admin-home) :is(#content .module h2,#content .module caption,.inline-group h2,fieldset h2,fieldset.module.aligned h2,.inline-related h3) { background:#e8f3ee; color:#173d50; padding:14px 18px; font-family:EKArchivo,system-ui,sans-serif; font-size:12px; font-weight:750; }
+html body:not(.login):not(.ea-admin-home) :is(.form-row,.aligned .form-row) { border-color:#e4eeea; padding:15px 18px; }
+html body:not(.login):not(.ea-admin-home) :is(.form-row label,.aligned label) { color:#385f66; }
+html body:not(.login):not(.ea-admin-home) :is(.help,.helptext,p.help,span.help,.form-row .help,.readonly,div.readonly,fieldset .description,#content .description) { color:#617e80 !important; }
+html body:not(.login):not(.ea-admin-home) :is(input[type=text],input[type=password],input[type=email],input[type=url],input[type=number],input[type=search],input[type=tel],input[type=date],input[type=time],input[type=datetime-local],select,textarea) { border:1px solid #bcd1ca !important; border-radius:3px; background:#fff !important; color:#173d50 !important; }
+html body:not(.login):not(.ea-admin-home) :is(input,select,textarea)::placeholder { color:#78908f; }
+html body:not(.login):not(.ea-admin-home) select option { background:#fff; color:#173d50; }
+html body:not(.login):not(.ea-admin-home) :is(input,select,textarea):focus { border-color:#4e9384 !important; box-shadow:0 0 0 3px #bce1d6; }
+html body:not(.login):not(.ea-admin-home) :is(.button,input[type=submit],input[type=button],button.button,.submit-row input,a.button) { border:1px solid #b9d1c8 !important; border-radius:3px !important; background:#f8fbf9 !important; color:#285b5c !important; }
+html body:not(.login):not(.ea-admin-home) :is(.button.default,input[type=submit].default,.submit-row input.default,.object-tools a,.object-tools a:link,.object-tools a:visited,.ea-dest-filter-actions button,.ea-review-filter button) { border-color:#214d4e !important; background:#214d4e !important; color:#fff !important; }
+html body:not(.login):not(.ea-admin-home) :is(.button:hover,input[type=submit]:hover,input[type=button]:hover,a.button:hover) { border-color:#529082 !important; background:#e8f4ef !important; color:#173d50 !important; }
+html body:not(.login):not(.ea-admin-home) :is(.button.default:hover,input[type=submit].default:hover,.object-tools a:hover,.ea-dest-filter-actions button:hover,.ea-review-filter button:hover) { background:#336a64 !important; color:#fff !important; }
+html body:not(.login):not(.ea-admin-home) .object-tools { float:none; display:flex; justify-content:flex-end; flex-wrap:wrap; gap:8px; margin:0 0 16px; }
+html body:not(.login):not(.ea-admin-home) .object-tools li { float:none; margin:0; }
+html body:not(.login):not(.ea-admin-home) .object-tools a { border-radius:3px !important; }
+html body:not(.login):not(.ea-admin-home) :is(.submit-row,#toolbar,#changelist .actions,.paginator) { border:1px solid #d2e1db !important; border-radius:3px; background:#f8fbf9 !important; color:#527373; }
+html body:not(.login):not(.ea-admin-home) :is(.submit-row a.deletelink,.deletelink) { background:#fff0ef !important; border:1px solid #e1b9b9 !important; color:#9e303c !important; }
+html body:not(.login):not(.ea-admin-home) :is(#changelist-filter) { background:#fff; border:1px solid #d2e1db; border-radius:3px; }
+html body:not(.login):not(.ea-admin-home) #changelist-filter h2 { background:#e8f3ee; color:#173d50; }
+html body:not(.login):not(.ea-admin-home) #changelist-filter :is(h3,li a) { color:#547676; }
+html body:not(.login):not(.ea-admin-home) #changelist-filter li.selected a { color:#1f6f61; }
+html body:not(.login):not(.ea-admin-home) :is(.results table thead th,#changelist table thead th,.module table thead th,.ea-review-table thead th) { background:#edf5f1 !important; color:#4a6d6d !important; border-color:#d8e7e0 !important; }
+html body:not(.login):not(.ea-admin-home) :is(.results table tbody th,#changelist table tbody th,.module table tbody th) { background:transparent !important; color:#285f5e !important; border-color:#e2ece8 !important; }
+html body:not(.login):not(.ea-admin-home) :is(.results table tbody td,#changelist table tbody td,.module table tbody td) { color:#3f6267; border-color:#e2ece8 !important; }
+html body:not(.login):not(.ea-admin-home) :is(.results table tbody tr:hover,#changelist table tbody tr:hover) { background:#f2f8f5 !important; }
+html body:not(.login):not(.ea-admin-home) :is(.results table tbody tr.selected,#changelist table tbody tr.selected) { background:#e1f1ea !important; }
+html body:not(.login):not(.ea-admin-home) #result_list tbody th a span { color:#286d68 !important; }
+html body:not(.login):not(.ea-admin-home) #result_list tbody th a small { color:#698481 !important; }
+html body:not(.login):not(.ea-admin-home) #result_list td.field-publication span { color:#216c52 !important; }
+html body:not(.login):not(.ea-admin-home) #result_list td.field-content_status span { color:#85591f !important; }
+html body:not(.login):not(.ea-admin-home) :is(.selector .selector-available,.selector .selector-chosen,.selector .selector-filter,.selector .list-footer-display) { background:#f8fbf9; border-color:#d2e1db; color:#45676e; }
+html body:not(.login):not(.ea-admin-home) :is(.selector .selector-available-title,.selector .selector-chosen-title) { background:#e8f3ee; border-color:#d2e1db; color:#173d50; }
+html body:not(.login):not(.ea-admin-home) :is(.selector .selector-available-title label,.selector .selector-chosen-title label) { color:#173d50 !important; }
+html body:not(.login):not(.ea-admin-home) :is(.selector .selector-available-title .helptext,.selector .selector-chosen-title .helptext) { color:#577b78; }
+html body:not(.login):not(.ea-admin-home) :is(.calendar,.clock,.related-widget-wrapper-link img) { filter:none; }
+html body:not(.login):not(.ea-admin-home) :is(.errornote,.errors) { background:#fff0ef !important; border-color:#dfaeb0 !important; color:#9e303c !important; }
+html body:not(.login):not(.ea-admin-home) .messagelist li { background:#e5f4ec; border-color:#a9d3bd; color:#255e4d; }
+/* Destination management and business verification share the same workspace. */
+html body:not(.login):not(.ea-admin-home) .ea-dest-heading { align-items:flex-end; margin-bottom:25px; }
+html body:not(.login):not(.ea-admin-home) .ea-dest-heading h1 { color:#123448; font-size:clamp(27px,2.5vw,36px) !important; margin-bottom:8px !important; }
+html body:not(.login):not(.ea-admin-home) :is(.ea-dest-heading p,.ea-dest-filter-note,.ea-dest-help,.ea-bulk-hint) { color:#5d7a7c; }
+html body:not(.login):not(.ea-admin-home) .ea-osm-queue-btn { border:1px solid #b9d1c8; border-radius:3px; background:#fff; color:#285b5c !important; }
+html body:not(.login):not(.ea-admin-home) #ea-dest-filter-form { padding:22px; border:1px solid #d2e1db; border-radius:3px; background:#fff; }
+html body:not(.login):not(.ea-admin-home) :is(.ea-dest-filter-grid label,.ea-review-filter label) { color:#3b6366; }
+html body:not(.login):not(.ea-admin-home) .ea-dest-filter-actions a { border-color:#b9d1c8; border-radius:3px; color:#285b5c; }
+html body:not(.login):not(.ea-admin-home) .ea-dest-good { background:#e2f2e9; color:#226c52; }
+html body:not(.login):not(.ea-admin-home) .ea-dest-warn { background:#fff1dc; color:#85591f; }
+html body:not(.login):not(.ea-admin-home) .ea-review-wrap { max-width:none; gap:18px; color:#45676e; }
+html body:not(.login):not(.ea-admin-home) .ea-review-hero { padding:28px; border:1px solid #c8ded4; border-radius:3px; background:#e4f1eb; }
+html body:not(.login):not(.ea-admin-home) .ea-review-hero h1 { color:#123448 !important; font-size:clamp(27px,2.5vw,36px) !important; margin-bottom:10px !important; }
+html body:not(.login):not(.ea-admin-home) .ea-review-hero p { color:#496d6d; }
+html body:not(.login):not(.ea-admin-home) :is(.ea-review-stat,.ea-review-panel) { border:1px solid #d2e1db; border-radius:3px; background:#fff; }
+html body:not(.login):not(.ea-admin-home) .ea-review-stat { padding:20px; }
+html body:not(.login):not(.ea-admin-home) .ea-review-stat strong { color:#123448; font-size:32px; }
+html body:not(.login):not(.ea-admin-home) :is(.ea-review-stat span,.ea-review-note,.ea-review-filter-tools span) { color:#5d7a7c; }
+html body:not(.login):not(.ea-admin-home) .ea-review-filter-tools strong { color:#285b5c; }
+html body:not(.login):not(.ea-admin-home) .ea-review-guide { border-color:#cfe2d8; border-radius:3px; background:#f4faf6; color:#365f5c; }
+html body:not(.login):not(.ea-admin-home) #content .ea-review-panel .ea-review-table tbody td { background:#fff !important; color:#45676e !important; border-color:#e2ece8; }
+html body:not(.login):not(.ea-admin-home) #content .ea-review-panel .ea-review-table tbody td a { color:#286d68 !important; }
+html body:not(.login):not(.ea-admin-home) #content .ea-review-panel .ea-review-table tbody td small { color:#698481; }
+@media(max-width:960px) { html body:not(.login):not(.ea-admin-home) #content { padding:28px 24px 50px; } html body:not(.login):not(.ea-admin-home) :is(.breadcrumbs,#breadcrumbs) { padding:10px 24px; } }
+@media(max-width:650px) { html body:not(.login):not(.ea-admin-home) #content { padding:24px 16px 40px; } html body:not(.login):not(.ea-admin-home) :is(.breadcrumbs,#breadcrumbs) { padding:10px 16px; } html body:not(.login):not(.ea-admin-home) #ea-dest-filter-form,html body:not(.login):not(.ea-admin-home) .ea-review-hero { padding:18px; } html body:not(.login):not(.ea-admin-home) :is(.form-row,.aligned .form-row) { padding:12px; } }
+/* Higher-specificity rules neutralize legacy dark overrides on Django's
+   sortable links, required labels, and filters. */
+html body:not(.login):not(.ea-admin-home) #content-main fieldset.module .form-row label { color:#385f66; }
+html body:not(.login):not(.ea-admin-home) #result_list thead th a { color:#4a6d6d !important; }
+html body:not(.login):not(.ea-admin-home) #changelist .results table tbody th a,html body:not(.login):not(.ea-admin-home) #result_list tbody th a { color:#286d68 !important; }
+html body:not(.login):not(.ea-admin-home) #changelist-filter h2 { background:#e8f3ee !important; color:#173d50 !important; }
+html body:not(.login):not(.ea-admin-home) #changelist-filter a { color:#326a69 !important; }
+html body:not(.login):not(.ea-admin-home) .object-tools a { float:none; display:inline-flex; align-items:center; }
+html body:not(.login):not(.ea-admin-home) :is(.addlink,.changelink,.viewlink,.deletelink-inline) { color:#286d68 !important; }
+html body:not(.login):not(.ea-admin-home) :is(.inline-related h3 .inline_label, .checkbox-row, #changelist .actions .all) { color:#45676e; }
+html body:not(.login):not(.ea-admin-home) :is(fieldset.collapsed,fieldset.collapsed h2) { background:#e8f3ee; color:#173d50; }
+html body:not(.login):not(.ea-admin-home) .ea-dest-heading { padding:22px 22px 0; }
+html body:not(.login):not(.ea-admin-home) .ea-dest-heading .ea-dest-object-tools { margin:0; }
+@media(max-width:650px) {
+ html body:not(.login):not(.ea-admin-home) #changelist-search { margin:0; }
+ html body:not(.login):not(.ea-admin-home) #changelist-search > div { display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
+ html body:not(.login):not(.ea-admin-home) #changelist-search input[type=text] { flex:1 1 120px; width:auto; min-width:0; max-width:100%; }
+ html body:not(.login):not(.ea-admin-home) .ea-dest-heading { padding:18px 18px 0; }
+}
+html body:not(.login):not(.ea-admin-home) .object-tools li { height:auto; }
+@media(max-width:767px) {
+ html body:not(.login):not(.ea-admin-home) #changelist-filter { flex:0 0 auto; }
+}

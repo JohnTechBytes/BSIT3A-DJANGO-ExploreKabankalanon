@@ -4,35 +4,70 @@
 {% block title %}{{ title }} | ExploreKabankalan Admin{% endblock %}
 {% block branding %}
 <div class="ea-brand-top">
-  <a href="{% url 'admin:index' %}" aria-label="ExploreKabankalan admin dashboard">ExploreKabankalan <span>Admin</span></a>
+  <a href="{% url 'admin:index' %}" aria-label="ExploreKabankalan staff dashboard">
+    <span class="ea-top-heading">Staff workspace</span><span class="ea-top-subtitle">ExploreKabankalan · Administration</span>
+  </a>
 </div>
+{% endblock %}
+
+{% block usertools %}
+{% if has_permission %}
+<div id="user-tools" class="ea-top-tools">
+  {% if site_url %}<a class="ea-top-site" href="{{ site_url }}"><span aria-hidden="true">↗</span> View site</a>{% endif %}
+  <details class="ea-account-menu" id="ea-account-menu">
+    <summary aria-label="Account menu for {{ user.get_username }}">
+      <span class="ea-account-avatar" aria-hidden="true">{{ user.get_username|first|upper }}</span>
+      <span class="ea-account-name">{{ user.get_username }}</span><span class="ea-account-chevron" aria-hidden="true">⌄</span>
+    </summary>
+    <div class="ea-account-dropdown">
+      <span class="ea-account-caption">SIGNED IN AS</span><strong>{{ user.get_username }}</strong>
+      {% if site_url %}<a class="ea-account-site" href="{{ site_url }}">{% translate 'View site' %}</a>{% endif %}
+      {% if user.has_usable_password %}<a href="{% url 'admin:password_change' %}">{% translate 'Change password' %}</a>{% endif %}
+      {% url 'django-admindocs-docroot' as docsroot %}
+      {% if docsroot %}<a href="{{ docsroot }}">{% translate 'Documentation' %}</a>{% endif %}
+      <form id="logout-form" method="post" action="{% url 'admin:logout' %}">{% csrf_token %}<button type="submit">{% translate 'Log out' %}</button></form>
+    </div>
+  </details>
+  {% include "admin/color_theme_toggle.html" %}
+</div>
+{% endif %}
 {% endblock %}
 
 {% block extrastyle %}
 {{ block.super }}
-<link rel="stylesheet" href="{% static 'css/admin-dark.css' %}">
+<link rel="stylesheet" href="{% static 'css/admin-dark.css' %}?v=20261031-1">
+<link rel="stylesheet" href="{% static 'css/admin-editorial.css' %}?v=20261031-11">
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/admin-workspace.css' %}?v=20261101-3">
+<link rel="stylesheet" href="{% static 'css/admin-guide.css' %}?v=20261101-1">
+<link rel="stylesheet" href="{% static 'css/design-craft.css' %}?v=20261101-2">
 {% endblock %}
 
 {% block nav-global %}
 {{ block.super }}
-<button type="button" class="ea-mobile-toggle" id="ea-mobile-toggle" aria-controls="ea-admin-sidebar" aria-expanded="false">☰ Menu</button>
+<button type="button" class="ea-mobile-toggle" id="ea-mobile-toggle" aria-controls="ea-admin-sidebar" aria-expanded="false"><span aria-hidden="true">☰</span><span>Menu</span></button>
 <div class="ea-side-scrim" id="ea-side-scrim" aria-hidden="true"></div>
 <aside id="ea-admin-sidebar" class="ea-admin-sidebar" aria-label="ExploreKabankalan administration navigation">
   <div class="ea-side-head">
-    <a href="{% url 'admin:index' %}">ExploreKabankalan</a>
-    <small>ADMINISTRATION · KABANKALAN</small>
-    <button type="button" class="ea-side-dismiss" id="ea-side-dismiss" aria-label="Close navigation">✕ Close</button>
+    <a class="ea-side-brand" href="{% url 'admin:index' %}" aria-label="ExploreKabankalan staff dashboard">
+      <span class="ea-side-brand-mark" aria-hidden="true">EK</span><span class="ea-side-brand-copy"><span>Explore</span><strong>Kabankalan</strong></span>
+    </a>
+    <button type="button" class="ea-side-dismiss" id="ea-side-dismiss" aria-label="Close navigation">×</button>
+    <small>STAFF WORKSPACE <span aria-hidden="true"> / </span> KABANKALAN</small>
   </div>
   <nav class="ea-side-scroll" aria-label="Admin sections">
     <span class="ea-side-heading">Workspace</span>
-    <a class="ea-side-link ea-side-home{% if request.resolver_match.view_name == 'admin:index' %} ea-side-active{% endif %}" href="{% url 'admin:index' %}"{% if request.resolver_match.view_name == 'admin:index' %} aria-current="page"{% endif %}><span class="ea-side-dot" aria-hidden="true">⌂</span>Dashboard</a>
+    <a class="ea-side-link ea-side-home{% if request.resolver_match.view_name == 'admin:index' %} ea-side-active{% endif %}" href="{% url 'admin:index' %}"{% if request.resolver_match.view_name == 'admin:index' %} aria-current="page"{% endif %}><span class="ea-side-dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>Dashboard</a>
     <span class="ea-side-heading">Management</span>
     {% for app in available_apps %}
       {% for model in app.models %}
         {% if model.admin_url %}
           {% if app.app_label == 'places' and model.object_name == 'Place' %}
-            <a class="ea-side-link{% if request.resolver_match.url_name == 'places_place_changelist' or request.resolver_match.url_name == 'places_place_change' or request.resolver_match.url_name == 'places_place_add' or request.resolver_match.url_name == 'places_place_history' or request.resolver_match.url_name == 'places_place_delete' %} ea-side-active{% endif %}" href="{{ model.admin_url }}"{% if request.resolver_match.url_name == 'places_place_changelist' or request.resolver_match.url_name == 'places_place_change' or request.resolver_match.url_name == 'places_place_add' or request.resolver_match.url_name == 'places_place_history' or request.resolver_match.url_name == 'places_place_delete' %} aria-current="page"{% endif %}><span class="ea-side-dot" aria-hidden="true">◇</span>Destinations</a>
-            <a class="ea-side-link{% if request.resolver_match.url_name == 'places_place_osm_review' %} ea-side-active{% endif %}" href="{% url 'admin:places_place_osm_review' %}"{% if request.resolver_match.url_name == 'places_place_osm_review' %} aria-current="page"{% endif %}><span class="ea-side-dot" aria-hidden="true">☷</span>Business review</a>
+            <a class="ea-side-link{% if request.resolver_match.url_name == 'places_place_changelist' or request.resolver_match.url_name == 'places_place_change' or request.resolver_match.url_name == 'places_place_add' or request.resolver_match.url_name == 'places_place_history' or request.resolver_match.url_name == 'places_place_delete' %} ea-side-active{% endif %}" href="{{ model.admin_url }}"{% if request.resolver_match.url_name == 'places_place_changelist' or request.resolver_match.url_name == 'places_place_change' or request.resolver_match.url_name == 'places_place_add' or request.resolver_match.url_name == 'places_place_history' or request.resolver_match.url_name == 'places_place_delete' %} aria-current="page"{% endif %}><span class="ea-side-dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 10c0 5-7 10-7 10s-7-5-7-10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>Destinations</a>
+            <a class="ea-side-link{% if request.resolver_match.url_name == 'places_place_osm_review' %} ea-side-active{% endif %}" href="{% url 'admin:places_place_osm_review' %}"{% if request.resolver_match.url_name == 'places_place_osm_review' %} aria-current="page"{% endif %}><span class="ea-side-dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h12M9 12h12M9 18h12M3 6l1 1 2-2M3 12l1 1 2-2M3 18l1 1 2-2"/></svg></span>Business review</a>
           {% endif %}
         {% endif %}
       {% endfor %}
@@ -41,11 +76,11 @@
       {% for model in app.models %}
         {% if model.admin_url %}
           {% if app.app_label == 'visits' and model.object_name == 'VisitCheckIn' %}
-            <a class="ea-side-link{% if request.resolver_match.url_name == 'visits_visitcheckin_changelist' or request.resolver_match.url_name == 'visits_visitcheckin_change' or request.resolver_match.url_name == 'visits_visitcheckin_add' or request.resolver_match.url_name == 'visits_visitcheckin_history' or request.resolver_match.url_name == 'visits_visitcheckin_delete' %} ea-side-active{% endif %}" href="{{ model.admin_url }}"{% if request.resolver_match.url_name == 'visits_visitcheckin_changelist' or request.resolver_match.url_name == 'visits_visitcheckin_change' or request.resolver_match.url_name == 'visits_visitcheckin_add' or request.resolver_match.url_name == 'visits_visitcheckin_history' or request.resolver_match.url_name == 'visits_visitcheckin_delete' %} aria-current="page"{% endif %}><span class="ea-side-dot" aria-hidden="true">✓</span>Visit approvals</a>
+            <a class="ea-side-link{% if request.resolver_match.url_name == 'visits_visitcheckin_changelist' or request.resolver_match.url_name == 'visits_visitcheckin_change' or request.resolver_match.url_name == 'visits_visitcheckin_add' or request.resolver_match.url_name == 'visits_visitcheckin_history' or request.resolver_match.url_name == 'visits_visitcheckin_delete' %} ea-side-active{% endif %}" href="{{ model.admin_url }}"{% if request.resolver_match.url_name == 'visits_visitcheckin_changelist' or request.resolver_match.url_name == 'visits_visitcheckin_change' or request.resolver_match.url_name == 'visits_visitcheckin_add' or request.resolver_match.url_name == 'visits_visitcheckin_history' or request.resolver_match.url_name == 'visits_visitcheckin_delete' %} aria-current="page"{% endif %}><span class="ea-side-dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="m8 12 3 3 5-6"/></svg></span>Visit approvals</a>
           {% elif app.app_label == 'info' and model.object_name == 'CityInformation' %}
-            <a class="ea-side-link{% if request.resolver_match.url_name == 'info_cityinformation_changelist' or request.resolver_match.url_name == 'info_cityinformation_change' or request.resolver_match.url_name == 'info_cityinformation_add' or request.resolver_match.url_name == 'info_cityinformation_history' or request.resolver_match.url_name == 'info_cityinformation_delete' %} ea-side-active{% endif %}" href="{{ model.admin_url }}"{% if request.resolver_match.url_name == 'info_cityinformation_changelist' or request.resolver_match.url_name == 'info_cityinformation_change' or request.resolver_match.url_name == 'info_cityinformation_add' or request.resolver_match.url_name == 'info_cityinformation_history' or request.resolver_match.url_name == 'info_cityinformation_delete' %} aria-current="page"{% endif %}><span class="ea-side-dot" aria-hidden="true">ⓘ</span>City information</a>
-          {% elif app.app_label == 'auth' and model.object_name == 'User' %}
-            <a class="ea-side-link{% if request.resolver_match.url_name == 'auth_user_changelist' or request.resolver_match.url_name == 'auth_user_change' or request.resolver_match.url_name == 'auth_user_add' or request.resolver_match.url_name == 'auth_user_history' or request.resolver_match.url_name == 'auth_user_delete' %} ea-side-active{% endif %}" href="{{ model.admin_url }}"{% if request.resolver_match.url_name == 'auth_user_changelist' or request.resolver_match.url_name == 'auth_user_change' or request.resolver_match.url_name == 'auth_user_add' or request.resolver_match.url_name == 'auth_user_history' or request.resolver_match.url_name == 'auth_user_delete' %} aria-current="page"{% endif %}><span class="ea-side-dot" aria-hidden="true">♙</span>Users</a>
+            <a class="ea-side-link{% if request.resolver_match.url_name == 'info_cityinformation_changelist' or request.resolver_match.url_name == 'info_cityinformation_change' or request.resolver_match.url_name == 'info_cityinformation_add' or request.resolver_match.url_name == 'info_cityinformation_history' or request.resolver_match.url_name == 'info_cityinformation_delete' %} ea-side-active{% endif %}" href="{{ model.admin_url }}"{% if request.resolver_match.url_name == 'info_cityinformation_changelist' or request.resolver_match.url_name == 'info_cityinformation_change' or request.resolver_match.url_name == 'info_cityinformation_add' or request.resolver_match.url_name == 'info_cityinformation_history' or request.resolver_match.url_name == 'info_cityinformation_delete' %} aria-current="page"{% endif %}><span class="ea-side-dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>City information</a>
+          {% elif app.app_label == 'users' and model.object_name == 'User' %}
+            <a class="ea-side-link{% if request.resolver_match.url_name == 'users_user_changelist' or request.resolver_match.url_name == 'users_user_change' or request.resolver_match.url_name == 'users_user_add' or request.resolver_match.url_name == 'users_user_history' or request.resolver_match.url_name == 'users_user_delete' %} ea-side-active{% endif %}" href="{{ model.admin_url }}"{% if request.resolver_match.url_name == 'users_user_changelist' or request.resolver_match.url_name == 'users_user_change' or request.resolver_match.url_name == 'users_user_add' or request.resolver_match.url_name == 'users_user_history' or request.resolver_match.url_name == 'users_user_delete' %} aria-current="page"{% endif %}><span class="ea-side-dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>Users</a>
           {% endif %}
         {% endif %}
       {% endfor %}
@@ -58,7 +93,7 @@
             {% if app.app_label == 'places' and model.object_name == 'Place' %}
             {% elif app.app_label == 'visits' and model.object_name == 'VisitCheckIn' %}
             {% elif app.app_label == 'info' and model.object_name == 'CityInformation' %}
-            {% elif app.app_label == 'auth' and model.object_name == 'User' %}
+            {% elif app.app_label == 'users' and model.object_name == 'User' %}
             {% else %}
               <a class="ea-side-link" href="{{ model.admin_url }}">{{ app.name }} · {{ model.name }}</a>
             {% endif %}
@@ -71,14 +106,41 @@
 </aside>
 <script>
 (function () {
-  var toggle=document.getElementById('ea-mobile-toggle');
-  var dismiss=document.getElementById('ea-side-dismiss');
-  var scrim=document.getElementById('ea-side-scrim');
-  function setOpen(open){document.body.classList.toggle('ea-side-open',open);if(toggle)toggle.setAttribute('aria-expanded',String(open));}
-  if(toggle)toggle.addEventListener('click',function(){setOpen(!document.body.classList.contains('ea-side-open'));});
-  if(dismiss)dismiss.addEventListener('click',function(){setOpen(false);});
-  if(scrim)scrim.addEventListener('click',function(){setOpen(false);});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false);});
+  var toggle = document.getElementById('ea-mobile-toggle');
+  var sidebar = document.getElementById('ea-admin-sidebar');
+  var dismiss = document.getElementById('ea-side-dismiss');
+  var scrim = document.getElementById('ea-side-scrim');
+  var account = document.getElementById('ea-account-menu');
+  var mobile = window.matchMedia('(max-width: 960px)');
+  if (!toggle || !sidebar) return;
+  function setOpen(open, returnFocus) {
+    open = mobile.matches && open;
+    document.body.classList.toggle('ea-side-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    sidebar.inert = mobile.matches && !open;
+    if (mobile.matches && !open) sidebar.setAttribute('aria-hidden', 'true');
+    else sidebar.removeAttribute('aria-hidden');
+    if (open && dismiss) dismiss.focus();
+    else if (returnFocus && mobile.matches) toggle.focus();
+  }
+  toggle.addEventListener('click', function () { setOpen(toggle.getAttribute('aria-expanded') !== 'true', true); });
+  if (dismiss) dismiss.addEventListener('click', function () { setOpen(false, true); });
+  if (scrim) scrim.addEventListener('click', function () { setOpen(false, true); });
+  mobile.addEventListener('change', function () { setOpen(false, false); });
+  document.addEventListener('click', function (e) { if (account && !account.contains(e.target)) account.open = false; });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      if (account && account.open) { account.open = false; account.querySelector('summary').focus(); }
+      if (document.body.classList.contains('ea-side-open')) setOpen(false, true);
+    }
+    if (e.key === 'Tab' && document.body.classList.contains('ea-side-open')) {
+      var links = Array.from(sidebar.querySelectorAll('a[href], button:not([disabled]), summary')).filter(function (node) { return node.getClientRects().length && (!node.closest("details:not([open])") || node.tagName === "SUMMARY"); });
+      if (!links.length) return;
+      if (e.shiftKey && document.activeElement === links[0]) { e.preventDefault(); links[links.length - 1].focus(); }
+      else if (!e.shiftKey && document.activeElement === links[links.length - 1]) { e.preventDefault(); links[0].focus(); }
+    }
+  });
+  setOpen(false, false);
 })();
 </script>
 {% endblock %}

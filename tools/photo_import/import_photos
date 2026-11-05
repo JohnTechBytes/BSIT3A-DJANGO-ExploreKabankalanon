@@ -1,0 +1,137 @@
+#!/usr/bin/env python3
+"""Import a reviewed batch of cover images; read-only preview by default."""
+import argparse
+import hashlib
+import io
+import os
+import re
+import sys
+import warnings
+from pathlib import Path
+
+parser = argparse.ArgumentParser(description='Review or import place photos; dry run is the default.')
+parser.add_argument('--apply', action='store_true', help='Import the reviewed images without replacing existing covers.')
+args = parser.parse_args()
+
+root = Path.cwd()
+if not (root / 'manage.py').is_file():
+    raise SystemExit('Stopped: open PowerShell in the project folder containing manage.py.')
+sys.path.insert(0, str(root))
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
+import django
+django.setup()
+from django.conf import settings
+from django.core.files.base import ContentFile
+from django.core.files.storage import FileSystemStorage
+from django.db import transaction
+from apps.places.models import Place
+from PIL import Image, UnidentifiedImageError
+
+image_folder = Path(__file__).resolve().parent / 'images'
+if not image_folder.is_dir():
+    raise SystemExit('Stopped: the images folder is missing from the photo_import folder.')
+db = settings.DATABASES['default']
+if (db['ENGINE'] != 'django.db.backends.mysql' or db['NAME'] != 'exploreanywhere'
+        or str(db.get('HOST', '')).lower() not in ('localhost', '127.0.0.1', '::1')):
+    raise SystemExit('Stopped: expected the local MySQL exploreanywhere database.')
+
+formats = {'.jpg': 'JPEG', '.jpeg': 'JPEG', '.png': 'PNG', '.webp': 'WEBP'}
+Image.MAX_IMAGE_PIXELS = 50_000_000
+warnings.simplefilter('error', Image.DecompressionBombWarning)
+items, errors = {}, []
+files = sorted(image_folder.iterdir(), key=lambda p: p.name.lower())
+for path in files:
+    if path.name.lower() in ('desktop.ini', 'thumbs.db', '.ds_store'):
+        continue
+    if path.is_symlink() or not path.is_file():
+        errors.append(f'{path.name}: use image files, not folders or shortcuts.')
+        continue
+    if not re.fullmatch(r'[1-9][0-9]*', path.stem) or path.suffix.lower() not in formats:
+        errors.append(f'{path.name}: use only the place ID and .jpg, .jpeg, .png, or .webp (for example 7638.png).')
+        continue
+    pk = int(path.stem)
+    if pk in items:
+        errors.append(f'{path.name}: more than one image has ID {pk}; keep only one.')
+        continue
+    try:
+        if path.stat().st_size > 20 * 1024 * 1024:
+            raise ValueError('file is larger than 20 MB')
+        data = path.read_bytes()
+        with Image.open(io.BytesIO(data)) as im:
+            width, height = im.size
+            if im.format != formats[path.suffix.lower()]:
+                raise ValueError(f'extension does not match its actual {im.format} format')
+            im.verify()
+        items[pk] = {'path': path, 'sha256': hashlib.sha256(data).hexdigest(), 'size': (width, height)}
+    except (OSError, ValueError, UnidentifiedImageError, Image.DecompressionBombWarning, Image.DecompressionBombError) as exc:
+        errors.append(f'{path.name}: invalid or unreadable image ({exc}).')
+if not items and not errors:
+    raise SystemExit('No images found. Put images named with place IDs into photo_import/images first.')
+
+
+def check_place(p):
+    if p.city_id != 2 or not p.is_active or not p.is_verified:
+        return 'not an active, verified Kabankalan place'
+    if p.cover_image or p.cover_image_url:
+        return 'already has a cover photo; it will not be overwritten'
+    if any((p.photo_credit, p.photo_source_url, p.photo_license, p.photo_license_url)):
+        return 'has existing photo attribution details; review them before replacing'
+    return ''
+
+places = {p.pk: p for p in Place.objects.filter(pk__in=items).only(
+    'id', 'title', 'city_id', 'is_active', 'is_verified', 'cover_image', 'cover_image_url',
+    'photo_credit', 'photo_source_url', 'photo_license', 'photo_license_url')}
+for pk, item in items.items():
+    p = places.get(pk)
+    if p is None:
+        errors.append(f'{item["path"].name}: ID {pk} does not exist.')
+        continue
+    problem = check_place(p)
+    if problem:
+        errors.append(f'{item["path"].name}: ID {pk} ({p.title}) {problem}.')
+        continue
+    width, height = item['size']
+    print(f'{item["path"].name} -> ID {pk}: {p.title} [{width}x{height}]')
+    if width < 640 or height < 480:
+        print('  Note: small image; consider a higher-resolution original.')
+if errors:
+    for err in errors:
+        print('ERROR:', err, file=sys.stderr)
+    raise SystemExit('Stopped: fix the listed issues; no files or database records were changed.')
+if not args.apply:
+    print(f'Dry run: {len(items)} image(s) ready for your review. Nothing was changed.')
+    print('Check that each image really matches the displayed place and that you have reuse rights.')
+    print('No source, photographer or license will be invented; see README.txt before applying.')
+    raise SystemExit(0)
+
+saved_files = []
+try:
+    with transaction.atomic():
+        locked = {p.pk: p for p in Place.objects.select_for_update().filter(pk__in=items)}
+        if set(locked) != set(items):
+            raise ValueError('a place disappeared since the check; no changes applied')
+        for pk in items:
+            problem = check_place(locked[pk])
+            if problem:
+                raise ValueError(f'ID {pk} ({locked[pk].title}) {problem}')
+            if not isinstance(locked[pk].cover_image.storage, FileSystemStorage):
+                raise ValueError('this importer requires local file storage; no changes applied')
+        for pk, item in items.items():
+            data = item['path'].read_bytes()
+            if hashlib.sha256(data).hexdigest() != item['sha256']:
+                raise ValueError(f'{item["path"].name} changed while importing; no changes applied')
+            place = locked[pk]
+            storage = place.cover_image.storage
+            filename = f'place-{pk}-cover{item["path"].suffix.lower()}'
+            place.cover_image.save(filename, ContentFile(data), save=False)
+            saved_files.append((storage, place.cover_image.name))
+            place.save(update_fields=['cover_image'])
+except BaseException:
+    for storage, name in reversed(saved_files):
+        try:
+            storage.delete(name)
+        except Exception as exc:
+            print(f'WARNING: could not remove temporary media file {name}: {exc}', file=sys.stderr)
+    raise
+print(f'Imported {len(items)} cover image(s). Existing place details and publication status were not changed.')
+print('Source and reuse permissions remain unverified; no credit or license was invented.')

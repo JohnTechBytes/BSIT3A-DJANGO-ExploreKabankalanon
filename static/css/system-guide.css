@@ -1,0 +1,166 @@
+/* The shared Kabankalan guide: task-focused public screens that complement
+   the landing and Explore Places pages. Existing forms and data are untouched. */
+:is(.nearby-page, .city-info-page, .detail-page, .saved-page, .journey-page,
+    .itinerary-list-page, .refresh-page, .discovery-page) {
+  --guide-ink: #153f43;
+  --guide-paper: #f8f8f2;
+  --guide-soft: #eaf2e9;
+  --guide-line: #cbdad1;
+  --guide-muted: #496361;
+  --guide-accent: #c5e69e;
+  background: var(--guide-paper);
+}
+:is(.nearby-page, .city-info-page, .detail-page, .saved-page, .journey-page,
+    .itinerary-list-page, .refresh-page, .discovery-page) .ea-site-footer {
+  background: #12383c;
+  color: #dfebe3;
+}
+:is(.nearby-page, .city-info-page, .detail-page, .saved-page, .journey-page,
+    .itinerary-list-page, .refresh-page, .discovery-page) .ek-brand-mark,
+:is(.nearby-page, .city-info-page, .detail-page, .saved-page, .journey-page,
+    .itinerary-list-page, .refresh-page, .discovery-page) .ea-nav-primary {
+  background: #153f43;
+  border-color: #153f43;
+}
+:is(.nearby-page, .city-info-page, .detail-page, .saved-page, .journey-page,
+    .itinerary-list-page, .refresh-page, .discovery-page) :focus-visible {
+  outline: 3px solid #b6532c;
+  outline-offset: 3px;
+}
+
+/* Entry sections use the same clear, high-contrast field as Explore Places. */
+.nearby-page .ea6-top,
+.site-dark.city-info-page .eainfo-hero,
+.site-dark.journey-page .ea4b-hero,
+.site-dark.saved-page .ea-saved .ea-c-page-hero,
+.site-dark.itinerary-list-page .ea-trip .hero,
+.site-dark.refresh-page :is(.ea-trip, .ea-choose, .ea-checkin) > .hero,
+.site-dark.refresh-page :is(.ea-myreviews, .ea-visits) > .ea-c-page-hero,
+.site-dark.refresh-page :is(.easus-hero, .eath-hero, .eapriv-hero) {
+  padding: clamp(26px, 3.4vw, 46px);
+  margin: 0 0 26px;
+  border: 0;
+  border-radius: 4px;
+  background: #153f43;
+  box-shadow: none;
+  color: #fff;
+}
+.nearby-page .ea6-main .ea6-top h1,
+.site-dark.city-info-page .eainfo-hero h1,
+.site-dark.journey-page .ea4b-hero h1,
+.site-dark.saved-page .ea-saved .ea-c-page-hero h1,
+.site-dark.itinerary-list-page .ea-trip .hero h1,
+.site-dark.refresh-page :is(.ea-trip, .ea-choose, .ea-checkin) > .hero h1,
+.site-dark.refresh-page :is(.ea-myreviews, .ea-visits) > .ea-c-page-hero h1,
+.site-dark.refresh-page :is(.easus-hero, .eath-hero, .eapriv-hero) h1 {
+  color: #fff !important;
+}
+.nearby-page .ea6-top .ea6-muted,
+.site-dark.city-info-page .eainfo-hero p,
+.site-dark.journey-page .ea4b-hero p,
+.site-dark.saved-page .ea-saved .ea-c-page-hero p,
+.site-dark.itinerary-list-page .ea-trip .hero p,
+.site-dark.refresh-page :is(.ea-trip, .ea-choose, .ea-checkin) > .hero p,
+.site-dark.refresh-page :is(.ea-myreviews, .ea-visits) > .ea-c-page-hero p,
+.site-dark.refresh-page :is(.easus-hero, .eath-hero, .eapriv-hero) p {
+  color: #e0eee5 !important;
+  opacity: 1;
+}
+.site-dark.refresh-page :is(.easus-kicker, .eath-kicker, .eapriv-kicker),
+.site-dark.refresh-page :is(.hero, .ea-c-page-hero) > :is(p:first-child, .eyebrow) {
+  color: #c5e69e !important;
+}
+.site-dark.journey-page .ea4b-hero::after { display: none; }
+.site-dark.journey-page .ea4b-hero .ea4b-btn-light { background: #c5e69e !important; border-color: #c5e69e !important; color: #153f43 !important; }
+.site-dark.journey-page .ea4b-hero .ea4b-btn-outline { background: transparent !important; border-color: #a6c5b6 !important; color: #fff !important; }
+.site-dark.journey-page .ea4b-hero .ea4b-btn-outline:hover { background: #285e58 !important; color: #fff !important; }
+.site-dark.refresh-page .ea-trip .ea-trip-hero-stats span,
+.site-dark.saved-page .ea-saved .ea-c-count { background: #e1f0df; border-color: #a9cbb4; color: #234e46; }
+
+/* Search, location controls, category chips and cards stay easy to scan. */
+.nearby-page .ea6-box, .nearby-page .ea6-card,
+.site-dark.city-info-page .eainfo-card,
+.site-dark.detail-page .pd-card, .site-dark.detail-page .pd-actions,
+.site-dark.saved-page .ea-saved-item,
+.site-dark.journey-page :is(.ea4b-panel, .ea4b-metric),
+.site-dark.itinerary-list-page .ea-trip :is(.panel, .empty),
+.site-dark.refresh-page :is(.ea-trip .panel, .ea-choose .card, .ea-choose .place,
+.ea-myr-card, .ea-visit-card, .ea-checkin-card, .eath-card, .eapriv-card, .easus-item, .ea-hobby-card) {
+  border-color: #cbdad1;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: none;
+}
+.nearby-page .ea6-box { padding: clamp(20px, 2.5vw, 30px); }
+.nearby-page .ea6-card, .site-dark.saved-page .ea-saved-item { background: #eef3ed; }
+.nearby-page :is(.ea6-field input, .ea6-field select),
+.site-dark.city-info-page .eainfo-search input[type="search"],
+.site-dark.refresh-page :is(input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=submit]), select, textarea),
+.site-dark.detail-page .pd-textarea {
+  border-color: #a7bfb5 !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+  color: #153f43 !important;
+  font-size: 16px;
+}
+.nearby-page :is(.ea6-search .ea6-btn, .ea6-actions a:first-child),
+.site-dark.city-info-page :is(.eainfo-search button, .eainfo-btn),
+.site-dark.detail-page :is(.pd-action-primary, .pd-cta),
+.site-dark.saved-page .ea-action:not(.ea-action-secondary),
+.site-dark.journey-page .ea4b-btn-blue,
+.site-dark.itinerary-list-page .ea-trip .btn:not(.outline),
+.site-dark.refresh-page :is(.ea-trip .btn:not(.outline):not(.danger), .ea-choose .btn:not(.outline),
+.ea-myr-btn:not(.outline), .ea-visits-link, .ea-checkin-btn, .ea-hobby-submit, .easus-btn:not(.easus-btn-soft)) {
+  border-color: #153f43 !important;
+  border-radius: 4px;
+  background: #153f43 !important;
+  color: #fff !important;
+}
+.site-dark.city-info-page .eainfo-hero .eainfo-search button { background: #c5e69e !important; border-color: #c5e69e !important; color: #153f43 !important; }
+.site-dark.city-info-page .eainfo-chip, .nearby-page .ea6-quick a { min-height: 44px; border-radius: 4px; }
+.site-dark.city-info-page .eainfo-chip.active { background: #153f43; border-color: #153f43; color: #fff; }
+.site-dark.city-info-page .eainfo-card { background: #eef3ed; }
+.site-dark.city-info-page .eainfo-group-head { border-color: #cbdad1; }
+.site-dark.detail-page .pd-heading { padding: 25px; background: #e1eee4; border-radius: 4px; }
+.site-dark.detail-page .pd-actions { border-color: #cbdad1; }
+.site-dark.detail-page :is(.pd-hero, .pd-action, .pd-cta, .pd-map-frame) { border-radius: 4px; }
+.site-dark.detail-page .pd-sample-note { font-size: 12px; }
+.site-dark.journey-page .ea4b-metric { background: #eef3ed; }
+.site-dark.journey-page .ea4b-metric-symbol { border: 0; background: #dcebe2; color: #285e58; }
+.site-dark.journey-page .ea4b-empty { background: #f8faf6; border-color: #d4e2d8; border-radius: 4px; }
+.site-dark.journey-page .ea4b-btn { min-height: 44px; border-radius: 4px; }
+.site-dark.saved-page .ea-actions { margin-bottom: 28px; }
+.site-dark.refresh-page :is(.ea-trip .empty, .ea-myreviews .ea-empty, .ea-visits .ea-empty) { border-color: #cbdad1; background: #eef3ed; }
+.site-dark.refresh-page :is(.ea-visit-badge.earned, .ea-hobby-choice input:checked + .ea-hobby-card) { background: #e3f1e4; border-color: #8eb8a0; }
+
+@media (max-width: 760px) {
+  .nearby-page .ea6-top,
+  .site-dark.city-info-page .eainfo-hero,
+  .site-dark.journey-page .ea4b-hero,
+  .site-dark.saved-page .ea-saved .ea-c-page-hero,
+  .site-dark.itinerary-list-page .ea-trip .hero,
+  .site-dark.refresh-page :is(.ea-trip, .ea-choose, .ea-checkin) > .hero,
+  .site-dark.refresh-page :is(.ea-myreviews, .ea-visits) > .ea-c-page-hero,
+  .site-dark.refresh-page :is(.easus-hero, .eath-hero, .eapriv-hero) { padding: 26px 22px; }
+  .site-dark.detail-page .pd-heading { padding: 20px; }
+  .site-dark.city-info-page .eainfo-search { flex-wrap: wrap; }
+  .site-dark.city-info-page .eainfo-search input { flex: 1 1 150px; }
+}
+@media (hover: none) {
+  .nearby-page .ea6-card:hover, .site-dark.saved-page .ea-saved-item:hover { transform: none; box-shadow: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.nearby-page, .city-info-page, .detail-page, .saved-page, .journey-page,
+      .itinerary-list-page, .refresh-page, .discovery-page) *,
+  :is(.nearby-page, .city-info-page, .detail-page, .saved-page, .journey-page,
+      .itinerary-list-page, .refresh-page, .discovery-page) *::before,
+  :is(.nearby-page, .city-info-page, .detail-page, .saved-page, .journey-page,
+      .itinerary-list-page, .refresh-page, .discovery-page) *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* Match the specificity of the earlier light-surface copy overrides. */
+.site-dark.refresh-page :is(.ea-trip, .ea-choose, .ea-checkin) > .hero p:not(:first-child) { color: #e0eee5 !important; }

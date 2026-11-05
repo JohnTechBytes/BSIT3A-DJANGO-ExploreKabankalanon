@@ -25,15 +25,13 @@
 @media(max-width:720px){.ea-trip{padding:22px 14px 72px}.ea-trip .grid{grid-template-columns:1fr}.ea-trip .panel{padding:17px}}
 </style>{% endblock %}
 {% block title %}Create an Itinerary · ExploreKabankalan{% endblock %}
-{% block body_class %}site-dark{% endblock %}
+{% block body_class %}site-dark refresh-page ek-discovery-theme ek-journey-theme{% endblock %}
 {% block skip_link %}<a class="sd-skip" href="#main-content">Skip to content</a>{% endblock %}
-{% block brand_content %}
-  <span class="sd-brand-icon" aria-hidden="true">✺</span>
-  <span class="sd-brand-name">Explore<span>Kabankalan</span><small>LOCAL PLACES. YOUR ADVENTURE.</small></span>
-{% endblock %}
+{% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
 {% block extra_css_after %}<link rel="stylesheet" href="{% static 'css/site-dark.css' %}">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-12">{% endblock %}
 
 {% block content %}
 <main class="ea-trip" id="main-content">
@@ -50,7 +48,7 @@
       <div class="grid"><div class="field"><label for="initial-place">First destination (optional)</label>
         <select id="initial-place" name="initial_place"><option value="">Create an empty itinerary</option>
           {% for place in places %}<option value="{{ place.pk }}" {% if selected_place == place.pk|stringformat:"s" %}selected{% endif %}>{{ place.title }}</option>{% endfor %}
-        </select><small>Only active, verified Kabankalan destinations are listed.</small></div>
+        </select><small>Only published Kabankalan destinations are listed.</small></div>
       <div class="field"><label for="first-time">Planned arrival time (when selecting a destination)</label><input id="first-time" type="time" name="start_time" value="{{ input_time }}"></div></div>
       <div class="actions"><button class="btn" type="submit">Create Itinerary</button><a class="btn outline" href="{% url 'itineraries:list' %}">Cancel</a></div>
     </form>

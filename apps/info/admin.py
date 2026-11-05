@@ -1,5 +1,6 @@
 
 from django.contrib import admin
+from django.contrib import messages
 
 from .models import (
     CityInformation,
@@ -15,12 +16,32 @@ class CityInformationAdmin(admin.ModelAdmin):
         "title",
         "city",
         "info_type",
+        "is_published",
         "order",
         "created_at",
     )
-    list_filter = ("city", "info_type")
+    list_filter = ("city", "info_type", "is_published")
     search_fields = ("title", "description", "city__name")
     ordering = ("city", "info_type", "order")
+    actions = ("publish_selected", "unpublish_selected")
+
+    @admin.action(description="Publish the selected City Information entries")
+    def publish_selected(self, request, queryset):
+        count = queryset.update(is_published=True)
+        self.message_user(
+            request,
+            f"{count} City Information entr{'y' if count == 1 else 'ies'} published.",
+            level=messages.SUCCESS,
+        )
+
+    @admin.action(description="Unpublish the selected City Information entries")
+    def unpublish_selected(self, request, queryset):
+        count = queryset.update(is_published=False)
+        self.message_user(
+            request,
+            f"{count} City Information entr{'y' if count == 1 else 'ies'} unpublished.",
+            level=messages.SUCCESS,
+        )
 
 
 @admin.register(SusResponse)

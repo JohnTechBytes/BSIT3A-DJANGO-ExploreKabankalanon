@@ -80,22 +80,19 @@
 </style>
 {% endblock %}
 {% block title %}My Journey · ExploreKabankalan{% endblock %}
-{% block body_class %}site-dark{% endblock %}
+{% block body_class %}site-dark journey-page ek-discovery-theme ek-journey-theme{% endblock %}
 {% block skip_link %}<a class="sd-skip" href="#main-content">Skip to content</a>{% endblock %}
-{% block brand_content %}
-  <span class="sd-brand-icon" aria-hidden="true">✺</span>
-  <span class="sd-brand-name">Explore<span>Kabankalan</span><small>LOCAL PLACES. YOUR ADVENTURE.</small></span>
-{% endblock %}
+{% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
 {% block extra_css_after %}<link rel="stylesheet" href="{% static 'css/site-dark.css' %}">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-12">{% endblock %}
 
 {% block content %}
 <main class="ea4b-page" id="main-content">
   <header class="ea4b-hero">
     <div class="ea4b-hero-content">
-      <p class="ea4b-kicker">One City. Your Hobbies. Our Map.</p>
-      <h1>My Kabankalan Journey</h1>
+      <h1>My Journey</h1>
       <p>Welcome back{% if request.user.first_name %}, {{ request.user.first_name }}{% endif %}! Keep your saved places, plans, reviews, and staff-reviewed visits together.</p>
     </div>
     <nav class="ea4b-hero-actions" aria-label="Journey quick navigation">
@@ -110,21 +107,21 @@
   </div>
   <section class="ea4b-metrics" aria-labelledby="journey-overview-heading">
     <a class="ea4b-metric" href="{% url 'places:saved_places' %}">
-      <span class="ea4b-metric-symbol" aria-hidden="true">&#9825;</span><strong>{{ saved_count }}</strong><span>Saved places</span>
+      <span class="ea4b-metric-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.8a5.5 5.5 0 0 0-7.8 0L12 5.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z"/></svg></span><strong>{{ saved_count }}</strong><span>Saved places</span>
     </a>
     <a class="ea4b-metric" href="{% url 'itineraries:list' %}">
-      <span class="ea4b-metric-symbol" aria-hidden="true">&#9776;</span><strong>{{ itinerary_count }}</strong><span>Trip plans</span>
+      <span class="ea4b-metric-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4m8-4v4M4 10h16m-12 4h3m-3 3h6"/></svg></span><strong>{{ itinerary_count }}</strong><span>Trip plans</span>
     </a>
     <a class="ea4b-metric" href="{% url 'places:my_reviews' %}">
-      <span class="ea4b-metric-symbol" aria-hidden="true">&#9733;</span><strong>{{ review_count }}</strong><span>My reviews</span>
+      <span class="ea4b-metric-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg></span><strong>{{ review_count }}</strong><span>My reviews</span>
     </a>
     <a class="ea4b-metric" href="{% url 'visits:list' %}">
-      <span class="ea4b-metric-symbol" aria-hidden="true">&#10003;</span><strong>{{ approved_visit_count }}</strong><span>Visited</span>
+      <span class="ea4b-metric-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></span><strong>{{ approved_visit_count }}</strong><span>Visited</span>
     </a>
   </section>
 
   <div class="ea4b-section-intro">
-    <div><h2>Keep your adventure organized</h2><p>Everything in one place, with direct links to the features you already use.</p></div>
+    <div><h2>Your activity</h2><p>Find your saved places, plans, reviews and visit history.</p></div>
   </div>
   <div class="ea4b-layout">
     <section class="ea4b-panel" aria-labelledby="ea4b-saved-heading">
@@ -184,7 +181,7 @@
         <div class="ea4b-rows">
           {% for visit in visits_preview %}
             <div class="ea4b-row"><div class="ea4b-row-main"><span>{{ visit.place.title }}</span><span>{{ visit.visited_on|date:"M j, Y" }}</span></div>
-              {% if visit.status == 'approved' %}<span class="ea4b-row-meta ea4b-visit-approved">Verified</span>
+              {% if visit.status == 'approved' %}<span class="ea4b-row-meta ea4b-visit-approved">Staff approved</span>
               {% elif visit.status == 'pending' %}<span class="ea4b-row-meta ea4b-visit-pending">Pending</span>
               {% else %}<span class="ea4b-row-meta ea4b-visit-rejected">{{ visit.get_status_display }}</span>{% endif %}
             </div>
@@ -244,4 +241,5 @@
       </div>
     </section>
   </div>
+</main>
 {% endblock %}

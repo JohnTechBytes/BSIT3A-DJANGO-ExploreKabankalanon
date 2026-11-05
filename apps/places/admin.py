@@ -130,6 +130,22 @@ class OpeningHoursInline(admin.TabularInline):
     fields = ("weekday", "open_time", "close_time", "is_closed")
 
 
+class HobbyAssignmentFilter(admin.SimpleListFilter):
+    """Help staff review missing tags without claiming those places are irrelevant."""
+    title = "Hobby tags"
+    parameter_name = "hobby_assignment"
+
+    def lookups(self, request, model_admin):
+        return (("missing", "No hobbies assigned (review)"), ("assigned", "Has hobby tags"))
+
+    def queryset(self, request, queryset):
+        if self.value() == "missing":
+            return queryset.filter(hobbies__isnull=True)
+        if self.value() == "assigned":
+            return queryset.filter(hobbies__isnull=False).distinct()
+        return queryset
+
+
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
     form = KabankalanPlaceAdminForm
@@ -144,7 +160,7 @@ class PlaceAdmin(admin.ModelAdmin):
         "has_image", "has_map_pin", "review_count",
     )
     list_display_links = ("destination_label",)
-    list_filter = ("is_verified", "is_active", "category")
+    list_filter = ("is_verified", "is_active", "category", HobbyAssignmentFilter)
     search_fields = (
         "title", "slug", "description", "address", "barangay",
         "category__name", "hobbies__name",
@@ -416,6 +432,7 @@ class PlaceAdmin(admin.ModelAdmin):
             "category": selected_category,
             "verified": request.GET.get("is_verified__exact", ""),
             "active": request.GET.get("is_active__exact", ""),
+            "hobby_assignment": request.GET.get("hobby_assignment", ""),
             "categories": categories,
         }
         extra_context = dict(extra_context or {})

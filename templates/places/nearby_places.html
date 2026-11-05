@@ -1,32 +1,25 @@
 {% extends "theme/public_base.html" %}
 {% block title %}Discover Kabankalan · Nearby Places · ExploreKabankalan{% endblock %}
 {% load static %}
-{% block body_class %}nearby-page{% endblock %}
+{% block body_class %}nearby-page ek-theme ek-discovery-theme{% endblock %}
 {% block skip_link %}<a class="ea6-skip" href="#nearby-main">Skip to content</a>{% endblock %}
-{% block brand_content %}
-  <span class="ea6-brand-icon" aria-hidden="true">✺</span>
-  <span class="ea6-brand-name">Explore<span>Kabankalan</span><small>LOCAL PLACES. YOUR ADVENTURE.</small></span>
-{% endblock %}
+{% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby.css' %}">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-12">{% endblock %}
 {% block content %}
 <main class="ea6-main" id="nearby-main">
   <header class="ea6-top">
     <div class="ea6-intro">
-      <span class="ea6-eyebrow"><span aria-hidden="true">✦</span> YOUR LOCAL GUIDE TO KABANKALAN</span>
-      <h1>Discover <span>Kabankalan</span><b>.</b></h1>
-      <p class="ea6-muted">Find verified destinations and local businesses, follow your interests, and discover what’s around the corner.</p>
-    </div>
-    <div class="ea6-intro-note" aria-hidden="true">
-      <span class="ea6-compass"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/><circle cx="12" cy="12" r="2"/></svg></span>
-      <div><small>ONE CITY, MANY STORIES</small><strong>Your next stop starts here.</strong><span>NEGROS OCCIDENTAL, PH</span></div>
+      <h1>Find places near you.</h1>
+      <p class="ea6-muted">Explore Kabankalan places by name or type, and optionally sort them by distance.</p>
     </div>
   </header>
   {% include "places/_discovery_modes.html" %}
   <section class="ea6-box ea6-search-box" aria-labelledby="ea6-search-title">
     <div class="ea6-panel-heading">
-      <div><span class="ea6-panel-eyebrow">01 / EXPLORE YOUR WAY</span><h2 id="ea6-search-title">Find your next stop</h2><p>Search by place or browse a local category.</p></div>
+      <div><h2 id="ea6-search-title">Find your next stop</h2><p>Search by place or browse a local category.</p></div>
       <span class="ea6-panel-symbol" aria-hidden="true">✧</span>
     </div>
     <form method="get" action="{% url 'places:attraction_carousel' %}" class="ea6-search" id="ea6-search-form" autocomplete="off">
@@ -35,14 +28,14 @@
         <label for="ea6-query">What are you looking for?</label>
         <input id="ea6-query" name="q" value="{{ query }}" maxlength="160" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ea6-suggestions" placeholder="e.g. Coffee &amp; Talk or coffee shop near me">
         <input type="hidden" name="place" id="ea6-place-id" value="">
-        <button type="button" class="ea6-voice-button" id="ea6-voice" aria-pressed="false" aria-label="Search by voice" hidden>
+        <button type="button" class="ea6-voice-button" id="ea6-voice" aria-pressed="false" aria-label="Speak to search by voice" hidden>
           <svg class="ea6-voice-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path d="M12 3.5a2.8 2.8 0 0 0-2.8 2.8v5.4a2.8 2.8 0 0 0 5.6 0V6.3A2.8 2.8 0 0 0 12 3.5Z"/>
             <path d="M5.5 11.2a6.5 6.5 0 0 0 13 0M12 17.7v3M9 20.7h6"/>
           </svg>
           <span class="ea6-voice-text">Speak</span>
         </button>
-        <div id="ea6-suggestions" class="ea6-autocomplete" role="listbox" aria-label="Suggested verified Kabankalan places" hidden></div>
+        <div id="ea6-suggestions" class="ea6-autocomplete" role="listbox" aria-label="Suggested published Kabankalan places" hidden></div>
         <p class="ea6-voice-status" id="ea6-voice-status" role="status" aria-live="polite"></p>
       </div>
       <div class="ea6-field">
@@ -69,14 +62,14 @@
     <div class="ea6k-location-top">
       <div class="ea6-location-title">
         <span class="ea6-location-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
-        <div><span class="ea6-panel-eyebrow">NEAR ME</span><h2 id="ea6-nearby-title">Find places near you</h2>
+        <div><h2 id="ea6-nearby-title">Find places near you</h2>
         <p>Optional: sort these results by distance from your location.</p></div>
       </div>
       <button id="ea6-use-gps" class="ea6-btn ea6-location-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg> Use my location</button>
     </div>
     <details class="ea6k-landmark" {% if selected_origin %}open{% endif %}>
       <summary>Can't use GPS? Choose a Kabankalan landmark instead</summary>
-      <p>Optional: choose a familiar published Kabankalan landmark as a <strong>distance reference</strong>, not your current location. Only curated landmarks with staff-verified map coordinates are listed.</p>
+      <p>Optional: choose a familiar published Kabankalan landmark as a <strong>distance reference</strong>, not your current location. Only selected landmarks with recorded map coordinates are listed. Confirm the location before travelling.</p>
       {% if landmarks %}
       <form method="get" action="{% url 'places:attraction_carousel' %}" id="ea6-landmark-form" class="ea6k-landmark-form">
         <input type="hidden" name="mode" value="nearby">
@@ -92,7 +85,7 @@
         <button type="submit" class="ea6-btn ea6-plain">Sort from landmark</button>
       </form>
       {% else %}
-      <p>There are currently no mapped, verified reference landmarks available. You can still browse verified Kabankalan places and use GPS when supported.</p>
+      <p>There are currently no mapped reference landmarks available. You can still browse published Kabankalan places and use GPS when supported.</p>
       {% endif %}
     </details>
     <div class="ea6h-radius" id="ea6h-radius" aria-label="Filter results by distance" hidden>
@@ -114,12 +107,15 @@
     <p class="ea6-fineprint">Your location stays in this browser tab; distances are straight-line estimates, not driving times.</p>
   </section>
   <div class="ea6-heading">
-    <div><span class="ea6-panel-eyebrow">PLACES TO EXPLORE</span>
+    <div>
       <h2>{% if selected_service_label %}{{ selected_service_label }}{% elif query %}Results for “{{ query }}”{% else %}Discover local places{% endif %}</h2>
       <p>Thoughtfully collected places in Kabankalan, ready for your next stop.</p>
     </div>
     <span class="ea6-pill" id="ea6h-result-count">{{ result_count }} matching listing{{ result_count|pluralize }}</span>
   </div>
+  {% if search_note %}
+    <p class="ea-search-note" role="status">{{ search_note }}</p>
+  {% endif %}
   {% if results %}
     <div class="ea6g-controls" aria-label="Nearby results viewing options">
       <button class="ea6g-map-button" id="ea6g-toggle" type="button" aria-controls="ea6g-map-shell" aria-expanded="false">View nearby results on map ↗</button>
@@ -133,17 +129,17 @@
     <div class="ea6-list" id="ea6-results"{% if selected_origin %} data-origin-lat="{{ selected_origin.latitude }}" data-origin-lng="{{ selected_origin.longitude }}" data-origin-name="{{ selected_origin.title }}"{% endif %}>
       {% for place in results %}
         <article class="ea6-card" data-place-id="{{ place.pk }}" data-title="{{ place.title }}" data-category="{% if place.category %}{{ place.category.name }}{% else %}Kabankalan place{% endif %}" data-detail-url="{% url 'places:place_detail' place.pk %}" {% if place.latitude != None and place.longitude != None %}data-lat="{{ place.latitude }}" data-lng="{{ place.longitude }}" data-directions-url="https://www.google.com/maps/dir/?api=1&amp;destination={{ place.latitude }},{{ place.longitude }}"{% endif %}>
-          <div class="ea6-cover" role="button" tabindex="0" aria-label="Fly to {{ place.title }} on the map">
-            {% if place.cover_image %}<img loading="lazy" decoding="async" width="640" height="360" alt="{{ place.title }}" src="{{ place.cover_image.url }}">
-            {% elif place.cover_image_url %}<img loading="lazy" decoding="async" width="640" height="360" alt="{{ place.title }}" src="{{ place.cover_image_url }}" onerror="this.closest('.ea6-cover').classList.add('ea6-photo-failed'); this.remove();">
-            {% elif place.sample_image %}<img loading="lazy" decoding="async" width="640" height="360" alt="Illustrative category sample, not an actual photo of {{ place.title }}" src="{% static place.sample_image %}"><span class="ea6-sample-badge">AI-generated category sample</span>
-            {% else %}<span class="ea6n-no-photo" role="img" aria-label="No verified photograph available"><span class="ea6n-no-photo-icon" aria-hidden="true">⌖</span><span>PHOTO NOT YET AVAILABLE</span></span>{% endif %}
-            <span class="ea6-card-map-hint" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" fill="currentColor"/></svg>View on map</span>
+          <div class="ea6-cover"{% if place.latitude != None and place.longitude != None %} role="button" tabindex="0" aria-label="View on map: {{ place.title }}{% if place.cover_image or place.cover_image_url %}{% elif place.sample_image %} · Illustrative category sample{% else %} · Photo not yet available{% endif %}"{% endif %}>
+            {% if place.cover_image %}<img data-place-cover loading="lazy" decoding="async" width="640" height="360" alt="{{ place.title }}" src="{{ place.cover_image.url }}">
+            {% elif place.cover_image_url %}<img data-place-cover loading="lazy" decoding="async" width="640" height="360" alt="{{ place.title }}" src="{{ place.cover_image_url }}">
+            {% elif place.sample_image %}<img data-place-cover loading="lazy" decoding="async" width="640" height="360" alt="Illustrative category sample, not an actual photo of {{ place.title }}" src="{% static place.sample_image %}"><span class="ea6-sample-badge">Photo not yet available · Illustrative category sample</span>
+            {% else %}<span class="ea6n-no-photo" role="img" aria-label="No destination photograph available"><span class="ea6n-no-photo-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8" cy="9" r="1.5"></circle><path d="m4 17 5-5 4 4 3-3 4 4"></path></svg></span><span>PHOTO NOT YET AVAILABLE</span></span>{% endif %}
+            {% if place.latitude != None and place.longitude != None %}<span class="ea6-card-map-hint" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" fill="currentColor"/></svg>View on map</span>{% endif %}
           </div>
           <div class="ea6-card-body">
             <div class="ea6n-badges">
               <span class="ea6-category">{% if place.category %}{{ place.category.name }}{% else %}Place in Kabankalan{% endif %}</span>
-              <span class="ea6-public-badge" title="Reviewed and published by ExploreKabankalan staff">✓ Staff verified listing</span>
+              <span class="ea6-public-badge" title="Published in the directory; confirm details before visiting">Published listing</span>
             </div>
             <h3><a href="{% url 'places:place_detail' place.pk %}">{{ place.title }}</a></h3>
             {% if place.review_count %}<p class="ea6-meta">★ {{ place.avg_rating|floatformat:1 }} / 5 · {{ place.review_count }} visitor review{{ place.review_count|pluralize }}</p>{% endif %}
@@ -162,7 +158,7 @@
               <a href="{% url 'places:place_detail' place.pk %}">View details ↗</a>
               {% if place.latitude != None and place.longitude != None %}
                 <a target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/dir/?api=1&amp;destination={{ place.latitude }},{{ place.longitude }}">Directions ↗</a>
-                <button class="ea6g-card-map" type="button" aria-label="Show {{ place.title }} on nearby map">Show on map ↗</button>
+                <button class="ea6g-card-map" type="button" aria-label="Show on map: {{ place.title }}">Show on map ↗</button>
               {% endif %}
             </div>
           </div>
@@ -176,24 +172,24 @@
         <strong id="ea6-drone-target">Kabankalan</strong>
         <span class="ea6-drone-scan"></span>
       </div>
-      <div id="ea6g-map" class="ea6g-map" role="region" aria-label="Interactive map of verified nearby result pins"></div>
+      <div id="ea6g-map" class="ea6g-map" role="region" aria-label="Interactive map of nearby result pins"></div>
       <p id="ea6g-map-status" class="ea6g-map-status" role="status" aria-live="polite">Map loading will begin when you open this panel.</p>
-      <p class="ea6g-map-status">Only this search's published, verified Kabankalan listings with coordinates are pinned. Map marker colors indicate selected or unselected locations—not hobby scores or business quality. Map tiles © <a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener noreferrer">MapTiler</a>; map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>.</p>
+      <p class="ea6g-map-status">Only this search's published Kabankalan listings with recorded coordinates are pinned. Locations may need confirmation. Map marker colors indicate selected or unselected locations—not hobby scores or business quality. Map tiles © <a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener noreferrer">MapTiler</a>; map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>.</p>
     </aside>
     </div>
   {% else %}
     <section class="ea6-empty" role="status">
-      <h2>No verified matches yet</h2>
-      <p>{% if selected_service_label %}There are currently no verified {{ selected_service_label|lower }} in ExploreKabankalan's database matching this search.{% else %}No published Kabankalan places matched that search.{% endif %} Nearby business results will become available as administrators add and verify real establishments and coordinates.</p>
+      <h2>No published matches yet</h2>
+      <p>{% if search_note %}{{ search_note }} No published Kabankalan places matched this search.{% elif selected_service_label %}There are currently no published {{ selected_service_label|lower }} in ExploreKabankalan's database matching this search.{% else %}No published Kabankalan places matched that search.{% endif %} Listings may be incomplete or outdated; confirm details before visiting.</p>
       <a class="ea6-back" href="{% url 'places:attraction_carousel' %}?browse=all">Browse existing destinations →</a>
     </section>
   {% endif %}
-  <p class="ea6-notice">Only staff-verified, published Kabankalan listings appear here. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>. Details can change — confirm before visiting.</p>
+  <p class="ea6-notice">Only published Kabankalan listings appear here. Publication does not guarantee independent verification. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>. Details can change — confirm before visiting.</p>
 </main>
 {% endblock %}
 {% block extra_js %}
 {{ approved_suggestions|json_script:"ea6-approved-data" }}
-<script src="{% static 'js/ea-voice.js' %}"></script>
+<script src="{% static 'js/ea-voice.js' %}?v=20261104-2"></script>
 <script>
 (function () {
   "use strict";
@@ -252,7 +248,7 @@
       const name = document.createElement("strong");
       name.textContent = place.title;
       const subtitle = document.createElement("small");
-      subtitle.textContent = (place.category__name || "Kabankalan place") + " · Staff verified";
+      subtitle.textContent = (place.category__name || "Kabankalan place") + " · Published listing";
       option.append(name,subtitle);
       option.addEventListener("click", () => choosePlace(place));
       listbox.append(option);
@@ -373,7 +369,7 @@
       const text = card.querySelector(".ea6-distance");
       if (text) text.textContent = Number.isFinite(distance)
         ? "Approx. " + distance.toFixed(1) + " km straight-line from " + label
-        : "Distance unavailable — coordinates not verified";
+        : "Distance unavailable — no recorded coordinates";
       return {card,index,distance};
     });
     scored.sort((a,b) => a.distance - b.distance || a.index-b.index);
@@ -414,13 +410,13 @@
   if (mapToggle && mappedRows.length === 0) {
     mapToggle.disabled = true;
     mapToggle.textContent = "Map unavailable for these results";
-    if (mapCount) mapCount.textContent = "No displayed listing has recorded coordinates. Try another verified place.";
+    if (mapCount) mapCount.textContent = "No displayed listing has recorded coordinates. Try another published place.";
   }
   function loadNearbyLeaflet() {
     if (window.L?.map && window.L?.tileLayer) return Promise.resolve();
     if (assetsPromise) return assetsPromise;
-    const cssUrl = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-    const jsUrl = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+    const cssUrl = "{% static 'vendor/leaflet/leaflet.css' %}";
+    const jsUrl = "{% static 'vendor/leaflet/leaflet.js' %}";
     const cssPromise = new Promise((resolve, reject) => {
       const link = document.createElement("link");
       link.rel = "stylesheet"; link.href = cssUrl; link.id = "ea6g-leaflet-css";
@@ -451,7 +447,7 @@
     const heading = document.createElement("strong");
     heading.textContent = card.dataset.title || "Kabankalan place";
     const category = document.createElement("small");
-    category.textContent = card.dataset.category || "Verified place";
+    category.textContent = card.dataset.category || "Published place";
     const info = document.createElement("div");
     info.textContent = card.querySelector(".ea6-distance")?.textContent || "Distance unavailable";
     const links = document.createElement("div");
@@ -576,7 +572,7 @@
           marker.openPopup();
         }
       } else fitResultPins();
-      if (mapStatus) mapStatus.textContent = visibleMappedRows().length + " verified location pin(s) shown for these search results. Select a pin or use Show on map on a card.";
+      if (mapStatus) mapStatus.textContent = visibleMappedRows().length + " location pin(s) shown for these search results. Select a pin or use Show on map on a card.";
       if (cardToFocus && window.matchMedia("(max-width:980px)").matches) mapShell.scrollIntoView({behavior:"smooth",block:"start"});
     } catch(error) {
       if (mapStatus) mapStatus.textContent = "Unable to load the map. Check your connection and click the map button again to retry. Your results list still works.";
@@ -646,7 +642,7 @@
     };
 
     if (reduceMotion.matches) {
-      resultsMap.setView([lat, lng], 16.5);
+      resultsMap.setView([lat, lng], 16.5, {animate:false});
       finish();
       return;
     }

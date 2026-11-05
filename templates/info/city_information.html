@@ -1,80 +1,40 @@
 {% extends "theme/public_base.html" %}
 {% load static %}
-{% block extra_css %}
-<style>
-/* ExploreAnywhere City Information module v1 - dark editorial theme */
-.eainfo-page {--eainfo-panel:#101822;--eainfo-panel-2:#0c141c;--eainfo-line:#2a3642;--eainfo-text:#e7edf1;--eainfo-muted:#a6b4c2;--eainfo-teal:#21d9c6;max-width:1180px;margin:0 auto;padding:34px 24px 92px;color:var(--eainfo-text)}
-.eainfo-page * {box-sizing:border-box}
-.eainfo-page a {text-decoration:none}
-.eainfo-page a:focus-visible {outline:2px solid var(--eainfo-teal);outline-offset:3px}
-.eainfo-hero {position:relative;overflow:hidden;padding:33px 34px;border:1px solid #2a4c47;border-radius:17px;background:linear-gradient(120deg,#112e32,#0c2230 70%);box-shadow:0 18px 45px #0002;color:#eaf4f1}
-.eainfo-hero::after {content:"";position:absolute;right:-70px;top:-100px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,#21d9c61f,transparent 65%);pointer-events:none}
-.eainfo-hero > * {position:relative;z-index:1}
-.eainfo-kicker {margin:0 0 12px;color:var(--eainfo-teal);font-size:10px;font-weight:750;letter-spacing:1.5px;text-transform:uppercase}
-.eainfo-hero h1 {margin:0 0 12px;color:#f1f6f3;font-family:Georgia,"Times New Roman",serif;font-size:clamp(32px,4.2vw,48px);font-weight:600;line-height:1.08;letter-spacing:-1.6px}
-.eainfo-hero p:not(.eainfo-kicker) {max-width:62ch;margin:0;color:#b6c8c7;font-size:13px;line-height:1.8}
-.eainfo-search {display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
-.eainfo-search input[type="search"] {flex:1 1 240px;min-width:0;min-height:42px;border-radius:10px;border:1px solid #2f5a53;background:#0c141c;color:#e7edf1;padding:10px 14px;font-size:13px;font-family:inherit}
-.eainfo-search input[type="search"]::placeholder {color:#7f93a4}
-.eainfo-search button {min-height:42px;border:0;border-radius:10px;padding:10px 20px;font-weight:750;font-size:13px;cursor:pointer;color:#061b1c;background:linear-gradient(105deg,#10d2bc,#1db7d4 60%,#6863f5)}
-.eainfo-search button:hover {filter:brightness(1.08)}
-.eainfo-chips {display:flex;gap:9px;flex-wrap:wrap;margin:26px 0 8px}
-.eainfo-chip {display:inline-flex;align-items:center;gap:8px;border:1px solid var(--eainfo-line);background:var(--eainfo-panel);color:#cfe0dd;border-radius:999px;padding:8px 15px;font-size:12px;font-weight:700;transition:border-color .16s,color .16s}
-.eainfo-chip:hover {border-color:var(--eainfo-teal);color:#fff}
-.eainfo-chip span {font-size:10px;background:#0f2b27;color:#a5e8dc;border-radius:999px;padding:2px 8px;font-weight:750}
-.eainfo-chip.active {background:var(--eainfo-teal);border-color:var(--eainfo-teal);color:#061718}
-.eainfo-chip.active span {background:#0617181f;color:#061718}
-.eainfo-meta {color:var(--eainfo-muted);font-size:12px;margin:0 0 24px}
-.eainfo-group {margin-bottom:30px}
-.eainfo-group-head {display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 13px}
-.eainfo-group-head h2 {margin:0;color:#f1f6f3;font-family:Georgia,"Times New Roman",serif;font-size:22px;font-weight:600;letter-spacing:-.4px}
-.eainfo-group-head span {color:var(--eainfo-muted);font-size:11px}
-.eainfo-grid {display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
-.eainfo-card {display:flex;flex-direction:column;gap:9px;background:var(--eainfo-panel);border:1px solid var(--eainfo-line);border-radius:16px;padding:19px;box-shadow:0 14px 34px #00000026;min-width:0}
-.eainfo-card:hover {border-color:#2f5a53}
-.eainfo-card h3 {margin:0;color:#f1f6f3;font-family:Georgia,"Times New Roman",serif;font-size:17px;font-weight:600;line-height:1.35}
-.eainfo-card p {margin:0;color:#aebdca;font-size:13px;line-height:1.7}
-.eainfo-card img {width:100%;height:150px;object-fit:cover;border-radius:12px;border:1px solid var(--eainfo-line)}
-.eainfo-empty {background:var(--eainfo-panel-2);border:1px dashed #2f5a53;border-radius:16px;padding:36px 26px;text-align:center}
-.eainfo-empty h2 {margin:0 0 9px;color:#f1f6f3;font-family:Georgia,"Times New Roman",serif;font-size:21px;font-weight:600}
-.eainfo-empty p {margin:0 auto;max-width:60ch;color:#aebdca;font-size:13px;line-height:1.75}
-.eainfo-empty .eainfo-actions {display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
-.eainfo-btn {display:inline-flex;align-items:center;justify-content:center;min-height:41px;padding:10px 17px;border-radius:10px;font-weight:750;font-size:12px}
-.eainfo-btn-teal {color:#061b1c!important;background:linear-gradient(105deg,#10d2bc,#1db7d4 60%,#6863f5)}
-.eainfo-btn-soft {background:#0f2b27;border:1px solid #2f5a53;color:#b4dfd9!important}
-.eainfo-note {margin-top:8px;color:#8296a6;font-size:11px;line-height:1.7}
-@media(max-width:760px){.eainfo-page{padding:22px 15px 65px}.eainfo-hero{padding:26px 22px;border-radius:15px}}
-@media(prefers-reduced-motion:reduce){.eainfo-chip{transition:none}}
-</style>
-{% endblock %}
 {% block title %}City Information · ExploreKabankalan{% endblock %}
-{% block body_class %}site-dark{% endblock %}
+{% block body_class %}site-dark city-info-page ek-discovery-theme ek-journey-theme{% endblock %}
 {% block skip_link %}<a class="sd-skip" href="#main-content">Skip to content</a>{% endblock %}
-{% block brand_content %}
-  <span class="sd-brand-icon" aria-hidden="true">✺</span>
-  <span class="sd-brand-name">Explore<span>Kabankalan</span><small>LOCAL PLACES. YOUR ADVENTURE.</small></span>
-{% endblock %}
+{% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
 {% block extra_css_after %}<link rel="stylesheet" href="{% static 'css/site-dark.css' %}">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261105-city-directory-1">{% endblock %}
 
 {% block content %}
 <main class="eainfo-page" id="main-content">
   <header class="eainfo-hero">
-    <p class="eainfo-kicker">One City. Your Hobbies. Our Map.</p>
     <h1>City Information</h1>
-    <p>Practical notes about Kabankalan published by the city administration: places worth knowing, how to get around, and what to expect before you visit.</p>
+    <p>Discover Kabankalan places and practical city guides in one place.</p>
     <form class="eainfo-search" method="get" action="{% url 'info:city_information' %}" role="search">
+      {% if selected_directory != "all" %}<input type="hidden" name="directory" value="{{ selected_directory }}">{% endif %}
       <input type="search" name="q" value="{{ search_query }}" placeholder="Search city information…" aria-label="Search city information">
       {% if selected_type %}<input type="hidden" name="type" value="{{ selected_type }}">{% endif %}
       <button type="submit">Search</button>
     </form>
   </header>
 
-  <nav class="eainfo-chips" aria-label="City information categories">
-    <a class="eainfo-chip{% if not selected_type %} active{% endif %}" href="{% url 'info:city_information' %}{% if search_query %}?q={{ search_query|urlencode }}{% endif %}">All<span>{{ total_count }}</span></a>
+  <nav class="eainfo-directory-nav" aria-label="Explore city information by category">
+    {% for link in directory_links %}
+      <a href="{{ link.url }}" class="eainfo-directory-link{% if link.active %} is-active{% endif %}"{% if link.active %} aria-current="page"{% endif %}>{{ link.label }}</a>
+    {% endfor %}
+  </nav>
+
+  {% if show_guides %}
+  <section class="eainfo-guides" aria-labelledby="city-guides-heading">
+  <div class="eainfo-section-heading"><div><p class="eainfo-eyebrow">Local knowledge</p><h2 id="city-guides-heading">City guides</h2><p>Staff-published notes about Kabankalan.</p></div></div>
+  <nav class="eainfo-chips" aria-label="City guide types">
+    <a class="eainfo-chip{% if not selected_type %} active{% endif %}"{% if not selected_type %} aria-current="page"{% endif %} href="?directory=guides{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}">All<span>{{ total_count }}</span></a>
     {% for link in type_links %}
-      <a class="eainfo-chip{% if link.active %} active{% endif %}" href="?type={{ link.type }}{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}">{{ link.label }}<span>{{ link.count }}</span></a>
+      <a class="eainfo-chip{% if link.active %} active{% endif %}"{% if link.active %} aria-current="page"{% endif %} href="?directory=guides&amp;type={{ link.type }}{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}">{{ link.label }}<span>{{ link.count }}</span></a>
     {% endfor %}
   </nav>
   <p class="eainfo-meta">
@@ -83,6 +43,7 @@
     {% else %}
       Showing {{ entry_count }} of {{ total_count }} published {{ total_count|pluralize:"entry,entries" }}.
     {% endif %}
+    Category counts show all published entries.
   </p>
 
   {% if grouped_entries %}
@@ -100,6 +61,9 @@
               {% endif %}
               <h3>{{ entry.title }}</h3>
               <p>{{ entry.description }}</p>
+              {% if entry.photo_credit %}
+                <p class="eainfo-credit">{{ entry.photo_credit }}</p>
+              {% endif %}
             </article>
           {% endfor %}
         </div>
@@ -107,14 +71,14 @@
     {% endfor %}
   {% else %}
     <section class="eainfo-empty">
-      <h2>No published city information yet</h2>
+      <h2>{% if search_query or selected_type %}No matching city information{% else %}No published city information yet{% endif %}</h2>
       <p>
         {% if search_query or selected_type %}
           No published entry matches the current filter. Try another search term or clear the category filter.
         {% else %}
-          The city administration publishes these notes from the staff dashboard
+          Staff publish these notes from the staff dashboard
           (Admin &rsaquo; City information). Nothing is shown here until an entry is published,
-          so this page never displays unverified information.
+          so this page only displays published entries.
         {% endif %}
       </p>
       <div class="eainfo-actions">
@@ -127,9 +91,54 @@
     </section>
   {% endif %}
 
-  <p class="eainfo-note">
-    Information is published by the city administration and reviewed in the staff dashboard.
-    ExploreAnywhere shows the published records as they are; it does not add claims of its own.
-  </p>
+  </section>
+  {% endif %}
+
+  {% if show_places %}
+  <section class="eainfo-directory" aria-labelledby="city-places-heading">
+    <div class="eainfo-section-heading">
+      <div><p class="eainfo-eyebrow">The shared place catalogue</p>
+        <h2 id="city-places-heading">{% if selected_directory == "all" %}Places in Kabankalan{% else %}{{ directory_label }}{% endif %}</h2>
+        <p>Browse existing published places. Some also appear in hobby discovery.</p>
+      </div>
+      <span class="eainfo-directory-count">{{ place_page.paginator.count }} {{ place_page.paginator.count|pluralize:"place,places" }}</span>
+    </div>
+    <p class="eainfo-directory-note">Groups use existing categories and some place names; they may need review. A missing hobby tag does not mean a place is irrelevant.</p>
+    {% if place_page.object_list %}
+    <div class="eainfo-grid eainfo-place-grid">
+      {% for place in place_page %}
+      <article class="eainfo-card eainfo-place-card">
+        {% if place.cover_image %}<img data-place-cover src="{{ place.cover_image.url }}" alt="{{ place.title }}" loading="lazy">
+        {% elif place.cover_image_url %}<img data-place-cover src="{{ place.cover_image_url }}" alt="{{ place.title }}" loading="lazy">
+        {% else %}<div class="eainfo-place-placeholder">Photo not yet available</div>{% endif %}
+        <div class="eainfo-place-content">
+          <p class="eainfo-place-category">{{ place.category.name|default:"Category not assigned" }}</p>
+          <h3>{{ place.title }}</h3>
+          {% if place.address %}<p>{{ place.address }}</p>{% endif %}
+          {% with hobbies=place.hobbies.all %}
+            <p class="eainfo-place-hobbies">{% if hobbies %}Hobbies: {% for hobby in hobbies %}{{ hobby.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}No hobby tags assigned{% endif %}</p>
+          {% endwith %}
+          {% if place.photo_credit or place.photo_source_url or place.photo_license %}
+          <p class="eainfo-credit">Photo{% if place.photo_credit %} by {{ place.photo_credit }}{% endif %}{% if place.photo_source_url %} · <a href="{{ place.photo_source_url }}" target="_blank" rel="noopener noreferrer">Source</a>{% endif %}{% if place.photo_license %} · {% if place.photo_license_url %}<a href="{{ place.photo_license_url }}" target="_blank" rel="noopener noreferrer">{{ place.photo_license }}</a>{% else %}{{ place.photo_license }}{% endif %}{% endif %}</p>
+          {% endif %}
+          <a class="eainfo-place-detail" href="{% url 'places:place_detail' place.pk %}">View place details <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% if place_page.has_other_pages %}
+      <nav class="eainfo-pagination" aria-label="Place directory pages">
+        {% if previous_page_url %}<a href="{{ previous_page_url }}">← Previous</a>{% endif %}
+        <span>Page {{ place_page.number }} of {{ place_page.paginator.num_pages }}</span>
+        {% if next_page_url %}<a href="{{ next_page_url }}">Next →</a>{% endif %}
+      </nav>
+    {% endif %}
+    {% else %}
+      <div class="eainfo-empty"><h3>No matching places</h3><p>Try another category or search term. Unclassified places remain under All.</p><a class="eainfo-btn eainfo-btn-teal" href="{% url 'info:city_information' %}">View all</a></div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  <p class="eainfo-note">Place listings and city guides can describe the same location. Details and publication status do not guarantee independent verification; confirm important information before visiting.</p>
 </main>
 {% endblock %}

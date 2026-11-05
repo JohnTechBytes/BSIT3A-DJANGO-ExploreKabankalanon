@@ -90,48 +90,45 @@
 </style>
 {% endblock %}
 {% block title %}Saved Places · ExploreKabankalan{% endblock %}
-{% block body_class %}site-dark{% endblock %}
+{% block body_class %}site-dark saved-page ek-discovery-theme ek-journey-theme{% endblock %}
 {% block skip_link %}<a class="sd-skip" href="#main-content">Skip to content</a>{% endblock %}
-{% block brand_content %}
-  <span class="sd-brand-icon" aria-hidden="true">✺</span>
-  <span class="sd-brand-name">Explore<span>Kabankalan</span><small>LOCAL PLACES. YOUR ADVENTURE.</small></span>
-{% endblock %}
+{% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
 {% block extra_css_after %}<link rel="stylesheet" href="{% static 'css/site-dark.css' %}">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-12">{% endblock %}
 
 {% block content %}
 <main class="ea-saved" id="main-content">
   <header class="ea-c-page-hero">
-    <p class="ea-c-eyebrow">MY KABANKALAN JOURNEY</p>
     <h1>Saved Places</h1>
     <p>Your personal collection of published Kabankalan destinations.</p>
     <span class="ea-c-count">{{ entries|length }} saved destination{{ entries|length|pluralize }}</span>
   </header>
   <nav class="ea-actions" aria-label="Saved places navigation">
     <a class="ea-action" href="{% url 'places:journey_dashboard' %}">My Journey</a>
-    <a class="ea-action ea-action-secondary" href="{% url 'places:attraction_carousel' %}">Explore Recommendations</a>
+    <a class="ea-action ea-action-secondary" href="{% url 'places:attraction_carousel' %}?browse=all">Explore Places</a>
   </nav>
-  {% if entries %}
-{% if messages %}
+  {% if messages %}
   <div class="sd-flash" role="status" aria-live="polite">
     {% for message in messages %}<p class="sd-flash-item {{ message.tags }}">{{ message }}</p>{% endfor %}
   </div>
   {% endif %}
 
+  {% if entries %}
     <section class="ea-saved-grid" aria-label="Your saved destinations">
     {% for entry in entries %}
     <article class="ea-saved-item">
       <div class="ea-c-place-media">
         {% if entry.place.cover_image %}
-          <img src="{{ entry.place.cover_image.url }}" alt="{{ entry.place.title }}" loading="lazy" decoding="async">
+          <img data-place-cover src="{{ entry.place.cover_image.url }}" alt="{{ entry.place.title }}" loading="lazy" decoding="async">
         {% elif entry.place.cover_image_url %}
-          <img src="{{ entry.place.cover_image_url }}" alt="{{ entry.place.title }}" loading="lazy" decoding="async">
+          <img data-place-cover src="{{ entry.place.cover_image_url }}" alt="{{ entry.place.title }}" loading="lazy" decoding="async">
         {% elif entry.place.sample_image %}
-          <img src="{% static entry.place.sample_image %}" alt="Illustrative category sample, not an actual photo of {{ entry.place.title }}" loading="lazy" decoding="async">
-          <span class="ea-saved-sample">AI-generated category sample</span>
+          <img data-place-cover src="{% static entry.place.sample_image %}" alt="Illustrative category sample, not an actual photo of {{ entry.place.title }}" loading="lazy" decoding="async">
+          <span class="ea-saved-sample">Photo not yet available · Illustrative category sample</span>
         {% else %}
-          <div class="ea-c-photo-empty"><span class="ea-c-photo-icon" aria-hidden="true">&#128205;</span><span>No destination photo available</span></div>
+          <div class="ea-c-photo-empty"><span class="ea-c-photo-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span>No destination photo available</span></div>
         {% endif %}
       </div>
       {% if entry.place.cover_image or entry.place.cover_image_url %}
@@ -148,13 +145,13 @@
       <a class="ea-action ea-action-secondary" href="{% url 'itineraries:choose_for_place' entry.place.pk %}">Add to Itinerary</a>
       <form method="post" action="{% url 'places:unsave_place' entry.place.pk %}">
         {% csrf_token %}
-        <button class="ea-unsave" type="submit">Remove from Saved</button>
+        <button class="ea-unsave" type="submit" aria-label="Remove from Saved — Remove {{ entry.place.title }} from saved places">Remove from Saved</button>
       </form>
     </article>
     {% endfor %}
   </section>
   {% else %}
-  <div class="ea-empty"><h2>No saved places yet</h2><p class="ea-muted">Discover a destination and select Save Place to add it here.</p></div>
+  <div class="ea-empty"><h2>No saved places yet</h2><p class="ea-muted">Discover a destination and select Save Place to add it here.</p><a class="ea-action" href="{% url 'places:attraction_carousel' %}?browse=all">Explore places ↗</a></div>
   {% endif %}
 </main>
 {% endblock %}

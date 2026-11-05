@@ -9,7 +9,11 @@
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 
+    <script src="{% static 'js/place-photo-fallback.js' %}"></script>
     <style>
+        .ek-photo-unavailable { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; min-height: 150px; padding: 16px; background: #e9eee5; color: #334e40; text-align: center; font-size: 13px; font-weight: 600; }
+        .eainfo-place-card > .ek-photo-unavailable { height: 175px; }
+        .discovery-card > .ek-photo-unavailable, .sample-photo-wrapper > .ek-photo-unavailable { height: 190px; }
         :root {
             --ea-navy: #0f1b3d;
             --ea-blue: #2563eb;
@@ -269,6 +273,16 @@
 
     {% block extra_css %}{% endblock %}
     {% block extra_css_after %}{% endblock %}
+    {# Bump this version when changing editorial.css so browsers fetch updated styles. #}
+    <link rel="stylesheet" href="{% static 'css/editorial.css' %}?v=20261031-10">
+    <link rel="stylesheet" href="{% static 'css/public-refresh.css' %}?v=20261031-3">
+    <link rel="stylesheet" href="{% static 'css/system-guide.css' %}?v=20261101-2">
+    {% block page_styles %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/design-craft.css' %}?v=20261101-2">
+    <link rel="stylesheet" href="{% static 'css/public-night.css' %}?v=20261101-3">
+    {% block design_system %}{% endblock %}
+    <script src="{% static 'js/public-reveal.js' %}?v=20261101-1" defer></script>
+    <script src="{% static 'js/public-motion.js' %}?v=20261101-1" defer></script>
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
@@ -278,21 +292,7 @@
     <nav class="ea-nav-container" aria-label="Main navigation">
 
         <a href="/" class="ea-site-logo">
-            {% block brand_content %}
-            <span class="ea-logo-icon">
-                <svg viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2"
-                     stroke-linecap="round"
-                     stroke-linejoin="round"
-                     aria-hidden="true">
-                    <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 0 1 16 0Z"/>
-                    <circle cx="12" cy="10" r="3"/>
-                </svg>
-            </span>
-            ExploreAnywhere
-            {% endblock %}
+            {% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
         </a>
 
         <button type="button"

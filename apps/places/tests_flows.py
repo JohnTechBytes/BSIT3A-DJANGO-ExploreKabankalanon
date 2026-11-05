@@ -316,6 +316,12 @@ class NearbyPageTests(FlowFixture):
         self.assertContains(response, 'id="ea6-voice-status"')
         self.assertContains(response, "js/ea-voice.js")
 
+    def test_nearby_map_uses_bundled_leaflet(self):
+        response = self.client.get(self.url, {"mode": "nearby"})
+        self.assertContains(response, 'vendor/leaflet/leaflet.js')
+        self.assertContains(response, 'vendor/leaflet/leaflet.css')
+        self.assertNotContains(response, 'unpkg.com/leaflet')
+
     def test_nearby_keeps_a_plain_grid_instead_of_a_marquee(self):
         response = self.client.get(self.url, {"mode": "nearby"})
         self.assertNotContains(response, "data-marquee")
@@ -328,7 +334,7 @@ class NearbyPageTests(FlowFixture):
         self.assertContains(response, "ea6-drone-hud")
         self.assertContains(response, 'id="ea6-drone-target"')
         self.assertContains(response, "ea6-card-map-hint")
-        self.assertContains(response, 'aria-label="Fly to Published Falls on the map"')
+        self.assertContains(response, 'aria-label="View on map: Published Falls')
 
 class ScoringDisplayTests(FlowFixture):
     """Percentages and "not scored" labels are no longer shown to visitors."""
@@ -437,6 +443,19 @@ class SavedPlacesFlowTests(FlowFixture):
         response = self.client.get(reverse("places:saved_places"))
         self.assertContains(response, "Published Falls")
         self.assertNotContains(response, "Published Cafe")
+
+    def test_saved_page_labels_remove_action_and_keeps_details_and_itinerary_links(self):
+        SavedPlace.objects.create(user=self.user, place=self.place)
+        response = self.client.get(reverse("places:saved_places"))
+        self.assertContains(response, '1 saved destination')
+        self.assertContains(response, f'Remove {self.place.title} from saved places')
+        self.assertContains(response, reverse("places:place_detail", args=[self.place.pk]))
+        self.assertContains(response, reverse("itineraries:choose_for_place", args=[self.place.pk]))
+
+    def test_empty_saved_page_offers_a_way_to_explore(self):
+        response = self.client.get(reverse("places:saved_places"))
+        self.assertContains(response, 'No saved places yet')
+        self.assertContains(response, reverse("places:attraction_carousel") + '?browse=all')
 
     def test_journey_dashboard_counts_reflect_saved_itinerary_and_review(self):
         SavedPlace.objects.create(user=self.user, place=self.place)
@@ -591,6 +610,19 @@ class ItineraryFlowTests(FlowFixture):
         self.assertEqual(self.client.post(
             reverse("itineraries:delete", args=[trip.pk])).status_code, 404)
         self.assertTrue(Itinerary.objects.filter(pk=trip.pk).exists())
+
+    def test_itinerary_list_keeps_empty_and_populated_navigation(self):
+        response = self.client.get(reverse("itineraries:list"))
+        self.assertContains(response, "No itinerary yet")
+        self.assertContains(response, reverse("itineraries:create"))
+        trip = Itinerary.objects.create(user=self.user, city=self.city, title="My plan", day_number=2)
+        response = self.client.get(reverse("itineraries:list"))
+        self.assertContains(response, "My plan")
+        self.assertContains(response, "Day 2")
+        self.assertContains(response, "0 planned stops")
+        self.assertContains(response, reverse("itineraries:builder", args=[trip.pk]))
+        self.assertContains(response, reverse("places:journey_dashboard"))
+        self.assertContains(response, reverse("places:saved_places"))
 
     def test_my_itineraries_lists_only_my_trips(self):
         Itinerary.objects.create(user=self.user, city=self.city, title="Mine to keep")

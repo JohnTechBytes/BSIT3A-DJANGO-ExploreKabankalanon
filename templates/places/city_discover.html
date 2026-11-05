@@ -1,6 +1,12 @@
-﻿{% extends "theme/public_base.html" %}
-{% load attraction_photos %}
+{% extends "theme/public_base.html" %}
+{% load attraction_photos static %}
 
+{% block title %}Discover {{ city_name }} · ExploreKabankalan{% endblock %}
+{% block body_class %}browse-page discovery-page ek-theme ek-discovery-theme{% endblock %}
+{% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
+{% block footer_brand %}ExploreKabankalan{% endblock %}
+{% block footer_tagline %}Local places. Your adventure.{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-12">{% endblock %}
 {% block content %}
 <style>
 .discovery{max-width:1300px;margin:auto;padding:36px 20px}
@@ -53,53 +59,36 @@
         {% for place in page_obj %}
         <article class="discovery-card">
             {% if place.cover_image %}
-                <img class="discovery-photo" src="{{ place.cover_image.url }}" alt="{{ place.title }}" loading="lazy">
+                <img data-place-cover class="discovery-photo" src="{{ place.cover_image.url }}" alt="{{ place.title }}" loading="lazy">
             {% elif place.cover_image_url %}
-                <img class="discovery-photo" src="{{ place.cover_image_url }}" alt="{{ place.title }}" loading="lazy">
+                <img data-place-cover class="discovery-photo" src="{{ place.cover_image_url }}" alt="{{ place.title }}" loading="lazy">
           
 {% else %}
     {% sample_photo place as stock_image %}
 
+    {% if stock_image %}
     <div class="sample-photo-wrapper">
-        <img
+        <img data-place-cover
             class="discovery-photo"
             src="{{ stock_image }}"
-            alt="Illustrative travel image for {{ place.title }}"
-            loading="lazy"
+            alt="Illustrative category sample, not an actual photo of {{ place.title }}"
+            loading="lazy" decoding="async"
         >
-
-        <span class="sample-photo-label">
-            Sample image · Not actual destination
-        </span>
+        <span class="sample-photo-label">Photo not yet available · Illustrative category sample · Not actual destination</span>
     </div>
+    {% else %}
+    <div class="discovery-empty" role="img" aria-label="No destination photo available for {{ place.title }}">Photo not yet available</div>
+    {% endif %}
 {% endif %}
 
             <div class="discovery-body">
                 <h3>{{ place.title }}</h3>
                 <p>{{ place.category.name|default:"Tourist attraction" }}</p>
 
-                {% if place.is_verified and place.is_active %}
-                    <span class="discovery-badge verified">Verified Attraction</span>
-                {% else %}
-                    <span class="discovery-badge">Unverified Map Discovery</span>
-                {% endif %}
-
-                {% if place.is_verified and place.is_active %}
-                    <div>
-                        <a class="discovery-link" href="{% url 'places:place_detail' place.pk %}">
-                            View Details
-                        </a>
-                    </div>
-                {% else %}
-                    <p>Information awaiting verification.</p>
-                    {% if place.latitude is not None and place.longitude is not None %}
-                    <a class="discovery-link"
-                       href="https://www.google.com/maps/search/?api=1&amp;query={{ place.latitude }},{{ place.longitude }}"
-                       target="_blank" rel="noopener noreferrer">
-                        View Map Location
-                    </a>
-                    {% endif %}
-                {% endif %}
+                <span class="discovery-badge verified">Published place</span>
+                <div>
+                    <a class="discovery-link" href="{% url 'places:place_detail' place.pk %}">View Details</a>
+                </div>
 
                 {% if place.photo_source_url %}
                     <p>

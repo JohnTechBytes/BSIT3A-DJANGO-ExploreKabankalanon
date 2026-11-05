@@ -2,11 +2,15 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+from datetime import date
+
+from apps.itineraries.models import Itinerary
+from apps.visits.models import VisitCheckIn
 
 from apps.cities.models import City
 from apps.core.models import Category, Hobby
 from apps.info.models import QueryLog, RecommendationRating
-from .models import Place
+from .models import Place, Review, SavedPlace
 
 
 class JourneyPreferenceTests(TestCase):
@@ -92,6 +96,25 @@ class JourneyDashboardPanelTests(TestCase):
 
     def setUp(self):
         self.client.force_login(self.user)
+
+    def test_dashboard_retains_populated_activity_and_links(self):
+        SavedPlace.objects.create(user=self.user, place=self.place)
+        Itinerary.objects.create(user=self.user, city=self.city, title="Test plan")
+        Review.objects.create(user=self.user, place=self.place, rating=4, comment="Test review")
+        VisitCheckIn.objects.create(user=self.user, place=self.place, visited_on=date(2026, 1, 1),
+                                    visit_note="Test visit", status=VisitCheckIn.Status.APPROVED)
+        response = self.client.get(reverse("places:journey_dashboard"))
+        self.assertContains(response, "My Journey")
+        self.assertContains(response, "Mag Aso Falls")
+        self.assertContains(response, "Test plan")
+        self.assertContains(response, "4 / 5 stars")
+        self.assertContains(response, "Staff approved")
+        self.assertEqual(response.context["saved_count"], 1)
+        self.assertEqual(response.context["itinerary_count"], 1)
+        self.assertEqual(response.context["review_count"], 1)
+        self.assertEqual(response.context["approved_visit_count"], 1)
+        for name in ("places:saved_places", "itineraries:list", "places:my_reviews", "visits:list"):
+            self.assertContains(response, f'href="{reverse(name)}"')
 
     def test_panel_shows_the_interests_and_the_search_history(self):
         session = self.client.session

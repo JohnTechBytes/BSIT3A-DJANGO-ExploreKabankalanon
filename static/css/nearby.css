@@ -108,6 +108,8 @@
 .nearby-page .ea6h-reset:not(:disabled):hover, .nearby-page .ea6g-map-button:not(:disabled):hover, .nearby-page .ea6g-map-button[aria-expanded="true"], .nearby-page .ea6g-fit:hover { border-color: #21d9c6; background: #17463f; color: #e4fffb; }
 .nearby-page .ea6h-help { flex: 1 1 220px; padding-bottom: 4px; color: #a3b6bf; font-size: 11px; line-height: 1.6; }
 .nearby-page .ea6-status, .nearby-page .ea6-warning { margin: 12px 0 0; color: #aab9c4; font-size: 11px; line-height: 1.7; }
+/* Explains where an answer came from, e.g. a match by category. */
+.nearby-page .ea-search-note { margin: 10px 0 0; color: #9fd9ff; font-size: 12px; line-height: 1.6; }
 .nearby-page .ea6-warning { color: #a1adbb; }
 
 /* Result heading, cards, and empty state. */

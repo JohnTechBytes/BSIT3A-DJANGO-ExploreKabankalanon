@@ -1,0 +1,24 @@
+@font-face { font-family:EKArchivo; src:url('../fonts/archivo-variable.ttf') format('truetype'); font-weight:100 900; font-display:swap; }
+body { background:#f7faf8; color:#0e3042; font-family:EKArchivo,system-ui,sans-serif; }
+.error-shell { background:#f7faf8; }
+.error-shell::after { border-color:#d0e3dd; box-shadow:0 0 0 70px #e6f2ef,0 0 0 150px #f0f7f4; }
+.error-brand { color:#173d50; }
+.error-brand-mark { border-radius:0; background:#173d50; color:#fff; font-size:14px; }
+.error-brand b span,.error-brand small { color:#4e6870; }
+.error-eyebrow { color:#2d6a72; }
+.error-code { color:#c8dfd8; font-family:EKArchivo,system-ui,sans-serif; font-weight:680; }
+.error-title { color:#0e3042; font-family:EKArchivo,system-ui,sans-serif; font-weight:680; letter-spacing:-.035em; }
+.error-copy,.error-foot { color:#4e6870; }
+.error-foot { border-color:#cfddda; }
+.error-btn { border-color:#a9c1bd; border-radius:0; background:#fff; color:#173d50; }
+.error-btn:hover { border-color:#69978f; background:#e6f2ef; color:#173d50; transform:none; }
+.error-btn.primary { border-color:#173d50; background:#173d50; color:#fff; }
+.error-btn.primary:hover { border-color:#295b6c; background:#295b6c; color:#fff; }
+.error-shell :focus-visible { outline:2px solid #b6532c; outline-offset:3px; }
+/* Use the same local-guide ink and paper as the public journey. */
+body, .error-shell { background: #f8f8f2; color: #153f43; }
+.error-shell::after { border-color: #d5e6d8; box-shadow: 0 0 0 70px #e6f1e7, 0 0 0 150px #f0f6ec; }
+.error-brand-mark, .error-btn.primary { background: #153f43; border-color: #153f43; color: #fff; border-radius: 4px; }
+.error-btn { border-color: #a7bfb5; border-radius: 4px; }
+.error-btn.primary:hover { background: #285e58; border-color: #285e58; }
+.error-shell :focus-visible { outline: 3px solid #b6532c; outline-offset: 3px; }

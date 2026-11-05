@@ -23,6 +23,37 @@ class AccountUrlTests(TestCase):
         self.assertEqual(reverse("register"), "/accounts/register/")
         self.assertEqual(reverse("logout"), "/accounts/logout/")
 
+    def test_auth_forms_keep_csrf_and_progressive_password_controls(self):
+        for name, count in (("login", 1), ("register", 2)):
+            with self.subTest(name=name):
+                response = self.client.get(reverse(name))
+                self.assertContains(response, 'name="csrfmiddlewaretoken"')
+                self.assertContains(response, 'data-password-toggle', count=count)
+                self.assertContains(response, 'aria-pressed="false" hidden', count=count)
+                self.assertContains(response, 'css/explore.css')
+
+    def test_invalid_registration_preserves_fields_and_reports_errors(self):
+        response = self.client.post(reverse("register"), {
+            "username": "invalid_account", "email": "bad-address",
+            "password1": "short", "password2": "different",
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'value="invalid_account"')
+        self.assertContains(response, 'Please review the highlighted fields below.')
+        self.assertContains(response, 'field-error-email')
+        self.assertContains(response, 'field-error-consent_privacy')
+        self.assertNotContains(response, 'value="short"')
+        self.assertFalse(User.objects.filter(username="invalid_account").exists())
+
+    def test_auth_posts_still_require_csrf(self):
+        csrf_client = self.client_class(enforce_csrf_checks=True)
+        for name in ("login", "register"):
+            with self.subTest(name=name):
+                self.assertEqual(csrf_client.post(reverse(name), {}).status_code, 403)
+                csrf_client.get(reverse(name))
+                token = csrf_client.cookies["csrftoken"].value
+                self.assertEqual(csrf_client.post(reverse(name), {"csrfmiddlewaretoken": token}).status_code, 200)
+
     def test_legacy_users_login_route_still_serves_the_branded_page(self):
         response = self.client.get("/users/login/")
         self.assertEqual(response.status_code, 200)
