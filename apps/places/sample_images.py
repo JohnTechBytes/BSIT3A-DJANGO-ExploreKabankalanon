@@ -1,7 +1,8 @@
 """Choose explicitly illustrative artwork for places without a real photo.
 
-These are category illustrations, not photos or claims about the listed places.
-Keep the matching conservative: unknown categories keep the neutral placeholder.
+These are shared illustrations, not photos or claims about listed places.
+Unknown categories receive a generic, AI-generated scene rather than a
+place-specific claim.
 """
 import re
 import unicodedata
@@ -24,7 +25,7 @@ _SAMPLE_PATTERNS = (
 
 
 def sample_image_for(place):
-    """Return a static path for a recognizable category, or an empty string."""
+    """Return a shared category sample, or a generic scene for unknown places."""
     category = place.category.name if place.category else ""
     text = f"{place.title} {category}".casefold()
     # A café should match both accented and unaccented spellings.
@@ -32,4 +33,4 @@ def sample_image_for(place):
     for pattern, image in _SAMPLE_PATTERNS:
         if re.search(pattern, text):
             return f"img/samples/{image}.jpg"
-    return ""
+    return "img/samples/generic.jpg"

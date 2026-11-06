@@ -66,7 +66,7 @@ class Command(BaseCommand):
         self.stdout.write(f"  Published places (active and verified): {total}")
         self.stdout.write(f"  With a description: {with_description}")
         self.stdout.write(f"  With at least one hobby: {with_hobby}")
-        self.stdout.write(f"  With a real, sourced photograph: {with_photo}")
+        self.stdout.write(f"  With a recorded cover reference (not verified): {with_photo}")
         self.stdout.write(f"  With an illustrative sample image: {with_sample}")
         self.stdout.write("  Without any image: %d" % (total - with_photo - with_sample))
 

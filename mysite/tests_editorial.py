@@ -180,7 +180,7 @@ class EditorialScreenTests(TestCase):
                              is_active=True, is_verified=True)
         response = self.client.get(reverse("places:city_discover"))
         self.assertContains(response, '/static/img/samples/museum.jpg')
-        self.assertContains(response, 'Illustrative category sample · Not actual destination')
+        self.assertContains(response, 'Illustrative category sample · Not an actual photo')
         self.assertNotContains(response, 'images.unsplash.com')
 
     def test_staff_admin_keeps_forms_filters_and_actions(self):

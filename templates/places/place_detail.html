@@ -1,5 +1,5 @@
 {% extends "theme/public_base.html" %}
-{% load static %}
+{% load attraction_photos static %}
 
 {% block extra_css %}
 <style>
@@ -122,7 +122,7 @@
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
 {% block extra_css_after %}<link rel="stylesheet" href="{% static 'css/site-dark.css' %}"><link rel="stylesheet" href="{% static 'css/place-detail-dark.css' %}">{% endblock %}
 
-{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-12">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261106-illustrations-1">{% endblock %}
 {% block content %}
 <main class="ea-place-v2" id="main-content">
   <nav class="pd-breadcrumb" aria-label="Breadcrumb">
@@ -183,19 +183,20 @@
     <div class="pd-main">
       <section aria-label="Destination photographs">
         <div class="pd-hero">
+          {% sample_photo place as fallback_image %}
           {% if place.cover_image %}
             <a href="{{ place.cover_image.url }}" data-gallery-image data-gallery-caption="Cover photograph of {{ place.title }}" aria-label="Enlarge photograph of {{ place.title }}">
-              <img data-place-cover src="{{ place.cover_image.url }}" alt="{{ place.title }} destination photograph" fetchpriority="high">
+              <img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" src="{{ place.cover_image.url }}" alt="{{ place.title }} destination photograph" fetchpriority="high">
               <span class="pd-photo-expand">⤢ View photo</span>
             </a>
           {% elif place.cover_image_url %}
             <a href="{{ place.cover_image_url }}" data-gallery-image data-gallery-caption="Cover photograph of {{ place.title }}" aria-label="Enlarge photograph of {{ place.title }}">
-              <img data-place-cover src="{{ place.cover_image_url }}" alt="{{ place.title }} destination photograph" fetchpriority="high">
+              <img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" src="{{ place.cover_image_url }}" alt="{{ place.title }} destination photograph" fetchpriority="high">
               <span class="pd-photo-expand">⤢ View photo</span>
             </a>
           {% elif place.sample_image %}
-            <img data-place-cover src="{% static place.sample_image %}" alt="Illustrative category sample, not an actual photo of {{ place.title }}" fetchpriority="high">
-            <span class="pd-sample-note">Photo not yet available · Illustrative category sample, not an actual photo of this place</span>
+            <img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" src="{% static place.sample_image %}" alt="Illustrative category sample, not an actual photo of {{ place.title }}" fetchpriority="high">
+            <span class="pd-sample-note">Photo not yet available · Illustrative category sample · Not an actual photo</span>
           {% else %}
             <div class="pd-no-photo">
               <span class="pd-no-photo-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8" cy="9" r="1.5"></circle><path d="m4 17 5-5 4 4 3-3 4 4"></path></svg></span>

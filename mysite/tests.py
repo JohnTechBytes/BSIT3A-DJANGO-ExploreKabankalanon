@@ -241,15 +241,16 @@ class HomepageTests(TestCase):
         self.place.save()
         response = self.render_home()
         self.assertContains(response, self.place.cover_image_url)
-        self.assertNotContains(response, 'img/samples/nature.jpg')
+        self.assertNotContains(response, ' src="/static/img/samples/nature.jpg"')
+        self.assertContains(response, 'data-sample-src="/static/img/samples/nature.jpg"')
         self.assertNotContains(response, 'Illustrative category sample')
 
-    def test_samples_match_category_and_do_not_guess_unknown_venues(self):
+    def test_samples_match_category_or_use_a_generic_illustration(self):
         from .views import sample_image_for
         self.place.category = None
         for title, expected in [
             ('Local Waterfalls', 'nature'), ('Local Inasal Grill', 'food'),
-            ('City Plaza', 'city'), ('Billiards Hall', 'billiards'), ('Book Shop', ''),
+            ('City Plaza', 'city'), ('Billiards Hall', 'billiards'), ('Book Shop', 'generic'),
         ]:
             self.place.title = title
             self.assertEqual(sample_image_for(self.place),

@@ -1,5 +1,5 @@
 {% extends "theme/public_base.html" %}
-{% load static %}
+{% load attraction_photos static %}
 {% block title %}City Information · ExploreKabankalan{% endblock %}
 {% block body_class %}site-dark city-info-page ek-discovery-theme ek-journey-theme{% endblock %}
 {% block skip_link %}<a class="sd-skip" href="#main-content">Skip to content</a>{% endblock %}
@@ -7,7 +7,7 @@
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
 {% block extra_css_after %}<link rel="stylesheet" href="{% static 'css/site-dark.css' %}">{% endblock %}
-{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261105-city-directory-1">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261106-illustrations-1">{% endblock %}
 
 {% block content %}
 <main class="eainfo-page" id="main-content">
@@ -107,10 +107,11 @@
     {% if place_page.object_list %}
     <div class="eainfo-grid eainfo-place-grid">
       {% for place in place_page %}
+      {% sample_photo place as fallback_image %}
       <article class="eainfo-card eainfo-place-card">
-        {% if place.cover_image %}<img data-place-cover src="{{ place.cover_image.url }}" alt="{{ place.title }}" loading="lazy">
-        {% elif place.cover_image_url %}<img data-place-cover src="{{ place.cover_image_url }}" alt="{{ place.title }}" loading="lazy">
-        {% else %}<div class="eainfo-place-placeholder">Photo not yet available</div>{% endif %}
+        {% if place.cover_image %}<img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" src="{{ place.cover_image.url }}" alt="{{ place.title }}" loading="lazy">
+        {% elif place.cover_image_url %}<img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" src="{{ place.cover_image_url }}" alt="{{ place.title }}" loading="lazy">
+        {% else %}<div class="ek-fallback-image"><img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" src="{{ fallback_image }}" alt="Illustrative category sample, not an actual photo of {{ place.title }}" loading="lazy"><span class="ek-fallback-label">Photo not yet available · Illustrative category sample · Not an actual photo</span></div>{% endif %}
         <div class="eainfo-place-content">
           <p class="eainfo-place-category">{{ place.category.name|default:"Category not assigned" }}</p>
           <h3>{{ place.title }}</h3>

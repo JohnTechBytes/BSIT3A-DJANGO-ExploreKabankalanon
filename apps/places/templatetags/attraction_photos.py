@@ -9,6 +9,6 @@ register = template.Library()
 
 @register.simple_tag
 def sample_photo(place):
-    """Return a local category sample, or no image for an unknown category."""
+    """Return a shared local category or generic illustration."""
     path = sample_image_for(place)
     return static(path) if path else ""
