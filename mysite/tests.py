@@ -91,7 +91,9 @@ class HomepageTests(TestCase):
 
     def test_homepage_pilot_is_scoped_and_preserves_core_interactions(self):
         response = self.render_home()
-        self.assertContains(response, 'css/homepage-pilot.css?v=3')
+        self.assertContains(response, 'css/homepage-pilot.css?v=4')
+        self.assertContains(response, 'class="hero-actions"')
+        self.assertContains(response, f'href="{reverse("places:attraction_carousel")}?mode=nearby"')
         self.assertContains(response, 'id="home-search"')
         self.assertContains(response, 'type="submit"')
         self.assertContains(response, 'id="home-places"')
@@ -99,10 +101,11 @@ class HomepageTests(TestCase):
         self.assertContains(response, 'id="landing-map-places"')
         self.assertContains(response, 'Photo not yet available')
         self.assertContains(response, 'Wikimedia Commons')
+        from pathlib import Path
         from django.contrib.staticfiles import finders
-        for asset in ('fonts/cormorant-garamond-variable.ttf', 'fonts/montserrat-variable.ttf',
-                      'fonts/CORMORANT-GARAMOND-OFL.txt', 'fonts/MONTSERRAT-OFL.txt'):
-            self.assertIsNotNone(finders.find(asset))
+        pilot_css = Path(finders.find('css/homepage-pilot.css')).read_text(encoding='utf-8')
+        self.assertIn('prefers-reduced-motion: no-preference', pilot_css)
+        self.assertIn('perspective(1200px)', pilot_css)
 
     def test_landing_search_and_main_links_use_existing_routes(self):
         response = self.render_home()

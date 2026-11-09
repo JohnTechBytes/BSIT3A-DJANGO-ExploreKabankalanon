@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#f8f6f1">
     <title>Explore Kabankalan | Discover your city</title>
     <link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261109-redesign-v2">
-    <link rel="stylesheet" href="{% static 'css/homepage-pilot.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'css/homepage-pilot.css' %}?v=4">
 </head>
 <body class="landing-page ek-theme">
 <svg class="ek-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display: none;">
@@ -51,6 +51,10 @@
                 <span class="hero-kicker"><svg class="ek-icon" aria-hidden="true" style="width:14px;height:14px;"><use href="#icon-compass"></use></svg> YOUR LOCAL GUIDE &bull; KABANKALAN CITY, NEGROS OCCIDENTAL</span>
                 <h1 id="hero-title">Find your place<br><em>in Kabankalan.</em></h1>
                 <p class="hero-description">A quiet morning, a favorite hobby, or somewhere new to go. Discover the places that make the city feel like yours.</p>
+                <div class="hero-actions">
+                    <a class="hero-primary" href="{{ browse_url }}?browse=all">Explore places <svg class="ek-icon" aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg></a>
+                    <a class="hero-secondary" href="{{ browse_url }}?mode=nearby">Find nearby <svg class="ek-icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></a>
+                </div>
                 <form class="search" action="{{ search_url }}" method="get" role="search">
                     <label class="search-label" for="home-search">What are you in the mood for?</label>
                     <div class="search-row">
