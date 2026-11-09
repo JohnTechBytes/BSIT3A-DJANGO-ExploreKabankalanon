@@ -999,9 +999,10 @@
     <div class="ek-map-guide-tools" role="group" aria-label="Map location options">
       <button type="button" id="ea-map-locate">Use my location</button>
       <button type="button" id="ea-map-fit">Fit results</button>
+      <button type="button" id="ea-map-retry-route" hidden>Retry driving route</button>
     </div>
-    <p id="ea-map-guide-status" class="ek-map-guide-status" role="status" aria-live="polite">Select a place and use your location to show a straight-line guide. It does not follow roads.</p>
-    <p class="ek-map-guide-privacy">Location is requested once; use the button again to update it. Coordinates are processed in this tab; map tile requests go to MapTiler.</p>
+    <p id="ea-map-guide-status" class="ek-map-guide-status" role="status" aria-live="polite">Select a place and use your location to request a driving route.</p>
+    <p class="ek-map-guide-privacy">Location is requested once; use the button again to update it. When a starting point and place are selected, their coordinates are sent to the OSRM demo for a driving route. Map tiles are requested from MapTiler. Routes may be incomplete; confirm road conditions.</p>
     <div id="ea-attraction-map"></div>
 
     <div class="ea-drone-hud" id="ea-drone-hud" hidden aria-hidden="true">
@@ -1046,7 +1047,7 @@
 
 
 {% block extra_js %}
-<script src="{% static 'js/map-guide.js' %}?v=1"></script>
+<script src="{% static 'js/map-guide.js' %}?v=2"></script>
 <script src="{% static 'js/ea-voice.js' %}?v=20261104-2"></script>
 
 <script>
@@ -1626,7 +1627,7 @@
         // ----------------------------------------------
 
         const coordinates = [];
-        guide = window.EKMapGuide.create(map, L, document.getElementById("ea-map-guide-status"));
+        guide = window.EKMapGuide.create(map, L, document.getElementById("ea-map-guide-status"), document.getElementById("ea-map-retry-route"));
 
         // A DOM marker keeps its pixel size during Leaflet's zooming flight.
         // SVG circle markers scale with the map and briefly become enormous.
@@ -1774,6 +1775,7 @@
         if (!showingMap) {
             selectionVersion += 1;
             clearFlight();
+            if (guide) guide.pause();
             resumeMarquee();
             return Promise.resolve(null);
         }
@@ -1799,6 +1801,7 @@
             // A visitor can switch back to List while Leaflet is loading.
             if (mapPanel.hidden) return null;
             initializeMap();
+            guide?.resume();
             requestAnimationFrame(function () {
                 if (map && !mapPanel.hidden) map.invalidateSize();
             });

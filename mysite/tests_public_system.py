@@ -114,17 +114,18 @@ class PublicSystemTests(TestCase):
         self.assertIn('No starting point selected. Results are alphabetical', html)
         self.assertIn('if (listbox && !listbox.hidden) event.preventDefault()', html)
 
-    def test_straight_line_guides_keep_existing_map_controls(self):
+    def test_driving_route_guides_keep_existing_map_controls(self):
         self.client.force_login(self.user)
         browse = self.client.get(reverse('places:attraction_carousel'), {'browse': 'all'}).content.decode()
         nearby = self.client.get(reverse('places:attraction_carousel'), {'mode': 'nearby'}).content.decode()
         for html in (browse, nearby):
             self.assertIn('js/map-guide.js', html)
-            self.assertIn('straight-line guide', html)
+            self.assertIn('driving route', html)
             self.assertIn('Fit results', html)
-            self.assertIn('Coordinates are processed in this tab', html)
-        for fragment in ('id="ea-map-locate"', 'id="ea-map-fit"', 'selectAttraction(index)'):
+            self.assertIn('OSRM demo', html)
+        for fragment in ('id="ea-map-locate"', 'id="ea-map-fit"', 'id="ea-map-retry-route"', 'selectAttraction(index)'):
             self.assertIn(fragment, browse)
-        for fragment in ('id="ea6-use-gps"', 'id="ea6g-close"', 'selectCard(card)'):
+        for fragment in ('id="ea6-use-gps"', 'id="ea6g-close"', 'id="ea6g-retry-route"', 'selectCard(card)'):
             self.assertIn(fragment, nearby)
-        self.assertNotIn('mapShell.scrollIntoView', nearby)
+        self.assertIn('container.hidden = true', nearby)
+        self.assertIn('Back to results', nearby)

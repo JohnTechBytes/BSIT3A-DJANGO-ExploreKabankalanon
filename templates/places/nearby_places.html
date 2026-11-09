@@ -6,7 +6,7 @@
 {% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby.css' %}"><link rel="stylesheet" href="{% static 'css/map-guide.css' %}?v=1">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby.css' %}?v=road-1"><link rel="stylesheet" href="{% static 'css/map-guide.css' %}?v=1">{% endblock %}
 {% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261106-illustrations-1">{% endblock %}
 {% block content %}
 <main class="ea6-main" id="nearby-main">
@@ -104,7 +104,7 @@
       <span id="ea6h-distance-help" class="ea6h-help" role="status" aria-live="polite">Choose a landmark or enable location permission to filter by distance. This does not use driving routes.</span>
     </div>
     <p id="ea6-location-status" class="ea6-status" role="status" aria-live="polite">{% if selected_origin %}Distances are estimated from {{ selected_origin.title }}. This is a landmark reference, not your live GPS position.{% else %}No starting point selected. Results are alphabetical until you choose one.{% endif %}</p>
-    <p class="ea6-fineprint">Your location is requested once; use the button again to update it. Coordinates are processed in this tab. Map tile requests go to MapTiler. Distances are straight-line estimates, not driving times.</p>
+    <p class="ea6-fineprint">Location is requested once; use the button again to update it. Selecting a starting point and place sends their coordinates to the OSRM demo for a driving route. Map tiles come from MapTiler. List distances and radius filters are straight-line estimates, not driving distances.</p>
   </section>
   <section class="ea6-results-heading" aria-labelledby="ea6-results-title">
   <div class="ea6-heading">
@@ -172,14 +172,15 @@
       {% endfor %}
     </div>
     <aside id="ea6g-map-shell" class="ea6g-map-shell" aria-label="Map of current nearby search results" tabindex="-1" hidden>
-      <div class="ea6g-map-head"><h3>Nearby results map</h3><div class="ea6g-map-actions"><button type="button" class="ea6g-fit" id="ea6g-fit">Fit results</button> <button type="button" class="ea6g-fit" id="ea6g-close">Close map</button></div></div>
+      <div class="ea6g-map-head"><h3>Nearby results map</h3><div class="ea6g-map-actions"><button type="button" class="ea6g-fit" id="ea6g-fit">Fit results</button> <button type="button" class="ea6g-fit" id="ea6g-close">Back to results</button></div></div>
       <div class="ea6-drone-hud" id="ea6-drone-hud" hidden aria-hidden="true">
         <span class="ea6-drone-track"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 8h4l2-3h4l2 3h4v8h-4l-2 3h-4l-2-3H4Z"/><circle cx="12" cy="12" r="2.4"/></svg>Drone view</span>
         <strong id="ea6-drone-target">Kabankalan</strong>
         <span class="ea6-drone-scan"></span>
       </div>
-      <div class="ek-map-guide-tools"><button type="button" id="ea6g-use-gps">Use my location</button></div>
-      <p id="ea6-map-guide-status" class="ek-map-guide-status" role="status" aria-live="polite">Select a place and use your location to show a straight-line guide. It does not follow roads.</p>
+      <div class="ek-map-guide-tools"><button type="button" id="ea6g-use-gps">Use my location</button><button type="button" id="ea6g-retry-route" hidden>Retry driving route</button></div>
+      <p id="ea6-map-guide-status" class="ek-map-guide-status" role="status" aria-live="polite">Select a place and use your location to request a driving route.</p>
+      <p class="ek-map-guide-privacy">A starting point and selected place are sent to the OSRM demo to calculate a driving route. Roads and access may be incomplete; confirm conditions before travelling.</p>
       <div id="ea6g-map" class="ea6g-map" role="region" aria-label="Interactive map of nearby result pins"></div>
       <p id="ea6g-map-status" class="ea6g-map-status" role="status" aria-live="polite">Map loading will begin when you open this panel.</p>
       <p class="ea6g-map-status">Only this search's published Kabankalan listings with recorded coordinates are pinned. Locations may need confirmation. Selecting a place shows its pin; Fit results restores all matching pins. Map tiles © <a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener noreferrer">MapTiler</a>; map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>.</p>
@@ -204,7 +205,7 @@
 </main>
 {% endblock %}
 {% block extra_js %}
-<script src="{% static 'js/map-guide.js' %}?v=1"></script>
+<script src="{% static 'js/map-guide.js' %}?v=2"></script>
 {{ approved_suggestions|json_script:"ea6-approved-data" }}
 <script src="{% static 'js/ea-voice.js' %}?v=20261104-2"></script>
 <script>
@@ -376,7 +377,7 @@
     if (mapToggle) {
       const open = !!mapShell && !mapShell.hidden;
       mapToggle.disabled = pins.length === 0 && !open;
-      mapToggle.textContent = open ? "Hide nearby map"
+      mapToggle.textContent = open ? "Back to results"
         : pins.length ? "View nearby results on map ↗"
         : "Map unavailable for these results";
     }
@@ -601,7 +602,7 @@
       'Satellite':nearbySatellite,
       'Hybrid (Street Overlay)':nearbyHybrid
     }, null, {position:'topright', collapsed:true}).addTo(resultsMap);
-    guide = window.EKMapGuide.create(resultsMap, L, document.getElementById("ea6-map-guide-status"));
+    guide = window.EKMapGuide.create(resultsMap, L, document.getElementById("ea6-map-guide-status"), document.getElementById("ea6g-retry-route"));
     mappedRows.forEach(card => {
       const marker = L.circleMarker([Number(card.dataset.lat),Number(card.dataset.lng)], {
         radius:9,color:"#0757d8",fillColor:"#0d9488",fillOpacity:.92,weight:2
@@ -624,14 +625,16 @@
     if (!mapShell || !mapLayout || !mapToggle || !visibleMappedRows().length) return;
     if (mapShell.hidden) mapOpener = document.activeElement;
     mapShell.hidden = false;
+    if (container) container.hidden = true;
     mapLayout.classList.add("map-open");
     mapToggle.setAttribute("aria-expanded","true");
-    mapToggle.textContent = "Hide nearby map";
+    mapToggle.textContent = "Back to results";
     if (mapStatus) mapStatus.textContent = "Loading nearby results map…";
     try {
       await loadNearbyLeaflet();
       if (mapShell.hidden || (selection !== null && selection !== selectionVersion)) return false;
       if (!resultsMap) createResultsMap();
+      guide.resume();
       // Leaflet must measure the panel after it becomes visible.
       resultsMap.invalidateSize();
       if (!cardToFocus && !selectedCard) fitResultPins();
@@ -650,9 +653,11 @@
     clearFlight();
     if (resultsMap) resultsMap.stop();
     const returnFocus = mapShell.contains(document.activeElement);
+    if (guide) guide.pause();
     mapShell.hidden = true;
+    if (container) container.hidden = false;
     mapLayout.classList.remove("map-open");
-    if (returnFocus && mapOpener?.isConnected && typeof mapOpener.focus === "function") mapOpener.focus({preventScroll:true});
+    if (returnFocus && mapOpener?.isConnected && typeof mapOpener.focus === "function") mapOpener.focus();
     mapToggle.textContent = "View nearby results on map ↗";
     mapToggle.setAttribute("aria-expanded","false");
   }
@@ -689,9 +694,12 @@
     const selection = ++selectionVersion;
     clearFlight();
     if (resultsMap) resultsMap.stop();
-    // The desktop map stays beside the list; narrow screens show it in a
-    // dismissible bottom panel. Neither selection moves the page.
+    // Like Explore Places, replace the results with the map section.
     const ready = openNearbyMap(card, selection);
+    if (mapShell && !mapShell.hidden) {
+      mapShell.focus({preventScroll:true});
+      mapShell.scrollIntoView({behavior:reducedMotion() ? "auto" : "smooth", block:"start"});
+    }
     if (!await ready || selection !== selectionVersion || mapShell.hidden || card.hidden) return;
     const lat = Number(card.dataset.lat), lng = Number(card.dataset.lng);
     const marker = resultsMapMarkers.get(card);
@@ -727,6 +735,9 @@
       }
     });
     card.querySelector(".ea6g-card-map")?.addEventListener("click", () => droneTo(card));
+    card.addEventListener("click", event => {
+      if (!event.target.closest("a, button, .ea6-cover")) droneTo(card);
+    });
   });
 
   // Voice search: the same shared module the Browse page uses.
