@@ -35,7 +35,9 @@ STOP_WORDS = {
     "in", "at", "of", "for", "me", "find",
     "show", "places", "place", "visit", "near",
     "some", "where", "can", "you", "please",
-    "would", "like", "explore",
+    "would", "like", "explore", "is", "are", "do", "does", "could",
+    "how", "directions", "direction", "located", "locate", "get", "way",
+    "saan", "nasaan", "nasan", "ang", "sa", "paano", "makapunta",
 }
 
 #: City/province words are location qualifiers, not attraction keywords.
@@ -113,6 +115,7 @@ STRONG_BUYING_PHRASES = (
     "where shall i buy", "i want to buy", "i need to buy",
     "i would like to buy", "to buy", "buy", "buying", "purchase",
     "who sells", "where to get", "where can i get", "where do i get",
+    "saan makabili", "makabili",
 )
 
 #: Softer seller wording - still a question about a product, not a place.
@@ -186,6 +189,7 @@ PRODUCT_STOP_WORDS = {
     "we", "do", "does", "is", "are", "there", "any", "some", "me", "my",
     "a", "an", "the", "of", "in", "at", "for", "on", "to", "get", "know",
     "tell", "where", "who", "what", "which", "and", "or", "it", "be",
+    "saan", "sa", "ng", "ako",
 }
 
 
@@ -390,6 +394,62 @@ def exact_title_filter(query, queryset):
     return Q(pk__in=ids)
 
 
+# Words allowed around a complete place name in a natural-language request.
+# Requiring the whole name and only these surrounding words avoids turning
+# arbitrary product/category questions into misleading named-place matches.
+NAME_CONTEXT_WORDS = STOP_WORDS | FILLER_WORDS | LOCATION_WORDS | {
+    "what", "which", "address", "location", "map", "wheres", "its",
+    "im", "interested", "am", "tell", "about", "information", "details",
+    "directions", "route", "showing", "punta", "adto", "diin", "hain",
+    "saan", "nasaan", "nasan", "ang", "sa", "paano", "makapunta",
+}
+# Generic place names alone are categories, not evidence of a specific venue.
+NAME_GENERIC_WORDS = GENERIC_WORDS | {
+    "cafe", "cafes", "coffee", "shop", "shops", "store", "restaurant",
+    "restaurants", "bar", "mall", "malls", "market", "hotel", "hospital",
+    "gas", "station", "public", "local", "the", "center", "centre",
+}
+
+
+def _normalize_place_name(value):
+    # Treat straight and curly apostrophes as omitted (Sol's = Sols), while
+    # leaving hyphens as word boundaries (Mag-aso = Mag Aso).
+    return normalize_words(str(value or "").replace("'", "").replace("’", ""))
+
+
+def embedded_title_filter(query, queryset):
+    """Match a complete published title inside a simple request, not a guess.
+
+    Prefer the longest full name and retain all records with that exact name;
+    e.g. two same-name branches remain distinct. Partial names and arbitrary
+    words around a title are left to the normal search path.
+    """
+    text = _normalize_place_name(query)
+    if not text:
+        return None
+    words = text.split()
+    best_length, ids = 0, []
+    # Read only id/title from the already city- and publication-scoped queryset.
+    for pk, title in queryset.order_by().values_list("pk", "title"):
+        name = _normalize_place_name(title)
+        title_words = name.split()
+        if not title_words or not any(w not in NAME_GENERIC_WORDS | LOCATION_WORDS for w in title_words):
+            continue
+        size = len(title_words)
+        for start in range(len(words) - size + 1):
+            if words[start:start + size] != title_words:
+                continue
+            remainder = words[:start] + words[start + size:]
+            if any(word not in NAME_CONTEXT_WORDS for word in remainder):
+                continue
+            if size > best_length:
+                best_length, ids = size, [pk]
+            elif size == best_length:
+                ids.append(pk)
+            break
+    return Q(pk__in=ids) if ids else None
+
+
 def named_place_filter(search_text):
     """Return a filter that matches a named place, or ``None``.
 
@@ -513,6 +573,9 @@ def question_matches(query, queryset=None):
         exact = exact_title_filter(query, queryset)
         if exact is not None:
             return exact, ""
+        embedded = embedded_title_filter(query, queryset)
+        if embedded is not None:
+            return embedded, ""
 
     if wants_to_buy(text) or maybe_buying(text):
         product = shopping_product(text)

@@ -169,7 +169,7 @@
         </article>
       {% endfor %}
     </div>
-    <aside id="ea6g-map-shell" class="ea6g-map-shell" aria-label="Map of current nearby search results" hidden>
+    <aside id="ea6g-map-shell" class="ea6g-map-shell" aria-label="Map of current nearby search results" tabindex="-1" hidden>
       <div class="ea6g-map-head"><h3>Nearby results map</h3><button type="button" class="ea6g-fit" id="ea6g-fit">Fit results</button></div>
       <div class="ea6-drone-hud" id="ea6-drone-hud" hidden aria-hidden="true">
         <span class="ea6-drone-track"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 8h4l2-3h4l2 3h4v8h-4l-2 3h-4l-2-3H4Z"/><circle cx="12" cy="12" r="2.4"/></svg>Drone view</span>
@@ -306,6 +306,22 @@
   });
   let resultsMap = null;
   let resultsMapMarkers = new Map();
+  let selectionVersion = 0;
+  let flightEnd = null;
+  let droneRing = null;
+  let droneTimer = null;
+  let ringTimer = null;
+  const reducedMotion = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function clearFlight() {
+    if (resultsMap && flightEnd) resultsMap.off("moveend", flightEnd);
+    flightEnd = null;
+    clearTimeout(droneTimer);
+    clearTimeout(ringTimer);
+    if (droneRing) droneRing.remove();
+    droneRing = null;
+    const hud = document.getElementById("ea6-drone-hud");
+    if (hud) hud.hidden = true;
+  }
   let originPoint = null;
   let originMarker = null;
   let assetsPromise = null;
@@ -326,6 +342,9 @@
     return haversine(originPoint.lat,originPoint.lng,lat,lng) <= radius + 1e-8;
   }
   function refreshRadius() {
+    ++selectionVersion;
+    clearFlight();
+    if (resultsMap) resultsMap.stop();
     // The radius control is noise until a reference point exists.
     const radiusBox = document.getElementById("ea6h-radius");
     if (radiusBox) radiusBox.hidden = !originPoint;
@@ -558,13 +577,18 @@
         radius:9,color:"#0757d8",fillColor:"#0d9488",fillOpacity:.92,weight:2
       }).addTo(resultsMap);
       marker.bindPopup(createPopup(card));
-      marker.on("click",() => selectCard(card));
+      marker.on("click",() => {
+        ++selectionVersion;
+        clearFlight();
+        resultsMap.stop();
+        selectCard(card);
+      });
       resultsMapMarkers.set(card,marker);
     });
     placeOriginMarker();
     fitResultPins();
   }
-  async function openNearbyMap(cardToFocus=null) {
+  async function openNearbyMap(cardToFocus=null, selection=selectionVersion) {
     if (!mapShell || !mapLayout || !mapToggle || !visibleMappedRows().length) return;
     mapShell.hidden = false;
     mapLayout.classList.add("map-open");
@@ -573,20 +597,15 @@
     if (mapStatus) mapStatus.textContent = "Loading nearby results map…";
     try {
       await loadNearbyLeaflet();
+      if (mapShell.hidden || (selection !== null && selection !== selectionVersion)) return false;
       if (!resultsMap) createResultsMap();
       // Leaflet must measure the panel after it becomes visible.
       resultsMap.invalidateSize();
-      if (cardToFocus) {
-        const marker = resultsMapMarkers.get(cardToFocus);
-        if (marker) {
-          selectCard(cardToFocus);
-          resultsMap.setView(marker.getLatLng(),Math.max(resultsMap.getZoom(),13));
-          marker.openPopup();
-        }
-      } else fitResultPins();
+      if (!cardToFocus) fitResultPins();
       if (mapStatus) mapStatus.textContent = visibleMappedRows().length + " location pin(s) shown for these search results. Select a pin or use Show on map on a card.";
-      if (cardToFocus && window.matchMedia("(max-width:980px)").matches) mapShell.scrollIntoView({behavior:"smooth",block:"start"});
+      return true;
     } catch(error) {
+      if (mapShell.hidden || (selection !== null && selection !== selectionVersion)) return false;
       if (mapStatus) mapStatus.textContent = "Unable to load the map. Check your connection and click the map button again to retry. Your results list still works.";
       mapToggle.textContent = "Retry nearby map";
       mapToggle.setAttribute("aria-expanded","false");
@@ -594,6 +613,9 @@
   }
   function closeNearbyMap() {
     if (!mapShell || !mapLayout || !mapToggle) return;
+    ++selectionVersion;
+    clearFlight();
+    if (resultsMap) resultsMap.stop();
     mapShell.hidden = true;
     mapLayout.classList.remove("map-open");
     mapToggle.textContent = "View nearby results on map ↗";
@@ -603,15 +625,18 @@
     if (mapShell?.hidden || mapToggle.getAttribute("aria-expanded") === "false") openNearbyMap();
     else closeNearbyMap();
   });
-  fitButton?.addEventListener("click", fitResultPins);
+  fitButton?.addEventListener("click", () => {
+    ++selectionVersion;
+    clearFlight();
+    if (resultsMap) resultsMap.stop();
+    selectCard(null);
+    fitResultPins();
+  });
   // ---------------------------------------------------------------
   // Drone view: choosing a listing flies the camera down onto it
   // ---------------------------------------------------------------
   const droneHud = document.getElementById("ea6-drone-hud");
   const droneTarget = document.getElementById("ea6-drone-target");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  let droneRing = null;
-  let droneTimer = null;
 
   function showDroneHud(card) {
     if (!droneHud) return;
@@ -622,44 +647,46 @@
   }
 
   async function droneTo(card) {
-    if (!card || !card.hasAttribute("data-lat")) return;
-    await openNearbyMap(card);
-    if (!mapShell) return;
-    showDroneHud(card);
-    if (!resultsMap || !window.L?.circleMarker) return;
-    const lat = Number(card.dataset.lat);
-    const lng = Number(card.dataset.lng);
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-
-    if (droneRing) {
-      resultsMap.removeLayer(droneRing);
-      droneRing = null;
+    if (!card || !mappedRows.includes(card) || card.hidden) return;
+    const selection = ++selectionVersion;
+    clearFlight();
+    if (resultsMap) resultsMap.stop();
+    // Open immediately, focus and reveal the same map panel at every width,
+    // like Explore Places. Leaflet assets can continue loading afterward.
+    const ready = openNearbyMap(card, selection);
+    if (mapShell && !mapShell.hidden) {
+      mapShell.focus({preventScroll:true});
+      mapShell.scrollIntoView({behavior:reducedMotion() ? "auto" : "smooth",block:"start"});
     }
-    droneRing = L.circleMarker([lat, lng], {
-      radius: 26, color: "#21d9c6", weight: 2,
-      fillColor: "#21d9c6", fillOpacity: .12, className: "ea6-drone-ring"
-    }).addTo(resultsMap);
-
+    if (!await ready || selection !== selectionVersion || mapShell.hidden || card.hidden) return;
+    const lat = Number(card.dataset.lat), lng = Number(card.dataset.lng);
+    const marker = resultsMapMarkers.get(card);
+    if (!marker) return;
+    selectCard(card);
+    showDroneHud(card);
     const finish = () => {
-      const marker = resultsMapMarkers.get(card);
-      if (marker) {
-        selectCard(card);
-        marker.openPopup();
-      }
+      if (selection !== selectionVersion || mapShell.hidden || card.hidden) return;
+      flightEnd = null;
+      marker.openPopup();
+      // Draw the highlight after the zoom, not while it is being scaled.
+      droneRing = L.circleMarker([lat, lng], {
+        radius:26, color:"#21d9c6", weight:2, fillColor:"#21d9c6",
+        fillOpacity:.12, className:"ea6-drone-ring", interactive:false
+      }).addTo(resultsMap);
       const ring = droneRing;
-      droneRing = null;
-      if (ring) window.setTimeout(() => {
-        try { resultsMap.removeLayer(ring); } catch (error) { /* map closed */ }
+      ringTimer = setTimeout(() => {
+        ring.remove();
+        if (droneRing === ring) droneRing = null;
       }, 2600);
     };
-
-    if (reduceMotion.matches) {
+    if (reducedMotion()) {
       resultsMap.setView([lat, lng], 16.5, {animate:false});
       finish();
-      return;
+    } else {
+      flightEnd = finish;
+      resultsMap.once("moveend", flightEnd);
+      resultsMap.flyTo([lat, lng], 16.5, {duration:1.5, easeLinearity:.22});
     }
-    resultsMap.once("moveend", finish);
-    resultsMap.flyTo([lat, lng], 16.5, { duration: 2.6 });
   }
 
   rows.forEach(card => {

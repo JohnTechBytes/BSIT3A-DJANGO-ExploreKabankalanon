@@ -21,7 +21,7 @@ ALIASES = {
     ),
     "coffee": (
         "coffee shop", "coffeeshop", "coffeshop", "coffee shops",
-        "coffee", "cafe", "cafes", "cafeteria", "coffeehouse",
+        "coffee", "cafe", "cafes", "cafeteria", "coffeehouse", "kape",
     ),
     "barber": (
         "barbershop", "barber shop", "barber", "barbers", "barber shops",
@@ -29,7 +29,8 @@ ALIASES = {
     ),
     "restaurant": (
         "restaurant", "restaurants", "resto", "eatery", "eateries",
-        "food court", "diner", "where to eat", "dining", "fast food",
+        "food court", "diner", "where to eat", "where can i eat", "dining", "fast food",
+        "saan kakain", "karinderya", "kainan",
     ),
     "mall": (
         "shopping mall", "mall", "malls", "shopping center",
