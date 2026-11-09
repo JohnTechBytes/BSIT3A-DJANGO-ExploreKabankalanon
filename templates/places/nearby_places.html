@@ -1,13 +1,13 @@
 {% extends "theme/public_base.html" %}
 {% block title %}Discover Kabankalan · Nearby Places · ExploreKabankalan{% endblock %}
-{% load static %}
+{% load attraction_photos static %}
 {% block body_class %}nearby-page ek-theme ek-discovery-theme{% endblock %}
 {% block skip_link %}<a class="ea6-skip" href="#nearby-main">Skip to content</a>{% endblock %}
 {% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby.css' %}">{% endblock %}
-{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261105-empty-results-1">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261106-illustrations-1">{% endblock %}
 {% block content %}
 <main class="ea6-main" id="nearby-main">
   <header class="ea6-top">
@@ -131,11 +131,12 @@
     <div class="ea6g-layout" id="ea6g-layout">
     <div class="ea6-list" id="ea6-results"{% if selected_origin %} data-origin-lat="{{ selected_origin.latitude }}" data-origin-lng="{{ selected_origin.longitude }}" data-origin-name="{{ selected_origin.title }}"{% endif %}>
       {% for place in results %}
+          {% sample_photo place as fallback_image %}
         <article class="ea6-card" data-place-id="{{ place.pk }}" data-title="{{ place.title }}" data-category="{% if place.category %}{{ place.category.name }}{% else %}Kabankalan place{% endif %}" data-detail-url="{% url 'places:place_detail' place.pk %}" {% if place.latitude != None and place.longitude != None %}data-lat="{{ place.latitude }}" data-lng="{{ place.longitude }}" data-directions-url="https://www.google.com/maps/dir/?api=1&amp;destination={{ place.latitude }},{{ place.longitude }}"{% endif %}>
           <div class="ea6-cover"{% if place.latitude != None and place.longitude != None %} role="button" tabindex="0" aria-label="View on map: {{ place.title }}{% if place.cover_image or place.cover_image_url %}{% elif place.sample_image %} · Illustrative category sample{% else %} · Photo not yet available{% endif %}"{% endif %}>
-            {% if place.cover_image %}<img data-place-cover loading="lazy" decoding="async" width="640" height="360" alt="{{ place.title }}" src="{{ place.cover_image.url }}">
-            {% elif place.cover_image_url %}<img data-place-cover loading="lazy" decoding="async" width="640" height="360" alt="{{ place.title }}" src="{{ place.cover_image_url }}">
-            {% elif place.sample_image %}<img data-place-cover loading="lazy" decoding="async" width="640" height="360" alt="Illustrative category sample, not an actual photo of {{ place.title }}" src="{% static place.sample_image %}"><span class="ea6-sample-badge">Photo not yet available · Illustrative category sample</span>
+            {% if place.cover_image %}<img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" loading="lazy" decoding="async" width="640" height="360" alt="{{ place.title }}" src="{{ place.cover_image.url }}">
+            {% elif place.cover_image_url %}<img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" loading="lazy" decoding="async" width="640" height="360" alt="{{ place.title }}" src="{{ place.cover_image_url }}">
+            {% elif place.sample_image %}<img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" loading="lazy" decoding="async" width="640" height="360" alt="Illustrative category sample, not an actual photo of {{ place.title }}" src="{% static place.sample_image %}"><span class="ea6-sample-badge">Photo not yet available · Illustrative category sample · Not an actual photo</span>
             {% else %}<span class="ea6n-no-photo" role="img" aria-label="No destination photograph available"><span class="ea6n-no-photo-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8" cy="9" r="1.5"></circle><path d="m4 17 5-5 4 4 3-3 4 4"></path></svg></span><span>PHOTO NOT YET AVAILABLE</span></span>{% endif %}
             {% if place.latitude != None and place.longitude != None %}<span class="ea6-card-map-hint" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" fill="currentColor"/></svg>View on map</span>{% endif %}
           </div>

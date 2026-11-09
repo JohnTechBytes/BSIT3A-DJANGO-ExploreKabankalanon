@@ -641,7 +641,7 @@
 <link rel="stylesheet" href="{% static 'css/browse.css' %}?v=20261031-3">
 {% endblock %}
 
-{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261105-empty-results-1">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261106-illustrations-1">{% endblock %}
 {% block content %}
 <style>
 .sample-photo-wrapper {
@@ -875,6 +875,7 @@
       <div class="ea-carousel-track" id="ea-carousel-track">
 
         {% for place in attractions %}
+          {% sample_photo place as fallback_image %}
 
           <article class="ea-card"
           
@@ -887,7 +888,7 @@
             <div class="ea-card-image">
 
               {% if place.cover_image %}
-                <img data-place-cover
+                <img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}"
                   src="{{ place.cover_image.url }}"
                   alt="{{ place.title }}"
                   loading="lazy"
@@ -897,7 +898,7 @@
                 >
 
               {% elif place.cover_image_url %}
-                <img data-place-cover
+                <img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}"
                   src="{{ place.cover_image_url }}"
                   alt="{{ place.title }}"
                   loading="lazy"
@@ -907,7 +908,7 @@
                 >
 
               {% elif place.sample_image %}
-                <img data-place-cover
+                <img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}"
                   src="{% static place.sample_image %}"
                   alt="Illustrative category sample, not an actual photo of {{ place.title }}"
                   loading="lazy"
@@ -915,7 +916,7 @@
                   width="640"
                   height="360"
                 >
-                <span class="ea-card-sample">Photo not yet available · Illustrative category sample</span>
+                <span class="ea-card-sample">Photo not yet available · Illustrative category sample · Not an actual photo</span>
 
               {% else %}
                 <div class="ea-photo-empty" role="img" aria-label="No destination photo available for {{ place.title }}">

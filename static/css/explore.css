@@ -1375,3 +1375,22 @@ body.ek-discovery-theme.browse-page .ea-empty-actions .ea-empty-clear {
 body.ek-discovery-theme.browse-page .ea-empty-actions .ea-empty-clear:hover {
   background: var(--ek-primary-tint); color: #176249;
 }
+
+/* Samples must stay readable and must never be mistaken for place photos. */
+body.browse-page .ea-card-sample,
+body.nearby-page .ea6-sample-badge,
+body.detail-page .pd-sample-note,
+body.site-dark.saved-page .ea-saved-sample,
+body.landing-page .sample-badge {
+  top: 10px;
+  bottom: auto;
+  left: 10px;
+  z-index: 6;
+  max-width: calc(100% - 20px);
+  padding: 6px 8px;
+  background: #10251ff2;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+}

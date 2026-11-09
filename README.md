@@ -167,7 +167,7 @@ development and verification process.
 | **Recommendation Engine** | Deterministic ranking: hobby fit 60%, average rating 20% where reviews exist; the hobby component remains in the denominator even when no hobby is selected. Results are ordered by score, then by number of matched hobbies, then by title. Match percentages are not displayed to visitors. |
 | **Interactive Map** | Browse and Nearby use Leaflet 1.9.4 with MapTiler streets, satellite and hybrid layers and attribution; the landing map uses OpenStreetMap tiles. Markers show place information. On Browse and Nearby, selecting a mapped photo/card can fly the map to the place. Maps require network access; MapTiler requires a client-visible key. |
 | **Voice Search** | Browse and Nearby use the browser speech-recognition API to enter search text. Availability depends on browser support, microphone permission and the browser's speech service; typing remains available. |
-| **Place Photos** | A recorded cover is displayed when available. Missing covers show a message or a clearly labelled illustrative category sample. If a marked cover cannot load, JavaScript shows a "Photo unavailable" message. A sample is not a photo of the place. |
+| **Place Photos** | Recorded covers take priority. Missing covers use shared category or generic illustrative samples, clearly labelled as not actual photos; the generic street scene is AI-generated. With JavaScript enabled a broken recorded cover also falls back to a labelled illustration, or an unavailable message if that fails. Samples do not depict the listed place. |
 | **Nearby Search and Live GPS** | The Nearby view reads the browser's geolocation, computes straight-line distance to each place, and filters or sorts results by distance (any distance, 1, 3, 5, 10 or 25 km). A curated Kabankalan landmark can serve as the reference point when GPS is unavailable or declined. Distances are straight-line estimates, not driving routes or travel times. |
 | **Reviews and Ratings** | One review per user per place, 1–5 stars plus an optional comment; reviews can be updated or deleted; the average rating feeds both the place page and the recommender. Reviews are opinions and do not by themselves prove an in-person visit. |
 | **Saved Places** | Visitors save and unsave places; saved places appear on a dedicated page and on the My Journey dashboard. |
@@ -289,9 +289,11 @@ connection before running commands.
 A cover is not proof of a place's identity, current operation or image reuse
 rights. Some local-test photos have unverified rights and must be removed or
 replaced with properly licensed or permitted images before public use. Do not
-remove watermarks without permission. Missing covers use a message or clearly
-labelled illustrative category sample; if a marked image fails to load, the
-browser shows a separate unavailable message when JavaScript is enabled.
+remove watermarks without permission. Missing covers use a clearly labelled
+shared category sample or a generic AI-generated illustration; neither is a
+photo of the place. If a recorded cover fails to load, JavaScript displays a
+labelled illustration instead, or an unavailable message if that also fails.
+This display fallback does not add or change a place's stored photo.
 
 The optional local photo tools are described in
 [`tools/photo_import/README.txt`](tools/photo_import/README.txt). The reviewed

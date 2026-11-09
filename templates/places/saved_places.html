@@ -1,5 +1,5 @@
 {% extends "theme/public_base.html" %}
-{% load static %}
+{% load attraction_photos static %}
 {% block extra_css %}
 <style>
 .ea-saved {max-width:1080px;margin:auto;padding:40px 20px 90px;color:#142e50}
@@ -96,7 +96,7 @@
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
 {% block extra_css_after %}<link rel="stylesheet" href="{% static 'css/site-dark.css' %}">{% endblock %}
-{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261104-12">{% endblock %}
+{% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261106-illustrations-1">{% endblock %}
 
 {% block content %}
 <main class="ea-saved" id="main-content">
@@ -117,15 +117,16 @@
   {% if entries %}
     <section class="ea-saved-grid" aria-label="Your saved destinations">
     {% for entry in entries %}
+          {% sample_photo entry.place as fallback_image %}
     <article class="ea-saved-item">
       <div class="ea-c-place-media">
         {% if entry.place.cover_image %}
-          <img data-place-cover src="{{ entry.place.cover_image.url }}" alt="{{ entry.place.title }}" loading="lazy" decoding="async">
+          <img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ entry.place.title }}" src="{{ entry.place.cover_image.url }}" alt="{{ entry.place.title }}" loading="lazy" decoding="async">
         {% elif entry.place.cover_image_url %}
-          <img data-place-cover src="{{ entry.place.cover_image_url }}" alt="{{ entry.place.title }}" loading="lazy" decoding="async">
+          <img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ entry.place.title }}" src="{{ entry.place.cover_image_url }}" alt="{{ entry.place.title }}" loading="lazy" decoding="async">
         {% elif entry.place.sample_image %}
-          <img data-place-cover src="{% static entry.place.sample_image %}" alt="Illustrative category sample, not an actual photo of {{ entry.place.title }}" loading="lazy" decoding="async">
-          <span class="ea-saved-sample">Photo not yet available · Illustrative category sample</span>
+          <img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ entry.place.title }}" src="{% static entry.place.sample_image %}" alt="Illustrative category sample, not an actual photo of {{ entry.place.title }}" loading="lazy" decoding="async">
+          <span class="ea-saved-sample">Photo not yet available · Illustrative category sample · Not an actual photo</span>
         {% else %}
           <div class="ea-c-photo-empty"><span class="ea-c-photo-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span>No destination photo available</span></div>
         {% endif %}

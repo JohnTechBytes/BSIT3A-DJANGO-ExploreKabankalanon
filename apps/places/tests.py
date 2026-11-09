@@ -20,7 +20,7 @@ class SampleImageTests(SimpleTestCase):
             ("CPSU Museum", "Culture", "museum"),
             ("City Plaza", None, "city"),
             ("Local Inasal Grill", None, "food"),
-            ("A Local Bookstore", None, ""),
+            ("A Local Bookstore", None, "generic"),
         ]
         for title, category_name, expected in cases:
             with self.subTest(title=title):
@@ -104,7 +104,8 @@ class NearbyRedesignTests(TestCase):
         self.cafe.cover_image_url = "https://example.com/real-cafe.jpg"
         self.cafe.save()
         response = self.client.get(reverse("places:place_detail", args=[self.cafe.pk]))
-        self.assertContains(response, 'data-place-cover src="https://example.com/real-cafe.jpg"')
+        self.assertContains(response, 'src="https://example.com/real-cafe.jpg"')
+        self.assertContains(response, 'data-sample-src="/static/img/samples/coffee.jpg"')
         self.assertNotContains(response, "Photo not yet available · Illustrative category sample")
 
     def test_nearby_unmapped_photo_does_not_claim_to_open_a_map(self):
@@ -137,14 +138,15 @@ class NearbyRedesignTests(TestCase):
         self.assertContains(response, "Original photographer")
         self.assertContains(response, self.cafe.photo_source_url)
         self.assertNotContains(response, "Illustrative category sample")
-        self.assertNotContains(response, "img/samples/coffee.jpg")
+        self.assertNotContains(response, ' src="/static/img/samples/coffee.jpg"')
+        self.assertContains(response, 'data-sample-src="/static/img/samples/coffee.jpg"')
 
-    def test_unknown_category_uses_neutral_placeholder(self):
+    def test_unknown_category_uses_labeled_generic_illustration(self):
         place = Place.objects.create(city=self.city, title="Local Bookstore", address="Local",
                                      is_verified=True, is_active=True)
         response = self.client.get(self.url, {"mode": "nearby", "place": place.pk})
-        self.assertContains(response, "PHOTO NOT YET AVAILABLE")
-        self.assertNotContains(response, "Illustrative category sample")
+        self.assertContains(response, 'src="/static/img/samples/generic.jpg"')
+        self.assertContains(response, "Illustrative category sample · Not an actual photo")
         self.assertContains(response, "Precise map coordinates unavailable")
         self.assertNotContains(response, "Show on map ↗")
 

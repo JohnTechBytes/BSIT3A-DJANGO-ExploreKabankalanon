@@ -57,24 +57,25 @@
 
     <section class="discovery-grid">
         {% for place in page_obj %}
+        {% sample_photo place as fallback_image %}
         <article class="discovery-card">
             {% if place.cover_image %}
-                <img data-place-cover class="discovery-photo" src="{{ place.cover_image.url }}" alt="{{ place.title }}" loading="lazy">
+                <img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" class="discovery-photo" src="{{ place.cover_image.url }}" alt="{{ place.title }}" loading="lazy">
             {% elif place.cover_image_url %}
-                <img data-place-cover class="discovery-photo" src="{{ place.cover_image_url }}" alt="{{ place.title }}" loading="lazy">
+                <img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" class="discovery-photo" src="{{ place.cover_image_url }}" alt="{{ place.title }}" loading="lazy">
           
 {% else %}
     {% sample_photo place as stock_image %}
 
     {% if stock_image %}
     <div class="sample-photo-wrapper">
-        <img data-place-cover
+        <img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}"
             class="discovery-photo"
             src="{{ stock_image }}"
             alt="Illustrative category sample, not an actual photo of {{ place.title }}"
             loading="lazy" decoding="async"
         >
-        <span class="sample-photo-label">Photo not yet available · Illustrative category sample · Not actual destination</span>
+        <span class="sample-photo-label">Photo not yet available · Illustrative category sample · Not an actual photo</span>
     </div>
     {% else %}
     <div class="discovery-empty" role="img" aria-label="No destination photo available for {{ place.title }}">Photo not yet available</div>
