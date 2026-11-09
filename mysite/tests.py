@@ -91,7 +91,7 @@ class HomepageTests(TestCase):
 
     def test_homepage_pilot_is_scoped_and_preserves_core_interactions(self):
         response = self.render_home()
-        self.assertContains(response, 'css/homepage-pilot.css?v=1')
+        self.assertContains(response, 'css/homepage-pilot.css?v=2')
         self.assertContains(response, 'id="home-search"')
         self.assertContains(response, 'type="submit"')
         self.assertContains(response, 'id="home-places"')
@@ -148,7 +148,7 @@ class HomepageTests(TestCase):
         script = Path(finders.find('js/landing-map.js')).read_text(encoding='utf-8')
         self.assertIn("https://tile.openstreetmap.org/{z}/{x}/{y}.png", script)
         self.assertIn("referrerPolicy: 'origin'", script)
-        self.assertContains(self.render_home(), 'js/landing-map.js?v=20261104-3')
+        self.assertContains(self.render_home(), 'js/landing-map.js?v=20261109-3')
 
     def test_landing_map_is_bounded_and_safely_serialized(self):
         self.place.title = '</script><script>alert(1)</script>'

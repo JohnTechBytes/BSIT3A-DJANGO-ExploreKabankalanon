@@ -89,3 +89,16 @@
   .landing-page .introduction { padding: 30px 22px; }
   .landing-page .card-body { padding: 20px; }
 }
+
+/* The laptop's earlier hero pilot added ID-specific rules in explore.css.
+   Override only those homepage rules; leave the shared file untouched. */
+.landing-page #hero-title { font-size: clamp(52px, 5.6vw, 76px); line-height: 1.04; margin-bottom: 0; }
+.landing-page #hero-title em { color: #287451; font-style: normal; }
+.landing-page .hero-description { margin: 20px 0 27px; font-size: 17px; max-width: 40ch; }
+@media (max-width: 768px) {
+  .landing-page #hero-title { font-size: clamp(42px, 9vw, 64px); }
+  .landing-page .hero-description { font-size: 16px; }
+}
+@media (max-width: 480px) {
+  .landing-page #hero-title { font-size: clamp(38px, 10vw, 48px); }
+}
