@@ -13,7 +13,7 @@ import tempfile
 from datetime import datetime
 import urllib.request
 
-TARGET_COMMIT = '2841ceda6b6e9fb6b589b0cd34e658db8cd35eea'
+TARGET_COMMIT = 'ee6029f6d85e7dca76594dc71d5738d6c41d447d'
 BASE_URL = ('https://raw.githubusercontent.com/'
             'JohnTechBytes/BSIT3A-DJANGO-ExploreKabankalanon/' + TARGET_COMMIT + '/')
 MAX_DOWNLOAD_BYTES = 3 * 1024 * 1024
@@ -31,7 +31,7 @@ FILES = {'templates/home.html': (('9e9391aef7052b243334aba4b21669439a3cfabaa82e8
                                '8a4d7a1c7df8956123002d17f285aed05eaff0e3edc1f264466d08f54b24edf0'),
  'templates/places/nearby_places.html': (('cba64693d0aa89447437c9b769af7a4acdf05140e9960c2953985b20df60f09b',),
                                          'c274ef955099efa7794ac6533544b4cec59b027f352b3890aa405c0e1320139e'),
- 'static/css/public-palette.css': ((None,), '6e6adc42a4a9351717caecc38d688396edef66db24ae2d885e9f81548188521d')}
+ 'static/css/public-palette.css': ((None,), '7f250fbcbc0504cf715f22c487d23fc785455c3112920e71ee1a3394f6e0476d')}
 # Dependencies are checked, never changed.
 PREREQUISITES = {'static/css/public-system.css': '1ef32e84bc66d26731036244de1695e1a8ea7e20735f4a60aea8f04eb2cec8db',
  'static/css/public-experience.css': '4d7aef8ee25daef7570622c6106fb38bef495234aaa930d0ec6813d45392632c',
