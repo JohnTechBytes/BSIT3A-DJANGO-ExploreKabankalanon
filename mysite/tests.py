@@ -89,6 +89,17 @@ class HomepageTests(TestCase):
         self.assertContains(response, 'aria-label="Your places links"')
         self.assertContains(response, '<strong>1</strong> published place')
 
+    def test_homepage_pilot_is_scoped_and_preserves_core_interactions(self):
+        response = self.render_home()
+        self.assertContains(response, 'css/homepage-pilot.css?v=1')
+        self.assertContains(response, 'id="home-search"')
+        self.assertContains(response, 'type="submit"')
+        self.assertContains(response, 'id="home-places"')
+        self.assertContains(response, 'data-carousel-toggle')
+        self.assertContains(response, 'id="landing-map-places"')
+        self.assertContains(response, 'Photo not yet available')
+        self.assertContains(response, 'Wikimedia Commons')
+
     def test_landing_search_and_main_links_use_existing_routes(self):
         response = self.render_home()
         self.assertContains(response, f'action="{reverse("places:smart_search")}"')

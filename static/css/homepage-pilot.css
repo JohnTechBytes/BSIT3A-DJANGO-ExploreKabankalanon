@@ -1,0 +1,91 @@
+/* Homepage pilot: visual changes only. Existing markup, carousel and map
+   scripts remain authoritative. Scoped to the landing page. */
+.landing-page {
+  --home-forest: #183e32;
+  --home-forest-deep: #102b24;
+  --home-paper: #f8f6ef;
+  --home-muted: #53665b;
+  --home-orange: #ae582c;
+  background: var(--home-paper);
+}
+.landing-page .site-header,
+.landing-page .site-header.is-scrolled {
+  background: rgba(250, 249, 243, .97);
+  border-color: #e3e7db;
+}
+.landing-page .site-header.is-scrolled .header-inner { transform: none; }
+.landing-page .brand-mark { border-radius: 13px; background: var(--home-forest); }
+.landing-page .main-nav a, .landing-page .account-link { color: #354c41; }
+.landing-page .header-action,
+.landing-page .ek-button-primary,
+.landing-page .search button { background: var(--home-forest); color: #fff; }
+.landing-page .header-action:hover,
+.landing-page .ek-button-primary:hover,
+.landing-page .search button:hover { background: #285944; color: #fff; }
+.landing-page .header-action { border-radius: 999px; }
+
+.landing-page .hero { background: #edf1e7; }
+.landing-page .hero::before { opacity: .075; }
+.landing-page .hero-inner {
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  gap: clamp(40px, 6vw, 84px);
+  padding-block: clamp(72px, 8vw, 112px);
+}
+.landing-page .hero-kicker { color: #38584a; letter-spacing: .14em; }
+.landing-page .hero h1 { font-size: clamp(52px, 5.6vw, 76px); line-height: 1.04; }
+.landing-page .hero h1 em { color: #287451; }
+.landing-page .hero-description { max-width: 40ch; color: #435b4d; line-height: 1.7; }
+.landing-page .search-label { color: #28483a; }
+.landing-page .search-row { min-height: 70px; padding: 6px; border-color: #b9cabb; border-radius: 14px; box-shadow: 0 8px 28px #183e3210; }
+.landing-page .search button { min-height: 48px; border-radius: 10px; }
+.landing-page .ek-chip { border-color: #b8cbbc; background: #f9fbf5; color: #28513d; }
+.landing-page .hero-footnote { color: #426250; }
+.landing-page .hero-visual { padding: 12px; border: 1px solid #dbe4d8; border-radius: 20px; box-shadow: 0 22px 55px #1b3e2c1a; }
+.landing-page .hero-photo { border-radius: 11px; }
+.landing-page .hero-image-frame { border-radius: 8px; }
+.landing-page .hero-photo-caption { padding: 22px 14px 16px; }
+.landing-page .hero-photo-caption small { color: var(--home-orange); letter-spacing: .11em; }
+.landing-page .hero-photo-credit { padding: 6px 14px 5px; }
+.landing-page .hero-photo-note { margin: 10px 14px 3px; }
+
+.landing-page .section-kicker { color: #9b4924; letter-spacing: .13em; }
+.landing-page .workflow { gap: clamp(32px, 5vw, 70px); padding-block: clamp(76px, 8vw, 110px); }
+.landing-page .steps > div { padding: 20px 0 0; border-top: 1px solid #cdd8cb; }
+.landing-page .step-icon { border: 0; background: #e6eee2; color: var(--home-forest); }
+.landing-page .discover { background: #fff; border-color: #e9ede4; }
+.landing-page .filters a { border-color: #d4dfd2; background: #f9fbf7; }
+.landing-page .filters a.selected { border-color: var(--home-forest); background: var(--home-forest); }
+.landing-page .carousel-controls button { border-color: #ccd9ce; border-radius: 999px; }
+.landing-page .place-card { border-color: #e1e8df; border-radius: 18px; box-shadow: 0 6px 20px #173c2c0a; }
+.landing-page .card-body { padding: 22px; }
+.landing-page .card-detail { color: #1e694b; }
+.landing-page .introduction { background: #e9efe2; border: 1px solid #dfe8d9; border-radius: 22px; }
+.landing-page .interest-links a { border-color: #c6d6c3; }
+.landing-page .interest-links a:hover { color: #1b6347; }
+.landing-page .map-panel { border-color: #d3e0d2; border-radius: 18px; }
+.landing-page .quick-explore a { border-color: #dce6da; border-radius: 14px; }
+.landing-page .closing-cta { background: var(--home-forest); color: #e8f0e5; }
+.landing-page .closing-cta h2 { color: #fff; }
+.landing-page .closing-cta .section-kicker { color: #e4c39b; }
+.landing-page .closing-inner p:last-child { color: #d5e5d7; }
+.landing-page .closing-cta .ek-button-primary { background: #fff; color: var(--home-forest-deep); }
+.landing-page .closing-cta .ek-button-primary:hover { background: #e9f3e8; color: var(--home-forest-deep); }
+.landing-page .site-footer { background: #f3f3e9; }
+
+@media (max-width: 768px) {
+  .landing-page .hero-inner { grid-template-columns: 1fr; gap: 36px; padding-block: 54px 65px; }
+  .landing-page .hero h1 { font-size: clamp(42px, 9vw, 64px); }
+  .landing-page .workflow { padding-block: 72px; }
+  .landing-page .hero-visual { max-width: 620px; }
+}
+@media (max-width: 480px) {
+  .landing-page .header-action { min-height: 44px; }
+  .landing-page .hero-kicker { line-height: 1.6; }
+  .landing-page .hero h1 { font-size: clamp(38px, 10vw, 48px); }
+  .landing-page .hero-visual { padding: 8px; }
+  .landing-page .hero-photo-caption { padding: 16px 10px 12px; }
+  .landing-page .hero-photo-credit { padding-inline: 10px; }
+  .landing-page .steps > div { padding-top: 16px; }
+  .landing-page .introduction { padding: 30px 22px; }
+  .landing-page .card-body { padding: 20px; }
+}
