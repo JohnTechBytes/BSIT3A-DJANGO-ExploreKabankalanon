@@ -1,0 +1,15 @@
+/* Local map-guide controls and honest fallback imagery. */
+.ek-map-guide-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0 0 12px; }
+.ek-map-guide-tools button { min-height: 44px; padding: 9px 14px; border: 1px solid #aec2d4; border-radius: 9px; background: #fff; color: #234b70; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.ek-map-guide-tools button:hover { background: #edf3f9; }
+.ek-map-guide-tools button:disabled { cursor: wait; opacity: .7; }
+.ek-map-guide-privacy { margin: 0 0 12px; color: #40566d; font-size: 12px; line-height: 1.5; }
+.ek-map-guide-status { margin: 8px 0 12px; color: #40566d; font-size: 13px; line-height: 1.5; }
+.landing-page .card-image .ek-fallback-image { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; }
+.landing-page .card-image .ek-fallback-image img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.landing-page .card-image .ek-fallback-label { position: absolute; top: 10px; left: 10px; z-index: 3; max-width: calc(100% - 20px); padding: 6px 8px; border-radius: 4px; background: #142233ef; color: #fff; font-size: 11px; font-weight: 600; line-height: 1.35; }
+.landing-page .card-image:has(.ek-fallback-image) .category-badge { top: auto; bottom: 10px; }
+
+/* Leaflet inserts its stylesheet on demand; keep attribution legible over tiles. */
+body .leaflet-container .leaflet-control-attribution { background: #fff; color: #283e51; }
+body .leaflet-container .leaflet-control-attribution a { color: #17527a; }

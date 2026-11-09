@@ -163,7 +163,7 @@
 /* On-demand map keeps Leaflet's own control and popup styling. */
 .nearby-page .ea6g-layout.map-open { display: grid; grid-template-columns: minmax(0, 1fr) minmax(330px, .9fr); gap: 18px; align-items: start; }
 .nearby-page .ea6g-layout.map-open .ea6-list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 245px), 1fr)); gap: 14px; }
-.nearby-page .ea6g-map-shell { position: sticky; top: 16px; min-width: 0; padding: 15px; border: 1px solid #30464b; border-radius: 15px; background: #111c23; }
+.nearby-page .ea6g-map-shell { position: sticky; top: 96px; min-width: 0; padding: 15px; border: 1px solid #30464b; border-radius: 15px; background: #111c23; }
 .nearby-page .ea6g-map-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
 .nearby-page .ea6g-map-head h3 { margin: 0; color: #ebf1ef; font-size: 19px; font-weight: 500; }
 .nearby-page .ea6g-fit { min-height: 38px; padding: 8px 11px; }
@@ -176,9 +176,10 @@
 .nearby-page .ea6g-popup-links a { color: #0757d8; font-size: 12px; font-weight: 800; }
 
 @keyframes nb-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-@media (max-width: 1050px) {
+@media (max-width: 900px) {
   .nearby-page .ea6g-layout.map-open { display: flex; flex-direction: column; }
-  .nearby-page .ea6g-map-shell { position: static; order: -1; width: 100%; }
+  .nearby-page .ea6g-map-shell { position: fixed; z-index: 1000; top: auto; bottom: 0; left: 0; right: 0; width: 100%; max-height: 70vh; max-height: 70dvh; overflow-y: auto; border-radius: 16px 16px 0 0; box-shadow: 0 -8px 32px #14283b33; }
+  .nearby-page .ea6g-map-shell .ea6g-map { height: 32vh; height: 32dvh; }
   .nearby-page .ea6g-layout.map-open .ea6-list { width: 100%; }
 }
 @media (max-width: 900px) {
@@ -304,7 +305,7 @@
 }
 
 /* Drone HUD shown while the camera descends onto a listing. */
-.nearby-page .ea6g-map-shell { position: relative; }
+/* The positioned map shell also anchors the drone HUD. */
 .nearby-page .ea6-drone-hud {
   position: absolute;
   top: 58px;

@@ -6,7 +6,7 @@
 {% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby.css' %}">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby.css' %}"><link rel="stylesheet" href="{% static 'css/map-guide.css' %}?v=1">{% endblock %}
 {% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261106-illustrations-1">{% endblock %}
 {% block content %}
 <main class="ea6-main" id="nearby-main">
@@ -104,7 +104,7 @@
       <span id="ea6h-distance-help" class="ea6h-help" role="status" aria-live="polite">Choose a landmark or enable location permission to filter by distance. This does not use driving routes.</span>
     </div>
     <p id="ea6-location-status" class="ea6-status" role="status" aria-live="polite">{% if selected_origin %}Distances are estimated from {{ selected_origin.title }}. This is a landmark reference, not your live GPS position.{% else %}No starting point selected. Results are alphabetical until you choose one.{% endif %}</p>
-    <p class="ea6-fineprint">Your location stays in this browser tab; distances are straight-line estimates, not driving times.</p>
+    <p class="ea6-fineprint">Your location is requested once; use the button again to update it. Coordinates are processed in this tab. Map tile requests go to MapTiler. Distances are straight-line estimates, not driving times.</p>
   </section>
   <section class="ea6-results-heading" aria-labelledby="ea6-results-title">
   <div class="ea6-heading">
@@ -135,7 +135,7 @@
       {% for place in results %}
           {% sample_photo place as fallback_image %}
         <article class="ea6-card" data-place-id="{{ place.pk }}" data-title="{{ place.title }}" data-category="{% if place.category %}{{ place.category.name }}{% else %}Kabankalan place{% endif %}" data-detail-url="{% url 'places:place_detail' place.pk %}" {% if place.latitude != None and place.longitude != None %}data-lat="{{ place.latitude }}" data-lng="{{ place.longitude }}" data-directions-url="https://www.google.com/maps/dir/?api=1&amp;destination={{ place.latitude }},{{ place.longitude }}"{% endif %}>
-          <div class="ea6-cover"{% if place.latitude != None and place.longitude != None %} role="button" tabindex="0" aria-label="View on map: {{ place.title }}{% if place.cover_image or place.cover_image_url %}{% elif place.sample_image %} · Illustrative category sample{% else %} · Photo not yet available{% endif %}"{% endif %}>
+          <div class="ea6-cover"{% if place.latitude != None and place.longitude != None %} role="button" tabindex="0" aria-label="View on map: {{ place.title }}{% if place.cover_image or place.cover_image_url %}{% elif place.sample_image %} · Photo not yet available · Illustrative category sample · Not an actual photo{% else %} · PHOTO NOT YET AVAILABLE{% endif %}"{% endif %}>
             {% if place.cover_image %}<img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" loading="lazy" decoding="async" width="640" height="360" alt="{{ place.title }}" src="{{ place.cover_image.url }}">
             {% elif place.cover_image_url %}<img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" loading="lazy" decoding="async" width="640" height="360" alt="{{ place.title }}" src="{{ place.cover_image_url }}">
             {% elif place.sample_image %}<img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" loading="lazy" decoding="async" width="640" height="360" alt="Illustrative category sample, not an actual photo of {{ place.title }}" src="{% static place.sample_image %}"><span class="ea6-sample-badge">Photo not yet available · Illustrative category sample · Not an actual photo</span>
@@ -172,15 +172,17 @@
       {% endfor %}
     </div>
     <aside id="ea6g-map-shell" class="ea6g-map-shell" aria-label="Map of current nearby search results" tabindex="-1" hidden>
-      <div class="ea6g-map-head"><h3>Nearby results map</h3><button type="button" class="ea6g-fit" id="ea6g-fit">Fit results</button></div>
+      <div class="ea6g-map-head"><h3>Nearby results map</h3><div class="ea6g-map-actions"><button type="button" class="ea6g-fit" id="ea6g-fit">Fit results</button> <button type="button" class="ea6g-fit" id="ea6g-close">Close map</button></div></div>
       <div class="ea6-drone-hud" id="ea6-drone-hud" hidden aria-hidden="true">
         <span class="ea6-drone-track"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 8h4l2-3h4l2 3h4v8h-4l-2 3h-4l-2-3H4Z"/><circle cx="12" cy="12" r="2.4"/></svg>Drone view</span>
         <strong id="ea6-drone-target">Kabankalan</strong>
         <span class="ea6-drone-scan"></span>
       </div>
+      <div class="ek-map-guide-tools"><button type="button" id="ea6g-use-gps">Use my location</button></div>
+      <p id="ea6-map-guide-status" class="ek-map-guide-status" role="status" aria-live="polite">Select a place and use your location to show a straight-line guide. It does not follow roads.</p>
       <div id="ea6g-map" class="ea6g-map" role="region" aria-label="Interactive map of nearby result pins"></div>
       <p id="ea6g-map-status" class="ea6g-map-status" role="status" aria-live="polite">Map loading will begin when you open this panel.</p>
-      <p class="ea6g-map-status">Only this search's published Kabankalan listings with recorded coordinates are pinned. Locations may need confirmation. Map marker colors indicate selected or unselected locations—not hobby scores or business quality. Map tiles © <a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener noreferrer">MapTiler</a>; map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>.</p>
+      <p class="ea6g-map-status">Only this search's published Kabankalan listings with recorded coordinates are pinned. Locations may need confirmation. Selecting a place shows its pin; Fit results restores all matching pins. Map tiles © <a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener noreferrer">MapTiler</a>; map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>.</p>
     </aside>
     </div>
   {% else %}
@@ -202,6 +204,7 @@
 </main>
 {% endblock %}
 {% block extra_js %}
+<script src="{% static 'js/map-guide.js' %}?v=1"></script>
 {{ approved_suggestions|json_script:"ea6-approved-data" }}
 <script src="{% static 'js/ea-voice.js' %}?v=20261104-2"></script>
 <script>
@@ -314,22 +317,18 @@
   let resultsMapMarkers = new Map();
   let selectionVersion = 0;
   let flightEnd = null;
-  let droneRing = null;
   let droneTimer = null;
-  let ringTimer = null;
   const reducedMotion = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function clearFlight() {
     if (resultsMap && flightEnd) resultsMap.off("moveend", flightEnd);
     flightEnd = null;
     clearTimeout(droneTimer);
-    clearTimeout(ringTimer);
-    if (droneRing) droneRing.remove();
-    droneRing = null;
     const hud = document.getElementById("ea6-drone-hud");
     if (hud) hud.hidden = true;
   }
   let originPoint = null;
-  let originMarker = null;
+  let guide = null;
+  let selectedCard = null;
   let assetsPromise = null;
   function haversine(a, b, c, d) {
     const r = Math.PI / 180;
@@ -385,10 +384,13 @@
         if (card.hidden && resultsMap.hasLayer(marker)) resultsMap.removeLayer(marker);
         else if (!card.hidden && !resultsMap.hasLayer(marker)) marker.addTo(resultsMap);
       });
-      selectCard(null);
-      if (pins.length) fitResultPins();
-      if (mapStatus) mapStatus.textContent = pins.length
-        ? pins.length + " mapped listing(s) currently shown; map pins match the distance filter."
+      if (selectedCard && selectedCard.hidden) selectCard(null);
+      else selectCard(selectedCard);
+      if (selectedCard && guide && guide.hasOrigin()) guide.fit();
+      else if (!selectedCard && pins.length) fitResultPins();
+      if (mapStatus) mapStatus.textContent = selectedCard
+        ? "Showing " + (selectedCard.dataset.title || "selected place") + ". Use Fit results to restore matching pins."
+        : pins.length ? pins.length + " mapped listing(s) currently shown; map pins match the distance filter."
         : "No mapped listings within the selected radius. Increase or clear the distance filter.";
     }
   }
@@ -415,30 +417,45 @@
       + " mapped listing(s) by estimated straight-line distance from " + label + ". Listings without coordinates appear last.";
     originPoint = {lat, lng, label};
     refreshRadius();
-    if (resultsMap) { placeOriginMarker(); syncPopupDistances(); }
+    if (resultsMap) {
+      guide.setOrigin(originPoint.lat, originPoint.lng, originPoint.label);
+      syncPopupDistances();
+      if (selectedCard) guide.fit();
+    }
   }
   if (container && container.dataset.originLat && container.dataset.originLng) {
     sortNearby(Number(container.dataset.originLat), Number(container.dataset.originLng), "landmark “" + container.dataset.originName + "”");
   }
   refreshRadius();
+  const mapGps = document.getElementById("ea6g-use-gps");
+  const guideStatus = document.getElementById("ea6-map-guide-status");
+  function locationMessage(message) {
+    if (status) status.textContent = message;
+    if (guideStatus) guideStatus.textContent = message;
+  }
+  mapGps?.addEventListener("click", () => gps?.click());
   gps?.addEventListener("click", function () {
     if (!window.isSecureContext) {
-      if (status) status.textContent = "Phone GPS generally requires HTTPS. Open the optional Kabankalan landmark selector instead, or test on localhost.";
+      locationMessage("Phone GPS generally requires HTTPS. Choose a landmark instead, or test on localhost.");
       return;
     }
     if (!navigator.geolocation) {
-      if (status) status.textContent = "This browser does not support location access. Choose a landmark instead.";
+      locationMessage("This browser does not support location access. Choose a landmark instead.");
       return;
     }
     gps.disabled = true;
-    if (status) status.textContent = "Requesting location permission…";
+    if (mapGps) mapGps.disabled = true;
+    locationMessage("Requesting location permission…");
     navigator.geolocation.getCurrentPosition(position => {
       gps.disabled = false;
+      if (mapGps) { mapGps.disabled = false; mapGps.textContent = "Update my location"; }
       sortNearby(position.coords.latitude, position.coords.longitude, "your current location");
+      if (gps.lastChild && gps.lastChild.nodeType === Node.TEXT_NODE) gps.lastChild.textContent = " Update my location";
     }, error => {
       gps.disabled = false;
-      if (status) status.textContent = error.code === 1 ? "Location permission denied. Choose a landmark instead."
-        : "Unable to obtain your location. Choose a landmark or try again.";
+      if (mapGps) mapGps.disabled = false;
+      locationMessage(error.code === 1 ? "Location permission denied. Choose a landmark instead."
+        : "Unable to obtain your location. Choose a landmark or try again.");
     }, {enableHighAccuracy:true,timeout:15000,maximumAge:60000});
   });
 
@@ -505,26 +522,23 @@
     return wrapper;
   }
   function selectCard(card) {
+    selectedCard = card;
     rows.forEach(row => row.classList.toggle("ea6g-selected", row === card));
-    resultsMapMarkers.forEach((marker,row) => marker.setStyle({
-      radius: row === card ? 12 : 9,
-      color: row === card ? "#0b3f8f" : "#0757d8",
-      fillColor: row === card ? "#f59e0b" : "#0d9488",
-      weight: row === card ? 3 : 2
-    }));
+    resultsMapMarkers.forEach((marker, row) => {
+      const show = !row.hidden && (!card || row === card);
+      if (show && !resultsMap.hasLayer(marker)) marker.addTo(resultsMap);
+      else if (!show && resultsMap.hasLayer(marker)) resultsMap.removeLayer(marker);
+      marker.setStyle({radius: row === card ? 11 : 9, color: "#0757d8", fillColor: "#0d9488", weight: 2});
+    });
+    if (guide) {
+      if (card) {
+        guide.setDestination(Number(card.dataset.lat), Number(card.dataset.lng), card.dataset.title || "selected place");
+        if (mapStatus) mapStatus.textContent = "Showing " + (card.dataset.title || "selected place") + ". Use Fit results to restore matching pins.";
+      } else guide.clearDestination();
+    }
   }
   function syncPopupDistances() {
     resultsMapMarkers.forEach((marker,card) => marker.setPopupContent(createPopup(card)));
-  }
-  function placeOriginMarker() {
-    if (!resultsMap || !originPoint) return;
-    if (originMarker) resultsMap.removeLayer(originMarker);
-    originMarker = L.circleMarker([originPoint.lat,originPoint.lng], {
-      radius:8,color:"#9a5704",fillColor:"#f59e0b",fillOpacity:.95,weight:3
-    }).addTo(resultsMap);
-    const note=document.createElement("div");
-    note.textContent="Distance reference: " + originPoint.label + " (not a business location)";
-    originMarker.bindPopup(note);
   }
   function fitResultPins() {
     if (!resultsMap || !mappedRows.length) return;
@@ -578,20 +592,23 @@
       'Satellite':nearbySatellite,
       'Hybrid (Street Overlay)':nearbyHybrid
     }, null, {position:'topright', collapsed:true}).addTo(resultsMap);
-    visibleMappedRows().forEach(card => {
+    guide = window.EKMapGuide.create(resultsMap, L, document.getElementById("ea6-map-guide-status"));
+    mappedRows.forEach(card => {
       const marker = L.circleMarker([Number(card.dataset.lat),Number(card.dataset.lng)], {
         radius:9,color:"#0757d8",fillColor:"#0d9488",fillOpacity:.92,weight:2
-      }).addTo(resultsMap);
-      marker.bindPopup(createPopup(card));
+      });
+      if (!card.hidden) marker.addTo(resultsMap);
+      marker.bindPopup(createPopup(card), {autoPan:false});
       marker.on("click",() => {
         ++selectionVersion;
         clearFlight();
         resultsMap.stop();
         selectCard(card);
+        if (guide.hasOrigin()) guide.fit();
       });
       resultsMapMarkers.set(card,marker);
     });
-    placeOriginMarker();
+    if (originPoint) guide.setOrigin(originPoint.lat, originPoint.lng, originPoint.label);
     fitResultPins();
   }
   async function openNearbyMap(cardToFocus=null, selection=selectionVersion) {
@@ -607,7 +624,7 @@
       if (!resultsMap) createResultsMap();
       // Leaflet must measure the panel after it becomes visible.
       resultsMap.invalidateSize();
-      if (!cardToFocus) fitResultPins();
+      if (!cardToFocus && !selectedCard) fitResultPins();
       if (mapStatus) mapStatus.textContent = visibleMappedRows().length + " location pin(s) shown for these search results. Select a pin or use Show on map on a card.";
       return true;
     } catch(error) {
@@ -631,12 +648,15 @@
     if (mapShell?.hidden || mapToggle.getAttribute("aria-expanded") === "false") openNearbyMap();
     else closeNearbyMap();
   });
+  document.getElementById("ea6g-close")?.addEventListener("click", closeNearbyMap);
   fitButton?.addEventListener("click", () => {
     ++selectionVersion;
     clearFlight();
     if (resultsMap) resultsMap.stop();
+    resultsMap?.closePopup();
     selectCard(null);
     fitResultPins();
+    if (mapStatus) mapStatus.textContent = visibleMappedRows().length + " mapped listing(s) shown. Select a pin or a card.";
   });
   // ---------------------------------------------------------------
   // Drone view: choosing a listing flies the camera down onto it
@@ -657,35 +677,25 @@
     const selection = ++selectionVersion;
     clearFlight();
     if (resultsMap) resultsMap.stop();
-    // Open immediately, focus and reveal the same map panel at every width,
-    // like Explore Places. Leaflet assets can continue loading afterward.
+    // The desktop map stays beside the list; narrow screens show it in a
+    // dismissible bottom panel. Neither selection moves the page.
     const ready = openNearbyMap(card, selection);
-    if (mapShell && !mapShell.hidden) {
-      mapShell.focus({preventScroll:true});
-      mapShell.scrollIntoView({behavior:reducedMotion() ? "auto" : "smooth",block:"start"});
-    }
     if (!await ready || selection !== selectionVersion || mapShell.hidden || card.hidden) return;
     const lat = Number(card.dataset.lat), lng = Number(card.dataset.lng);
     const marker = resultsMapMarkers.get(card);
     if (!marker) return;
     selectCard(card);
-    showDroneHud(card);
+    if (!guide.hasOrigin()) showDroneHud(card);
     const finish = () => {
       if (selection !== selectionVersion || mapShell.hidden || card.hidden) return;
       flightEnd = null;
       marker.openPopup();
-      // Draw the highlight after the zoom, not while it is being scaled.
-      droneRing = L.circleMarker([lat, lng], {
-        radius:26, color:"#21d9c6", weight:2, fillColor:"#21d9c6",
-        fillOpacity:.12, className:"ea6-drone-ring", interactive:false
-      }).addTo(resultsMap);
-      const ring = droneRing;
-      ringTimer = setTimeout(() => {
-        ring.remove();
-        if (droneRing === ring) droneRing = null;
-      }, 2600);
+
     };
-    if (reducedMotion()) {
+    if (guide.hasOrigin()) {
+      guide.fit();
+      finish();
+    } else if (reducedMotion()) {
       resultsMap.setView([lat, lng], 16.5, {animate:false});
       finish();
     } else {

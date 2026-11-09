@@ -82,7 +82,7 @@ class PublicExperienceUpdaterTests(TestCase):
         for name in fresh.PREREQUISITES:
             dest = root / name
             dest.parent.mkdir(parents=True, exist_ok=True)
-            dest.write_bytes((ROOT / name).read_bytes())
+            dest.write_bytes(subprocess.check_output(['git', 'show', updater.TARGET_COMMIT + ':' + name], cwd=ROOT))
         for name, (old, target) in updater.FILES.items():
             try:
                 data = subprocess.check_output(['git', 'show', '77a32e8:' + name], cwd=ROOT, stderr=subprocess.DEVNULL)

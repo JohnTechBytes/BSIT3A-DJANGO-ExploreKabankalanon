@@ -363,7 +363,8 @@ class ScoringDisplayTests(FlowFixture):
         response = self.client.get(self.url, {"browse": "all"})
         self.assertNotContains(response, "#16a34a")
         self.assertNotContains(response, "#dc2626")
-        self.assertContains(response, "#21d9c6")
+        self.assertContains(response, "selectAttraction(index)")
+        self.assertContains(response, "ea-map-pin")
 
     def test_recommended_sorting_still_works_without_the_badge(self):
         response = self.client.get(self.url, {"browse": "all", "sort": "recommended"})
