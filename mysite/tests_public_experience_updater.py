@@ -94,7 +94,7 @@ class PublicExperienceUpdaterTests(TestCase):
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 dest.write_bytes(data)
         with patch.object(updater, 'PREREQUISITES', fresh.PREREQUISITES):
-            backup = updater.apply(root, Path(self.tmp.name), downloader=lambda name: (ROOT / name).read_bytes())
+            backup = updater.apply(root, Path(self.tmp.name), downloader=lambda name: subprocess.check_output(['git', 'show', updater.TARGET_COMMIT + ':' + name], cwd=ROOT))
             self.assertIsNotNone(backup)
             for name, (_, target) in updater.FILES.items():
                 self.assertEqual(updater.digest((root / name).read_bytes()), target, name)

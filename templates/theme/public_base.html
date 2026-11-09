@@ -291,6 +291,7 @@
     <script src="{% static 'js/public-motion.js' %}?v=20261101-1" defer></script>
     <link rel="stylesheet" href="{% static 'css/public-system.css' %}?v=1">
     <link rel="stylesheet" href="{% static 'css/public-experience.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'css/public-palette.css' %}?v=1">
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
@@ -315,7 +316,7 @@
         <div class="ea-nav-links" id="public-nav-links">
             <a href="{% url 'home' %}">Home</a>
             <a href="{% url 'places:attraction_carousel' %}?browse=all">Explore Places</a>
-            <a href="{% url 'places:attraction_carousel' %}?mode=nearby">Nearby</a>
+            <a href="{% url 'places:attraction_carousel' %}?mode=nearby"{% if request.resolver_match.url_name == 'attraction_carousel' and request.GET.mode == 'nearby' %} aria-current="page"{% endif %}>Nearby</a>
             <a href="{% url 'info:city_information' %}">City Information</a>
 
             {% if request.user.is_authenticated %}

@@ -78,7 +78,7 @@ class HomepageTests(TestCase):
 
         response = self.render_home()
         self.assertContains(response, 'Discover<br><em>Kabankalan.</em>')
-        self.assertContains(response, 'content="#101b18"')
+        self.assertContains(response, 'content="#111b2a"')
         stylesheet = Path(finders.find('css/explore.css')).read_text()
         self.assertIn('--ek-bg: #f8f6f1', stylesheet)
         self.assertIn('--ek-primary: #1e7a5c', stylesheet)

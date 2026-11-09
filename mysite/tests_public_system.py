@@ -88,3 +88,28 @@ class PublicSystemTests(TestCase):
         fallback = Path(finders.find('js/public-experience-photo.js')).read_text(encoding='utf-8')
         self.assertIn('.card-credit', fallback)
         self.assertIn('credit.hidden = true', fallback)
+
+    def test_palette_is_loaded_for_public_and_recovery_pages(self):
+        self.client.force_login(self.user)
+        for url in (reverse('home'), reverse('places:attraction_carousel'),
+                    reverse('info:city_information'), reverse('places:place_detail', args=[self.place.pk]),
+                    reverse('places:saved_places'), reverse('core:privacy_notice')):
+            with self.subTest(url=url):
+                self.assertContains(self.client.get(url), 'css/public-palette.css?v=1')
+        self.client.logout()
+        for url in (reverse('login'), reverse('register')):
+            self.assertContains(self.client.get(url), 'css/public-palette.css?v=1')
+        for template in ('errors/404.html', 'errors/500.html'):
+            self.assertIn('css/public-palette.css?v=1', render_to_string(template))
+
+    def test_nearby_search_location_and_results_have_clear_order_and_controls(self):
+        self.client.force_login(self.user)
+        html = self.client.get(reverse('places:attraction_carousel'), {'mode': 'nearby'}).content.decode()
+        self.assertLess(html.index('id="ea6-search-title"'), html.index('id="ea6-nearby-title"'))
+        self.assertLess(html.index('id="ea6-nearby-title"'), html.index('id="ea6-results-title"'))
+        for item in ('id="ea6-query"', 'id="ea6-service"', 'id="ea6-voice-status"',
+                     'id="ea6-use-gps"', 'id="ea6h-distance"', 'id="ea6g-toggle"',
+                     'id="ea6g-map-shell"', 'aria-current="page">Nearby</a>'):
+            self.assertIn(item, html)
+        self.assertIn('No starting point selected. Results are alphabetical', html)
+        self.assertIn('if (listbox && !listbox.hidden) event.preventDefault()', html)

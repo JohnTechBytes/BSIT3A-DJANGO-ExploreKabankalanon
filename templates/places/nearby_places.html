@@ -19,7 +19,7 @@
   {% include "places/_discovery_modes.html" %}
   <section class="ea6-box ea6-search-box" aria-labelledby="ea6-search-title">
     <div class="ea6-panel-heading">
-      <div><h2 id="ea6-search-title">Find your next stop</h2><p>Search by place or browse a local category.</p></div>
+      <div><h2 id="ea6-search-title">Search places</h2><p>Start with a place name, activity, or category.</p></div>
       <span class="ea6-panel-symbol" aria-hidden="true">✧</span>
     </div>
     <form method="get" action="{% url 'places:attraction_carousel' %}" class="ea6-search" id="ea6-search-form" autocomplete="off">
@@ -36,7 +36,6 @@
           <span class="ea6-voice-text">Speak</span>
         </button>
         <div id="ea6-suggestions" class="ea6-autocomplete" role="listbox" aria-label="Suggested published Kabankalan places" hidden></div>
-        <p class="ea6-voice-status" id="ea6-voice-status" role="status" aria-live="polite"></p>
       </div>
       <div class="ea6-field">
         <label for="ea6-service">Place type</label>
@@ -47,6 +46,7 @@
       </div>
       <button class="ea6-btn" type="submit">Find places <span aria-hidden="true">↗</span></button>
     </form>
+    <p class="ea6-voice-status" id="ea6-voice-status" role="status" aria-live="polite"></p>
     <div class="ea6-quick" aria-label="Quick searches for published Kabankalan listings">
       <span>QUICK SEARCHES</span>
       <a href="{% url 'places:attraction_carousel' %}?mode=nearby&amp;service=coffee" {% if selected_service == 'coffee' %}aria-current="true"{% endif %}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V7Zm12 1h2a2.5 2.5 0 0 1 0 5h-2M3 20h15M8 3v2m4-2v2"/></svg>Coffee</a>
@@ -62,13 +62,13 @@
     <div class="ea6k-location-top">
       <div class="ea6-location-title">
         <span class="ea6-location-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
-        <div><h2 id="ea6-nearby-title">Find places near you</h2>
-        <p>Optional: sort these results by distance from your location.</p></div>
+        <div><h2 id="ea6-nearby-title">Choose a starting point <span class="ea6-optional">Optional</span></h2>
+        <p>Use your location or a landmark to sort results by straight-line distance.</p></div>
       </div>
       <button id="ea6-use-gps" class="ea6-btn ea6-location-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg> Use my location</button>
     </div>
     <details class="ea6k-landmark" {% if selected_origin %}open{% endif %}>
-      <summary>Can't use GPS? Choose a Kabankalan landmark instead</summary>
+      <summary>Or choose a Kabankalan landmark</summary>
       <p>Optional: choose a familiar published Kabankalan landmark as a <strong>distance reference</strong>, not your current location. Only selected landmarks with recorded map coordinates are listed. Confirm the location before travelling.</p>
       {% if landmarks %}
       <form method="get" action="{% url 'places:attraction_carousel' %}" id="ea6-landmark-form" class="ea6k-landmark-form">
@@ -103,12 +103,13 @@
       <button type="button" class="ea6h-reset" id="ea6h-reset" disabled>Clear distance filter</button>
       <span id="ea6h-distance-help" class="ea6h-help" role="status" aria-live="polite">Choose a landmark or enable location permission to filter by distance. This does not use driving routes.</span>
     </div>
-    <p id="ea6-location-status" class="ea6-status" role="status" aria-live="polite">{% if selected_origin %}Distances are estimated from {{ selected_origin.title }}. This is a landmark reference, not your live GPS position.{% else %}Use GPS for distance sorting, or expand the optional Kabankalan landmark selector if GPS is unavailable. Without a reference, results are alphabetical.{% endif %}</p>
+    <p id="ea6-location-status" class="ea6-status" role="status" aria-live="polite">{% if selected_origin %}Distances are estimated from {{ selected_origin.title }}. This is a landmark reference, not your live GPS position.{% else %}No starting point selected. Results are alphabetical until you choose one.{% endif %}</p>
     <p class="ea6-fineprint">Your location stays in this browser tab; distances are straight-line estimates, not driving times.</p>
   </section>
+  <section class="ea6-results-heading" aria-labelledby="ea6-results-title">
   <div class="ea6-heading">
     <div>
-      <h2>{% if selected_service_label %}{{ selected_service_label }}{% elif query %}Results for “{{ query }}”{% else %}Discover local places{% endif %}</h2>
+      <h2 id="ea6-results-title">{% if selected_service_label %}{{ selected_service_label }}{% elif query %}Results for “{{ query }}”{% else %}Discover local places{% endif %}</h2>
       <p>Thoughtfully collected places in Kabankalan, ready for your next stop.</p>
     </div>
     <span class="ea6-pill" id="ea6h-result-count">{{ result_count }} matching listing{{ result_count|pluralize }}</span>
@@ -125,6 +126,7 @@
       <span id="ea6g-count" class="ea6g-small" role="status" aria-live="polite">The map only includes displayed listings with coordinates.</span>
     </div>
   {% endif %}
+  </section>
   {% if limit_reached %}<p class="ea6-warning">The page displays at most 250 listings. Distance sorting applies to these displayed results, not to any additional entries. Ask an administrator to refine the search if needed.</p>{% endif %}
   {% if results %}
     <p id="ea6h-no-results" class="ea6h-none" role="status" hidden>No displayed listings fall within that straight-line distance. Increase the radius or clear the distance filter to see all matches. Listings without recorded coordinates cannot be assessed against a radius.</p>
@@ -270,7 +272,11 @@
   }
   input?.addEventListener("input", () => { if (selectedId) selectedId.value=""; showSuggestions(); });
   input?.addEventListener("keydown", event => {
-    if (event.key === "Escape") { closeSuggestions(); return; }
+    if (event.key === "Escape") {
+      if (listbox && !listbox.hidden) event.preventDefault();
+      closeSuggestions();
+      return;
+    }
     if (!listbox || listbox.hidden || !displayed.length) return;
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();

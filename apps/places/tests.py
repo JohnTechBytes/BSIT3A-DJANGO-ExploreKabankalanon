@@ -64,7 +64,7 @@ class NearbyRedesignTests(TestCase):
         self.assertTemplateUsed(response, "places/nearby_places.html")
         for content in [
             'class="nearby-page ek-theme ek-discovery-theme"', 'css/nearby.css', 'css/editorial.css', 'css/explore.css', 'class="ek-brand-name"',
-            'Find places near you.', 'Find your next stop',
+            'Find places near you.', 'Search places',
             'id="ea6-search-form"', 'id="ea6-use-gps"', 'id="ea6-origin"',
             'id="ea6h-distance"', 'id="ea6g-toggle"', 'id="ea6g-map-shell"',
             'id="ea6-results"', 'View details', 'Directions', 'Show on map',
