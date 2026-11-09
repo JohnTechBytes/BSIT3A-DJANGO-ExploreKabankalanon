@@ -13,7 +13,7 @@ import tempfile
 from datetime import datetime
 import urllib.request
 
-TARGET_COMMIT = 'd581a87db1cf8405d6c899d45b0233db6c554fba'
+TARGET_COMMIT = '3aca510199e2da2611031f6a106ac13433ce351b'
 BASE_URL = ('https://raw.githubusercontent.com/'
             'JohnTechBytes/BSIT3A-DJANGO-ExploreKabankalanon/' + TARGET_COMMIT + '/')
 MAX_DOWNLOAD_BYTES = 3 * 1024 * 1024
@@ -36,7 +36,7 @@ FILES = {'templates/home.html': (('9e9391aef7052b243334aba4b21669439a3cfabaa82e8
                                '8a4d7a1c7df8956123002d17f285aed05eaff0e3edc1f264466d08f54b24edf0'),
  'templates/places/nearby_places.html': (('cba64693d0aa89447437c9b769af7a4acdf05140e9960c2953985b20df60f09b',
                                           'c274ef955099efa7794ac6533544b4cec59b027f352b3890aa405c0e1320139e'),
-                                         'da60fa34966ffc0db242e68d6b2b5a8a841b92c0f0aeb77edf909d90be5b279d'),
+                                         '3be0dd2da152749de93c496aeddeea9e11a01852e1453caea447778ed80f6b46'),
  'static/css/public-palette.css': ((None, '7f250fbcbc0504cf715f22c487d23fc785455c3112920e71ee1a3394f6e0476d'),
                                    '7f250fbcbc0504cf715f22c487d23fc785455c3112920e71ee1a3394f6e0476d'),
  'templates/places/attraction_carousel.html': (('e0d14b2770c9390a7d0438a21b026ede7227bd13901dfb1d9c77cfce76f4055f',),
