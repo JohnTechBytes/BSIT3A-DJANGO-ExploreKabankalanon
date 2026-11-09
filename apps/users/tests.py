@@ -81,7 +81,8 @@ class PrivacyNoticeTests(TestCase):
         self.assertTemplateUsed(response, "privacy/notice.html")
         self.assertContains(response, "Privacy Notice")
         self.assertContains(response, "Your live GPS position")
-        self.assertContains(response, "not sent to the server")
+        self.assertContains(response, "not sent to this application’s server")
+        self.assertContains(response, "OSRM routing service")
         self.assertContains(response, "Who can see it")
 
     def test_notice_is_linked_from_the_footer(self):

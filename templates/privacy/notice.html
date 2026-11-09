@@ -61,7 +61,7 @@
   <section class="eapriv-card eapriv-never" aria-labelledby="eapriv-never">
     <h2 id="eapriv-never">What is never stored</h2>
     <ul>
-      <li><strong>Your live GPS position.</strong> The distance between you and a destination is calculated inside your browser. The coordinates are not sent to the server and are not written to the database.</li>
+      <li><strong>Your live GPS position.</strong> The distance between you and a destination is calculated inside your browser. For distance estimates, the coordinates are not sent to this application’s server or written to its database. If you request a driving route, the selected origin and destination coordinates are sent to the external OSRM routing service.</li>
       <li><strong>Your precise location history.</strong> The system keeps no trail of where you have been.</li>
       <li><strong>Advertising cookies.</strong> The project does not intentionally set advertising cookies. External services may receive connection information as described below.</li>
     </ul>
@@ -84,7 +84,10 @@
       MapTiler or OpenStreetMap, depending on the map. Tile requests reveal the
       map area and ordinary connection information, such as your IP address, to
       the tile provider. Tile requests do not include your account, searches or
-      saved places. External destination images may also contact their host.
+      saved places. If you request a driving route, the OSRM demo service receives
+      the origin and destination coordinates and ordinary connection information.
+      It is a third-party demo with no availability guarantee; routes are approximate.
+      External destination images may also contact their host.
     </p>
   </section>
 
