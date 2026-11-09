@@ -449,7 +449,15 @@
     navigator.geolocation.getCurrentPosition(position => {
       gps.disabled = false;
       if (mapGps) { mapGps.disabled = false; mapGps.textContent = "Update my location"; }
+      // Sorting cards and revealing the radius controls must not pull the
+      // viewport away from an open map panel when its GPS button is used.
+      const scrollTop = window.scrollY;
+      const root = document.documentElement;
+      const oldAnchor = root.style.overflowAnchor;
+      root.style.overflowAnchor = "none";
       sortNearby(position.coords.latitude, position.coords.longitude, "your current location");
+      window.scrollTo({top: scrollTop, behavior: "instant"});
+      requestAnimationFrame(() => { root.style.overflowAnchor = oldAnchor; });
       if (gps.lastChild && gps.lastChild.nodeType === Node.TEXT_NODE) gps.lastChild.textContent = " Update my location";
     }, error => {
       gps.disabled = false;
