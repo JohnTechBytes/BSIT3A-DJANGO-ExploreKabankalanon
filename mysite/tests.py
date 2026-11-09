@@ -94,7 +94,10 @@ class HomepageTests(TestCase):
         self.assertContains(response, 'css/homepage-pilot.css?v=5')
         self.assertContains(response, 'class="hero-actions"')
         html = response.content.decode()
-        self.assertLess(html.index('id="discover"'), html.index('id="hobbies"'))
+        self.assertContains(response, 'css/landing-field-guide.css?v=1')
+        self.assertContains(response, 'aria-label="Mobile navigation"')
+        self.assertLess(html.index('id="discover"'), html.index('id="map-preview-title"'))
+        self.assertLess(html.index('id="map-preview-title"'), html.index('id="hobbies"'))
         self.assertLess(html.index('id="hobbies"'), html.index('id="how-it-works"'))
         self.assertContains(response, f'href="{reverse("places:attraction_carousel")}?mode=nearby"')
         self.assertContains(response, 'id="home-search"')
@@ -148,6 +151,8 @@ class HomepageTests(TestCase):
         response = self.render_home()
         self.assertContains(response, 'id="landing-map-places"')
         self.assertContains(response, 'Existing local place')
+        self.assertContains(response, 'data-map-place="0"')
+        self.assertContains(response, '9.9889, 122.8142')
         self.assertNotContains(response, 'Not public')
         self.assertContains(response, 'js/landing-map.js')
 
@@ -158,7 +163,7 @@ class HomepageTests(TestCase):
         script = Path(finders.find('js/landing-map.js')).read_text(encoding='utf-8')
         self.assertIn("https://tile.openstreetmap.org/{z}/{x}/{y}.png", script)
         self.assertIn("referrerPolicy: 'origin'", script)
-        self.assertContains(self.render_home(), 'js/landing-map.js?v=20261109-3')
+        self.assertContains(self.render_home(), 'js/landing-map.js?v=20261109-4')
 
     def test_landing_map_is_bounded_and_safely_serialized(self):
         self.place.title = '</script><script>alert(1)</script>'
