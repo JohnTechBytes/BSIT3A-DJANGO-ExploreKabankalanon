@@ -329,6 +329,7 @@
   let originPoint = null;
   let guide = null;
   let selectedCard = null;
+  let mapOpener = null;
   let assetsPromise = null;
   function haversine(a, b, c, d) {
     const r = Math.PI / 180;
@@ -621,6 +622,7 @@
   }
   async function openNearbyMap(cardToFocus=null, selection=selectionVersion) {
     if (!mapShell || !mapLayout || !mapToggle || !visibleMappedRows().length) return;
+    if (mapShell.hidden) mapOpener = document.activeElement;
     mapShell.hidden = false;
     mapLayout.classList.add("map-open");
     mapToggle.setAttribute("aria-expanded","true");
@@ -647,8 +649,10 @@
     ++selectionVersion;
     clearFlight();
     if (resultsMap) resultsMap.stop();
+    const returnFocus = mapShell.contains(document.activeElement);
     mapShell.hidden = true;
     mapLayout.classList.remove("map-open");
+    if (returnFocus && mapOpener?.isConnected && typeof mapOpener.focus === "function") mapOpener.focus({preventScroll:true});
     mapToggle.textContent = "View nearby results on map ↗";
     mapToggle.setAttribute("aria-expanded","false");
   }
