@@ -77,7 +77,7 @@ class HomepageTests(TestCase):
         from pathlib import Path
 
         response = self.render_home()
-        self.assertContains(response, 'Find your place<br><em>in Kabankalan.</em>')
+        self.assertContains(response, 'Discover<br><em>Kabankalan.</em>')
         self.assertContains(response, 'content="#101b18"')
         stylesheet = Path(finders.find('css/explore.css')).read_text()
         self.assertIn('--ek-bg: #f8f6f1', stylesheet)

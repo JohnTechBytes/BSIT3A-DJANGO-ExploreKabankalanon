@@ -1156,8 +1156,10 @@
 
     function applyMarqueeOffset() {
         if (track) {
-            track.style.transform =
-                "translate3d(" + marquee.offset.toFixed(2) + "px, 0, 0)";
+            const transform = "translate3d(" + marquee.offset.toFixed(2) + "px, 0, 0)";
+            track.style.transform = transform;
+            // Reduced motion disables autoplay but must retain instant manual navigation.
+            track.style.setProperty("--xp-carousel-transform", transform);
         }
     }
 

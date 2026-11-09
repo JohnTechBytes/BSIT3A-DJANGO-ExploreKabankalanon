@@ -53,3 +53,38 @@ class PublicSystemTests(TestCase):
         css = Path(finders.find('css/public-system.css')).read_text(encoding='utf-8')
         self.assertIn(':focus-visible', css)
         self.assertIn('prefers-reduced-motion: reduce', css)
+
+    def test_cinematic_experience_is_wired_to_public_pages(self):
+        self.client.force_login(self.user)
+        for url in (reverse('home'), reverse('places:attraction_carousel'),
+                    reverse('info:city_information'), reverse('places:place_detail', args=[self.place.pk]),
+                    reverse('places:saved_places'), reverse('places:my_reviews'),
+                    reverse('core:privacy_notice'), reverse('evaluation:sus_survey')):
+            with self.subTest(url=url):
+                self.assertContains(self.client.get(url), 'css/public-experience.css?v=1')
+        self.client.logout()
+        for url in (reverse('login'), reverse('register')):
+            self.assertContains(self.client.get(url), 'css/public-experience.css?v=1')
+        self.client.force_login(self.user)
+        for template in ('errors/404.html', 'errors/500.html'):
+            self.assertIn('css/public-experience.css?v=1', render_to_string(template))
+        response = self.client.get(reverse('places:attraction_carousel'))
+        self.assertContains(response, 'mode=nearby')
+        self.assertContains(response, '--xp-carousel-transform')
+        css = Path(finders.find('css/public-experience.css')).read_text(encoding='utf-8')
+        self.assertIn('100cqw', css)
+        self.assertIn('var(--xp-carousel-transform, none)', css)
+
+    def test_homepage_photo_credit_and_sample_are_not_confused(self):
+        self.place.cover_image_url = 'https://example.com/photo.jpg'
+        self.place.photo_credit = 'Photographer Example'
+        self.place.photo_source_url = 'https://example.com/source'
+        self.place.photo_license = 'CC BY 4.0'
+        self.place.save()
+        html = self.client.get(reverse('home')).content.decode()
+        self.assertIn('Photographer Example', html)
+        self.assertIn('https://example.com/source', html)
+        self.assertIn('place-photo-fallback.js', html)
+        fallback = Path(finders.find('js/public-experience-photo.js')).read_text(encoding='utf-8')
+        self.assertIn('.card-credit', fallback)
+        self.assertIn('credit.hidden = true', fallback)

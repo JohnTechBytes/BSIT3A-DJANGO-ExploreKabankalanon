@@ -9,6 +9,7 @@
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 
+    <script src="{% static 'js/public-experience-photo.js' %}?v=1"></script>
     <script src="{% static 'js/place-photo-fallback.js' %}?v=20261106-1"></script>
     <style>
         .ek-fallback-image { position: relative; display: block; width: 100%; height: 100%; }
@@ -289,6 +290,7 @@
     <script src="{% static 'js/public-reveal.js' %}?v=20261101-1" defer></script>
     <script src="{% static 'js/public-motion.js' %}?v=20261101-1" defer></script>
     <link rel="stylesheet" href="{% static 'css/public-system.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'css/public-experience.css' %}?v=1">
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
@@ -313,6 +315,7 @@
         <div class="ea-nav-links" id="public-nav-links">
             <a href="{% url 'home' %}">Home</a>
             <a href="{% url 'places:attraction_carousel' %}?browse=all">Explore Places</a>
+            <a href="{% url 'places:attraction_carousel' %}?mode=nearby">Nearby</a>
             <a href="{% url 'info:city_information' %}">City Information</a>
 
             {% if request.user.is_authenticated %}
@@ -350,12 +353,29 @@
 </div>
 
 <footer class="ea-site-footer">
-    <div class="ea-footer-inner">
-        <span>&copy; {% now "Y" %} {% block footer_brand %}ExploreAnywhere{% endblock %}</span>
-        <span>{% block footer_tagline %}One City. Your Hobbies. Our Map.{% endblock %}</span>
-        <a class="ea-footer-link" href="{% url 'evaluation:sus_survey' %}">Usability Survey</a>
-        <a class="ea-footer-link" href="{% url 'core:privacy_notice' %}">Privacy Notice</a>
+    <div class="ea-footer-layout">
+        <div class="ea-footer-intro">
+            <a class="ea-footer-brand" href="{% url 'home' %}">Explore<strong>Kabankalan</strong></a>
+            <p>Find your kind of day, close to home.</p>
+        </div>
+        <nav aria-label="Explore footer links">
+            <strong>Explore</strong>
+            <a href="{% url 'places:attraction_carousel' %}?browse=all">Places</a>
+            <a href="{% url 'places:attraction_carousel' %}?mode=nearby">Nearby</a>
+            <a href="{% url 'info:city_information' %}">City information</a>
+        </nav>
+        <nav aria-label="Account footer links">
+            <strong>Your places</strong>
+            <a href="{% url 'places:saved_places' %}">Saved places</a>
+            <a href="{% url 'places:my_reviews' %}">My reviews</a>
+        </nav>
+        <nav aria-label="Information footer links">
+            <strong>Information</strong>
+            <a href="{% url 'evaluation:sus_survey' %}">Usability survey</a>
+            <a href="{% url 'core:privacy_notice' %}">Privacy notice</a>
+        </nav>
     </div>
+    <div class="ea-footer-end"><span>&copy; {% now "Y" %} {% block footer_brand %}ExploreKabankalan{% endblock %}</span><span>{% block footer_tagline %}Local places. Your adventure.{% endblock %}</span></div>
 </footer>
 
 <script>
