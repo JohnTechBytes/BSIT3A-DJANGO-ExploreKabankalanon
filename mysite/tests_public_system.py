@@ -1,0 +1,55 @@
+"""Public design-system wiring and task layout regression tests."""
+from pathlib import Path
+
+from django.contrib.auth import get_user_model
+from django.contrib.staticfiles import finders
+from django.template.loader import render_to_string
+from django.test import TestCase
+from django.urls import reverse
+
+from apps.cities.models import City
+from apps.core.models import Category
+from apps.places.models import Place
+
+
+class PublicSystemTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        city = City.objects.create(pk=2, name='Kabankalan', slug='kabankalan')
+        category = Category.objects.create(name='Food', slug='food')
+        cls.place = Place.objects.create(city=city, category=category, title='Existing place',
+                                         is_active=True, is_verified=True)
+        cls.user = get_user_model().objects.create_user(username='design_test', password='test-pass-123')
+
+    def test_public_pages_load_shared_stylesheet_and_existing_controls(self):
+        self.client.force_login(self.user)
+        for url in (reverse('places:attraction_carousel'), reverse('info:city_information'),
+                    reverse('places:place_detail', args=[self.place.pk]),
+                    reverse('places:saved_places'), reverse('places:my_reviews'),
+                    reverse('core:privacy_notice'), reverse('evaluation:sus_survey')):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, 200)
+                self.assertContains(response, 'css/public-system.css?v=1')
+        nearby = self.client.get(reverse('places:attraction_carousel'), {'mode': 'nearby'})
+        self.assertContains(nearby, 'id="ea6-query"')
+        self.assertContains(nearby, 'id="ea6-use-gps"')
+        self.assertContains(nearby, 'css/public-system.css?v=1')
+
+    def test_search_precedes_summary_without_losing_map_or_carousel(self):
+        self.client.force_login(self.user)
+        response = self.client.get(reverse('places:attraction_carousel'), {'browse': 'all'})
+        html = response.content.decode()
+        self.assertLess(html.index('class="ea-discovery-tools"'), html.index('class="ea-summary"'))
+        for control in ('id="ea-search-query"', 'id="ea-filter-category"', 'id="ea-filter-hobby"',
+                        'id="ea-list-button"', 'id="ea-map-button"', 'id="ea-carousel"'):
+            self.assertIn(control, html)
+
+    def test_auth_and_error_templates_load_the_shared_system(self):
+        self.assertContains(self.client.get(reverse('login')), 'css/public-system.css?v=1')
+        self.assertContains(self.client.get(reverse('register')), 'css/public-system.css?v=1')
+        for template in ('errors/404.html', 'errors/500.html'):
+            self.assertIn('css/public-system.css?v=1', render_to_string(template))
+        css = Path(finders.find('css/public-system.css')).read_text(encoding='utf-8')
+        self.assertIn(':focus-visible', css)
+        self.assertIn('prefers-reduced-motion: reduce', css)

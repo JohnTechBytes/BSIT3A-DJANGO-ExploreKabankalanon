@@ -686,33 +686,6 @@
 
   {% include "places/_discovery_modes.html" %}
 
-  <section class="ea-summary" aria-live="polite">
-    <strong>
-      {% if search_query or selected_category or selected_hobby %}
-        {{ total_attractions }} Matching Place{{ total_attractions|pluralize }}
-      {% else %}
-        {{ published_total }} Published Place{{ published_total|pluralize }}
-      {% endif %}
-    </strong>
-    {% if search_query or selected_category or selected_hobby %}
-      <p class="ea-summary-note">Filtered from {{ published_total }} published Kabankalan places.</p>
-    {% else %}
-      <p class="ea-summary-note">Published Kabankalan places and businesses. Details may need confirmation.</p>
-    {% endif %}
-    {% if search_note %}
-      <p class="ea-search-note" role="status">{{ search_note }}</p>
-    {% endif %}
-
-    <p>
-      {{ selected_city.name }}
-      {% if selected_city.province_ref %}
-        &middot; {{ selected_city.province_ref.name }}
-      {% elif selected_city.province %}
-        &middot; {{ selected_city.province }}
-      {% endif %}
-    </p>
-  </section>
-
   {# exploreanywhere-phase5a-discovery-controls-v1 #}
   <section class="ea-discovery-tools" aria-label="Find and filter Kabankalan places">
     <div class="ea-tools-heading">
@@ -786,6 +759,33 @@
         </div>
       </div>
     {% endif %}
+  </section>
+
+  <section class="ea-summary" aria-live="polite">
+    <strong>
+      {% if search_query or selected_category or selected_hobby %}
+        {{ total_attractions }} Matching Place{{ total_attractions|pluralize }}
+      {% else %}
+        {{ published_total }} Published Place{{ published_total|pluralize }}
+      {% endif %}
+    </strong>
+    {% if search_query or selected_category or selected_hobby %}
+      <p class="ea-summary-note">Filtered from {{ published_total }} published Kabankalan places.</p>
+    {% else %}
+      <p class="ea-summary-note">Published Kabankalan places and businesses. Details may need confirmation.</p>
+    {% endif %}
+    {% if search_note %}
+      <p class="ea-search-note" role="status">{{ search_note }}</p>
+    {% endif %}
+
+    <p>
+      {{ selected_city.name }}
+      {% if selected_city.province_ref %}
+        &middot; {{ selected_city.province_ref.name }}
+      {% elif selected_city.province %}
+        &middot; {{ selected_city.province }}
+      {% endif %}
+    </p>
   </section>
 
   {% if attractions %}
