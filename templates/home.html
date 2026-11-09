@@ -7,10 +7,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Discover Kabankalan places for your hobbies, save favorites, and plan your next local adventure.">
-    <meta name="theme-color" content="#f8f6f1">
+    <meta name="theme-color" content="#101b18">
     <title>Explore Kabankalan | Discover your city</title>
     <link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261109-redesign-v2">
-    <link rel="stylesheet" href="{% static 'css/homepage-pilot.css' %}?v=4">
+    <link rel="stylesheet" href="{% static 'css/homepage-pilot.css' %}?v=5">
 </head>
 <body class="landing-page ek-theme">
 <svg class="ek-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display: none;">
@@ -53,7 +53,6 @@
                 <p class="hero-description">A quiet morning, a favorite hobby, or somewhere new to go. Discover the places that make the city feel like yours.</p>
                 <div class="hero-actions">
                     <a class="hero-primary" href="{{ browse_url }}?browse=all">Explore places <svg class="ek-icon" aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg></a>
-                    <a class="hero-secondary" href="{{ browse_url }}?mode=nearby">Find nearby <svg class="ek-icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></a>
                 </div>
                 <form class="search" action="{{ search_url }}" method="get" role="search">
                     <label class="search-label" for="home-search">What are you in the mood for?</label>
@@ -71,7 +70,7 @@
                 <p class="hero-footnote"><svg class="ek-icon" aria-hidden="true" style="width:16px;height:16px;"><use href="#icon-pin"></use></svg><strong>{{ published_count }}</strong> published place{{ published_count|pluralize }} to explore</p>
             </div>
             <div class="hero-visual">
-                <span class="hero-photo-note" aria-hidden="true">Featured Landmark &bull; 01 / 03</span>
+                <span class="hero-photo-note" aria-hidden="true">KABANKALAN CITY &nbsp; / &nbsp; FEATURED LANDMARK</span>
                 <a class="hero-photo" href="{% url 'info:city_information' %}?q=New%20Kabankalan%20Cathedral">
                     <span class="hero-image-frame">
                         <img src="{% static 'img/places/new-kabankalan-cathedral.jpg' %}" width="1378" height="767" alt="The facade of the new Saint Francis Xavier Cathedral in Kabankalan" fetchpriority="high">
@@ -90,45 +89,11 @@
         </div>
     </section>
 
-    <section class="workflow wrap" id="how-it-works" aria-labelledby="workflow-title">
-        <div class="workflow-heading">
-            <p class="section-kicker">01 / THE SIMPLE WAY TO EXPLORE</p>
-            <h2 id="workflow-title">A good day starts<br>with a good plan.</h2>
-            <p>From first idea to next stop, make more of your time in Kabankalan.</p>
-        </div>
-        <div class="steps">
-            <div>
-                <span class="step-icon"><svg class="ek-icon" aria-hidden="true"><use href="#icon-compass"></use></svg></span>
-                <div>
-                    <span class="step-number">01</span>
-                    <h3>Find a place</h3>
-                    <p>Start with an interest or search for somewhere you’d like to visit.</p>
-                </div>
-            </div>
-            <div>
-                <span class="step-icon"><svg class="ek-icon" aria-hidden="true"><use href="#icon-heart"></use></svg></span>
-                <div>
-                    <span class="step-number">02</span>
-                    <h3>Save your favorites</h3>
-                    <p>Keep the places you want to explore in your personal list.</p>
-                </div>
-            </div>
-            <div>
-                <span class="step-icon"><svg class="ek-icon" aria-hidden="true"><use href="#icon-route"></use></svg></span>
-                <div>
-                    <span class="step-number">03</span>
-                    <h3>Find your way</h3>
-                    <p>Check place details and use available directions before you go.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <section class="discover" id="discover" aria-labelledby="discover-title">
         <div class="wrap">
             <div class="section-heading">
                 <div>
-                    <p class="section-kicker">02 / THE PLACE DIRECTORY</p>
+                    <p class="section-kicker">01 / THE PLACE DIRECTORY</p>
                     <h2 id="discover-title">Good places, close to home.</h2>
                     <p>Explore published places, or choose a category to narrow your search.</p>
                 </div>
@@ -170,7 +135,7 @@
 
     <section class="introduction wrap" id="hobbies" aria-labelledby="interest-title">
         <div class="intro-heading">
-            <p class="section-kicker">03 / EXPLORE BY INTEREST</p>
+            <p class="section-kicker">02 / EXPLORE BY INTEREST</p>
             <h2 id="interest-title">Start with what you love.</h2>
             <p>Choose an interest to find places where you can spend your time your way.</p>
         </div>
@@ -186,7 +151,7 @@
 
     <section class="map-preview wrap" aria-labelledby="map-preview-title">
         <div class="map-copy">
-            <p class="section-kicker">04 / FIND YOUR WAY</p>
+            <p class="section-kicker">03 / FIND YOUR WAY</p>
             <h2 id="map-preview-title">A city worth getting to know.</h2>
             <p>See a selection of published places with map coordinates, then explore the full map when you’re ready.</p>
             {% include 'components/button.html' with href=browse_url|add:'?browse=all#ea-map-button' label='Browse places & map' arrow=True only %}
@@ -218,6 +183,40 @@
         <a href="{{ browse_url }}?mode=nearby"><span>Find nearby</span><svg class="ek-icon" aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg></a>
         <a href="{% url 'info:city_information' %}"><span>City information</span><svg class="ek-icon" aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg></a>
     </nav>
+    <section class="workflow wrap" id="how-it-works" aria-labelledby="workflow-title">
+        <div class="workflow-heading">
+            <p class="section-kicker">04 / THE SIMPLE WAY TO EXPLORE</p>
+            <h2 id="workflow-title">A good day starts<br>with a good plan.</h2>
+            <p>From first idea to next stop, make more of your time in Kabankalan.</p>
+        </div>
+        <div class="steps">
+            <div>
+                <span class="step-icon"><svg class="ek-icon" aria-hidden="true"><use href="#icon-compass"></use></svg></span>
+                <div>
+                    <span class="step-number">01</span>
+                    <h3>Find a place</h3>
+                    <p>Start with an interest or search for somewhere you’d like to visit.</p>
+                </div>
+            </div>
+            <div>
+                <span class="step-icon"><svg class="ek-icon" aria-hidden="true"><use href="#icon-heart"></use></svg></span>
+                <div>
+                    <span class="step-number">02</span>
+                    <h3>Save your favorites</h3>
+                    <p>Keep the places you want to explore in your personal list.</p>
+                </div>
+            </div>
+            <div>
+                <span class="step-icon"><svg class="ek-icon" aria-hidden="true"><use href="#icon-route"></use></svg></span>
+                <div>
+                    <span class="step-number">03</span>
+                    <h3>Find your way</h3>
+                    <p>Check place details and use available directions before you go.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="closing-cta" aria-labelledby="closing-title">
         <div class="wrap closing-inner">
             <div>

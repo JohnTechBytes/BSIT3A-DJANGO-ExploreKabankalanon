@@ -72,13 +72,13 @@ class HomepageTests(TestCase):
         self.assertContains(response, 'img/places/new-kabankalan-cathedral.jpg')
         self.assertContains(response, 'Lightningscale / Wikimedia Commons')
 
-    def test_landing_uses_light_guide_and_respects_reduced_motion(self):
+    def test_landing_retains_shared_guide_and_respects_reduced_motion(self):
         from django.contrib.staticfiles import finders
         from pathlib import Path
 
         response = self.render_home()
         self.assertContains(response, 'Find your place<br><em>in Kabankalan.</em>')
-        self.assertContains(response, 'content="#f8f6f1"')
+        self.assertContains(response, 'content="#101b18"')
         stylesheet = Path(finders.find('css/explore.css')).read_text()
         self.assertIn('--ek-bg: #f8f6f1', stylesheet)
         self.assertIn('--ek-primary: #1e7a5c', stylesheet)
@@ -91,8 +91,11 @@ class HomepageTests(TestCase):
 
     def test_homepage_pilot_is_scoped_and_preserves_core_interactions(self):
         response = self.render_home()
-        self.assertContains(response, 'css/homepage-pilot.css?v=4')
+        self.assertContains(response, 'css/homepage-pilot.css?v=5')
         self.assertContains(response, 'class="hero-actions"')
+        html = response.content.decode()
+        self.assertLess(html.index('id="discover"'), html.index('id="hobbies"'))
+        self.assertLess(html.index('id="hobbies"'), html.index('id="how-it-works"'))
         self.assertContains(response, f'href="{reverse("places:attraction_carousel")}?mode=nearby"')
         self.assertContains(response, 'id="home-search"')
         self.assertContains(response, 'type="submit"')
