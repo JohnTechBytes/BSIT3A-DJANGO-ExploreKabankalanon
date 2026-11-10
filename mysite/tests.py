@@ -94,7 +94,7 @@ class HomepageTests(TestCase):
         self.assertContains(response, 'css/homepage-pilot.css?v=5')
         self.assertContains(response, 'class="hero-actions"')
         html = response.content.decode()
-        self.assertContains(response, 'css/landing-field-guide.css?v=1')
+        self.assertContains(response, 'css/landing-field-guide.css?v=2')
         self.assertContains(response, 'aria-label="Mobile navigation"')
         self.assertLess(html.index('id="discover"'), html.index('id="map-preview-title"'))
         self.assertLess(html.index('id="map-preview-title"'), html.index('id="hobbies"'))

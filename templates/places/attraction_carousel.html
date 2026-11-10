@@ -986,8 +986,10 @@
       <p class="ea-carousel-caption">
         {% if carousel_truncated %}
           Showing the first {{ attractions|length }} of {{ total_attractions }} matching places.
+        {% elif total_attractions <= 3 %}
+          {{ total_attractions }} matching place{{ total_attractions|pluralize }} shown. Open a place on the map to explore.
         {% else %}
-          All {{ total_attractions }} matching place{{ total_attractions|pluralize }} loop here automatically — drag, pause, or open one on the map.
+          All {{ total_attractions }} matching places shown — drag or use the controls to explore, or open one on the map.
         {% endif %}
       </p>
 

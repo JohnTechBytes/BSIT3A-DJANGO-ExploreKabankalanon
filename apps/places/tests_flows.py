@@ -257,7 +257,7 @@ class CarouselLoopTests(FlowFixture):
         self.assertContains(response, 'id="ea-carousel-track"')
         self.assertContains(response, "data-marquee")
         self.assertContains(response, "ea-carousel-caption")
-        self.assertContains(response, "loop here automatically")
+        self.assertContains(response, "2 matching places shown. Open a place on the map to explore.")
         # Pagination is gone: one request holds the whole list.
         self.assertNotContains(response, "ea-pagination")
 
@@ -291,6 +291,7 @@ class CarouselLoopTests(FlowFixture):
         )
         four_places = self.client.get(self.url, {"browse": "all"})
         self.assertContains(four_places, 'id="ea-marquee-toggle"')
+        self.assertContains(four_places, 'All 4 matching places shown')
 
     def test_carousel_cap_truncates_with_a_visible_notice(self):
         with mock.patch("apps.places.views.MAX_CAROUSEL_PLACES", 1):

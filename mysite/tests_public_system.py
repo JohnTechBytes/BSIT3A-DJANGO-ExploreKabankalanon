@@ -115,7 +115,7 @@ class PublicSystemTests(TestCase):
             with self.subTest(url=url):
                 response = self.client.get(url)
                 self.assertEqual(response.status_code, 200)
-                self.assertContains(response, 'css/public-field-guide.css?v=1')
+                self.assertContains(response, 'css/public-field-guide.css?v=2')
                 self.assertContains(response, 'class="field-mobile-saved"')
         self.client.logout()
         for url in (reverse('login'), reverse('register')):

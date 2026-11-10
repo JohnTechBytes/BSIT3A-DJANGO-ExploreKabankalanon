@@ -167,3 +167,14 @@
   .landing-page *, .landing-page *::before, .landing-page *::after { scroll-behavior:auto !important; animation:none !important; transition:none !important; }
   .landing-page .hero-visual:hover, .landing-page .hero-photo:hover img, .landing-page .place-card:hover { transform:none !important; }
 }
+
+/* Carousel geometry is relative to its viewport, not the browser window.
+   One complete card on small screens, two on tablets and three on desktop. */
+.landing-page .places-carousel { container-type:inline-size; --field-card-width:100cqw; }
+.landing-page .places-grid { gap:18px; }
+.landing-page .places-grid > .place-card { flex:0 0 var(--field-card-width); width:var(--field-card-width); min-width:0; }
+.landing-page .card-heading, .landing-page .card-bottom { flex-wrap:wrap; }
+.landing-page .card-heading h3 { min-width:0; }
+@media (min-width:600px) { .landing-page .places-carousel { --field-card-width:calc((100cqw - 18px) / 2); } }
+@media (min-width:1000px) { .landing-page .places-carousel { --field-card-width:calc((100cqw - 36px) / 3); } }
+.landing-page .place-card :is(.address,.description,.card-credit,.place-tags) { overflow-wrap:anywhere; }

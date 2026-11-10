@@ -241,3 +241,27 @@ body.auth-page .auth-logo strong { display:inline; margin-left:12px; padding-lef
 body .ea-site-footer .ea-footer-brand { display:inline-flex; flex-direction:row; color:#f0ece2; font:500 25px/1 EKFieldSerif,Georgia,serif; }
 body .ea-site-footer .ea-footer-brand strong { font:inherit; }
 @media (max-width:900px) { body.ek-discovery-theme .ea-site-logo + .ea-mobile-menu, body .ea-site-logo + .ea-mobile-menu { margin-left:auto; } }
+
+/* Keep the browse carousel aligned with the landing carousel. Compact
+   results use the same column widths rather than expanding a single photo. */
+body.ek-discovery-theme.browse-page .ea-carousel:not(.ea-carousel--compact) { --ea-card-w:100cqw; }
+body.ek-discovery-theme.browse-page .ea-carousel-track { gap:18px; }
+body.ek-discovery-theme.browse-page .ea-carousel-track > .ea-card { max-width:none; }
+body.ek-discovery-theme.browse-page .ea-carousel:not(.is-cloned):not(.ea-carousel--compact) { overflow-x:auto; cursor:auto; }
+body.ek-discovery-theme.browse-page .ea-carousel--compact,
+body.ek-discovery-theme.browse-page .ea-carousel--single { display:block; width:100%; max-width:none; }
+body.ek-discovery-theme.browse-page .ea-carousel--compact .ea-carousel-track,
+body.ek-discovery-theme.browse-page .ea-carousel--single .ea-carousel-track { display:grid; width:100%; max-width:none; grid-template-columns:minmax(0,1fr); gap:18px; }
+body.ek-discovery-theme.browse-page .ea-carousel--compact .ea-carousel-track > .ea-card { width:auto; max-width:none; min-width:0; }
+body.ek-discovery-theme.browse-page .ea-carousel--single .ea-card-image { width:100%; min-height:0; height:auto; aspect-ratio:4 / 3; }
+@media (min-width:600px) {
+  body.ek-discovery-theme.browse-page .ea-carousel:not(.ea-carousel--compact) { --ea-card-w:calc((100cqw - 18px) / 2); }
+  body.ek-discovery-theme.browse-page .ea-carousel--compact .ea-carousel-track,
+  body.ek-discovery-theme.browse-page .ea-carousel--single .ea-carousel-track { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (min-width:1000px) {
+  body.ek-discovery-theme.browse-page .ea-carousel:not(.ea-carousel--compact) { --ea-card-w:calc((100cqw - 36px) / 3); }
+  body.ek-discovery-theme.browse-page .ea-carousel--compact .ea-carousel-track,
+  body.ek-discovery-theme.browse-page .ea-carousel--single .ea-carousel-track { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
+body.ek-discovery-theme.browse-page .ea-card :is(.ea-category,.ea-card-location,.ea-card-description,.ea-card-credit,.ea-search-relevance) { overflow-wrap:anywhere; }
