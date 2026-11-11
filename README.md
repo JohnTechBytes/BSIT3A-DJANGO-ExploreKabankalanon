@@ -5,11 +5,13 @@ shared place directory, hobby-based matching, natural-language search, a Leaflet
 live GPS, reviews, saved places and a customized administrative panel, backed by
 locally imported OpenStreetMap and PSGC data.
 
-> **Documentation note.** This document states what the system does today. A
-> feature that is only partly built, or that is planned but not yet written, is
-> labelled as such in the *Implementation Status* table. Where the project
-> title refers to an "AI-assisted" system, the note under *Background of the
-> Project* explains exactly which part of that is implemented.
+> **Concept paper and documentation note.** The Introduction and Scope sections
+> follow the headings in the BSIT Class Project Concept Paper Guidelines. This
+> README also contains technical documentation; it is **not** the formatted
+> concept paper or proof of an approved title, objectives or research agenda.
+> Confirm those with the professor. Implemented features are described in the
+> present tense; unfinished activities are described as planned. No evaluation
+> results are claimed.
 
 ---
 
@@ -26,15 +28,15 @@ want to find a place that fits their interests, such as billiards, badminton,
 coffee, or nature walks, must search through many sources, and the information
 they find may be incomplete, outdated, or not tied to where they currently are.
 
-General-purpose map and review platforms list places, but they do not match
-places to a person's hobbies, and they are not designed around the information
-needs of a specific city. Local business owners also have limited means to keep
-their listings accurate, while city offices have no single platform for sharing
-official city information.
+General-purpose maps and listings can help people find places, but may not
+organize local information around the hobby tags used by this project. A
+city-focused directory can bring these records and separately published city
+guides together. This proposed need has not been established as a comparative
+study of other platforms or an official city-office requirement.
 
 To address this need, **Explore Kabankalan** was developed as a web-based,
-single-city system built with the Django framework. A visitor can browse the
-published places of Kabankalan, filter them by category and hobby,
+single-city system built with the Django framework. A signed-in visitor can
+browse the published places of Kabankalan, filter them by category and hobby,
 search in natural language, view results on an interactive map, sort and filter
 nearby places by straight-line distance from the device's GPS position or from a
 chosen city landmark, read and write reviews, save places, read the city's
@@ -51,8 +53,8 @@ always in the denominator; it is zero when no hobbies are selected. The rating
 component is excluded when there are no reviews. Distance is not part
 of the ranking score; it is used by the Nearby view for sorting and filtering.
 
-> **Implementation status of "AI-assisted".** Despite the project title,
-> search and recommendation currently use deterministic rules and database
+> **Implementation status of "AI-assisted".** If that term is used in the
+> approved project title, explain that search and recommendation currently use deterministic rules and database
 > metadata, not a language model or machine learning. Search does not call an
 > external AI API. Map tiles use external providers and MapTiler requires a
 > client-visible key. A language-model integration is only a possible future
@@ -64,7 +66,13 @@ The main objective of this project is to design, develop, and evaluate a
 web-based, hobby-based place recommendation and city information system for
 Kabankalan City that will help users find places that match their interests.
 
-Specifically, the project accomplishes the following technical objectives:
+The following are **working technical objectives**, not a claim that they
+match an adviser-approved paper. Confirm the approved wording and evaluation
+plan before submission. The system currently supports the first seven and
+ninth items as qualified below; administering and reporting an evaluation
+remain future activities.
+
+Specifically, the project aims to:
 
 1. **Hobby-based recommendation module.** Allow visitors to filter the place
    directory by staff-assigned hobby tags and rank the matching places by hobby
@@ -95,51 +103,48 @@ Specifically, the project accomplishes the following technical objectives:
    Administrative access is controlled by Django's staff, superuser and model
    permissions, not automatically granted by the role field. A business-owner
    portal and role-based city scoping are not implemented.
-8. **Evaluation instruments.** Build the System Usability Scale (SUS)
-   instrument and a recommendation-relevance instrument into the system's data
-   model, including the standard 0–100 SUS scoring, so that a usability
-   evaluation can be administered with residents, visitors, and city or
-   business representatives. Both instruments are reachable by respondents: the
-   survey at `/evaluation/sus/` and the relevance control on a destination
-   reached from a search.
+8. **Evaluation instruments.** Provide a System Usability Scale (SUS) survey
+   with standard 0–100 scoring and a recommendation-relevance control. The
+   survey is at `/evaluation/sus/`; signed-in visitors can rate relevance on a
+   destination reached from a search. A future evaluation will require an
+   approved participant and testing plan; no completed evaluation is claimed.
 9. **Privacy and data protection.** Publish a privacy notice that states what
     the system stores and what it deliberately does not store, and record a
     visitor's acceptance of it when an account is created.
 
 ### Significance of the Project
 
-The system provides practical value to the following beneficiaries:
+The system is intended to provide practical value to the following beneficiaries:
 
 - **Residents and Visitors.** Find places that match their hobbies, see
   distance, details and maps in one platform, save places for later, and share
-  reviews. Previously available planning and visit pages remain at their direct
-  URLs but are not part of the main navigation.
+  reviews.
 - **Local Business Owners.** Gain visibility through published
   listings whose details can be corrected by city staff. A self-service
   interface for owners to edit their own listings is identified as future work.
 - **City Administrators and Tourism Personnel.** Have a central panel for
-  verifying and publishing place listings, reviewing imported OSM records
-  before publication, moderating visit evidence, and maintaining city
-  information records.
+  reviewing and publishing place listings, reviewing imported OSM records
+  before publication, and maintaining city information records.
 - **Future Researchers and Students.** Have a working reference for a
   single-city, hobby-weighted recommender built on Django, including its data
   model, import pipeline, administrative workflow and automated test suite.
 
 ### Alignment with Institutional Research Agenda and Sustainable Development Goals
 
-**Institutional Research Agenda Alignment.** The project aligns with the
-Institutional IT research priority by applying web technologies to improve
-access to local information and services, and by documenting a reproducible
-development and verification process.
+**Institutional Research Agenda Alignment.** The project uses web technology to
+support access to local place and city information. The institution's exact
+research priority and its fit with this project **still need confirmation** from
+the professor or the institution's published agenda; no official alignment is
+claimed here.
 
-**Sustainable Development Goal Alignment.**
+**Potential Sustainable Development Goal Alignment.** These are proposed
+connections, not measured outcomes or verified institutional approvals:
 
-- **SDG 9 (Industry, Innovation, and Infrastructure):** contributes through
-  the use of open data (OpenStreetMap, PSA PSGC) and open web technology to
-  build a local information infrastructure for one city.
-- **SDG 11 (Sustainable Cities and Communities):** contributes by improving
-  residents' and visitors' access to city information, public spaces, and
-  recreational places.
+- **SDG 9 (Industry, Innovation, and Infrastructure):** the project uses open
+  web technology and local records derived in part from OpenStreetMap and PSA
+  PSGC to build a city information tool.
+- **SDG 11 (Sustainable Cities and Communities):** the directory is intended
+  to make information about local places and city guides easier to find.
 
 ---
 
@@ -160,17 +165,20 @@ development and verification process.
 | **Interactive Map** | Browse and Nearby use Leaflet 1.9.4 with MapTiler streets, satellite and hybrid layers and attribution; the landing map uses OpenStreetMap tiles. Markers show place information. On Browse and Nearby, selecting a mapped photo/card can fly the map to the place. Maps require network access; MapTiler requires a client-visible key. |
 | **Voice Search** | Browse and Nearby use the browser speech-recognition API to enter search text. Availability depends on browser support, microphone permission and the browser's speech service; typing remains available. |
 | **Place Photos** | Recorded covers take priority. Missing covers use shared category or generic illustrative samples, clearly labelled as not actual photos; the generic street scene is AI-generated. With JavaScript enabled a broken recorded cover also falls back to a labelled illustration, or an unavailable message if that fails. Samples do not depict the listed place. |
-| **Nearby Search and Live GPS** | The Nearby view reads the browser's geolocation, computes straight-line distance to each place, and filters or sorts results by distance (any distance, 1, 3, 5, 10 or 25 km). A curated Kabankalan landmark can serve as the reference point when GPS is unavailable or declined. Distances are straight-line estimates, not driving routes or travel times. |
+| **Nearby Search and Live GPS** | The Nearby view reads the browser's geolocation, computes straight-line distance to each place, and filters or sorts results by distance (any distance, 1, 3, 5, 10 or 25 km). A curated Kabankalan landmark can serve as the reference point. List distances are straight-line estimates. The map can separately request an approximate driving route from the public OSRM demo, sending it the selected origin and destination coordinates. |
 | **Reviews and Ratings** | One review per user per place, 1–5 stars plus an optional comment; reviews can be updated or deleted; the average rating feeds both the place page and the recommender. Reviews are opinions and do not by themselves prove an in-person visit. |
 | **Saved Places** | Visitors save and unsave places; saved places appear on a dedicated page. |
 | **Administrative Panel** | Customized Django admin with destination management (search, category/verification/publication filters), bulk publication actions, per-place verification, photo actions, a business review queue for OSM imports, city information records, the evaluation records and account management (role and managed city). The index lists only the modules the city office uses; Django's own group editor stays reachable at `/admin/auth/group/` for a superuser. Native Django permissions and safeguards are preserved. |
 | **Data Import** | Management commands import PSA PSGC codes, an OpenStreetMap extract and Wikimedia imagery, and enrich, categorize or attach photos to imported places. |
 | **Evaluation Instruments** | The public System Usability Scale survey (`/evaluation/sus/`) asks the ten standard items on a 1–5 scale and scores them with the standard 0–100 formula, then shows the score and the interpretation band. `RecommendationRating` stores relevant, partially relevant or irrelevant ratings for a query and place; a destination reached from a search offers that control. Both records are also managed in the administrative panel. |
-| **Privacy and Data Protection** | A public privacy notice (`/privacy/`) states what the system stores, what it never stores (the live GPS position is calculated in the browser and never sent to the server), who can see the data and how to have it deleted. Creating an account requires accepting the notice, and the acceptance and its date are stored with the account. |
+| **Privacy and Data Protection** | The public privacy notice (`/privacy/`) describes stored data, deletion and external services. Distance calculations occur in the browser without sending the coordinates to the Django server; requesting a driving route sends the origin and destination to the external OSRM demo. Creating an account requires accepting the notice, and the acceptance and its date are stored with the account. |
 | **Technology Stack** | Python and Django (see the compatibility profiles below) for the server; MySQL or compatible MariaDB for storage, accessed through the PyMySQL driver; HTML5, CSS3 and JavaScript with Bootstrap 5.3.3 for the interface; Leaflet 1.9.4 with MapTiler tiles for maps; Pillow for image handling. Deployment values (secret key, debug flag, allowed hosts, database credentials, MapTiler token) are read from environment variables with development defaults. |
 | **Target Users** | Residents, visitors and tourists who look for places that match their hobbies; business owners whose listings appear in the directory; city administrators and tourism personnel who verify and publish places and maintain city information records; and system administrators. |
 
 ### Implementation Status
+
+The following is technical documentation of the current code, not evaluation
+results or proof that the laptop or hosted system has been verified.
 
 | Module | Status | Notes |
 |---|---|---|
@@ -181,7 +189,8 @@ development and verification process.
 | Leaflet map, drone fly-to | Implemented | Needs a network connection and a MapTiler key |
 | Voice search | Implemented | Browser speech-recognition support and microphone permission required; typing remains available |
 | Missing or failed place photos | Implemented | Missing covers show a message or labelled sample; failed marked covers show a message when JavaScript is available |
-| Nearby search, live GPS, radius filter | Implemented | Straight-line distance |
+| Nearby search, live GPS, radius filter | Implemented | List distances and radius filters use straight-line distance |
+| Driving route on map | Implemented | Optional external OSRM demo; approximate and not guaranteed available |
 | Reviews and ratings | Implemented | One review per user per place |
 | Saved places | Implemented | — |
 | Administrative panel and OSM review queue | Implemented | Bulk approval refuses unverified OSM imports |
@@ -199,8 +208,8 @@ development and verification process.
 
 ### Limitations
 
-- The system covers **Kabankalan City only**. Places, information and evaluation
-  involving other cities are not included.
+- The place directory and city information focus on **Kabankalan City**.
+  Accounts and survey respondents are not restricted by physical location.
 - **Maps and GPS are browser-dependent**: external tiles require connectivity;
   geolocation requires browser permission and a secure context (localhost may be
   treated as secure). Availability and accuracy vary. Search and recommendation
@@ -209,8 +218,10 @@ development and verification process.
   `MAPTILER_API_KEY`; apply provider-side restrictions. The landing map uses
   OpenStreetMap tiles. Tile availability and geolocation depend on the network,
   browser, permissions and provider.
-- **GPS accuracy depends on the user's device**, and all distances are
-  straight-line estimates rather than driving distances or travel times.
+- **GPS accuracy depends on the user's device.** Nearby list and radius
+  distances are straight-line estimates. Optional driving routes use the OSRM
+  public demo, which receives origin and destination coordinates, may be
+  unavailable or incomplete, and does not provide turn-by-turn navigation.
 - **Voice input depends on the browser's speech-recognition service and
   microphone permission.** It may require network access; typing remains
   available when voice recognition is unsupported or denied.
@@ -229,8 +240,8 @@ development and verification process.
 - The **SUS survey** can be answered more than once and an anonymous answer is
   not linked to a person. A signed-in answer is stored with the account.
 - The **chosen hobby is held in the browser session** and is lost when the
-  session ends; the search history and the relevance ratings are stored with
-  the account.
+  session ends. Nonempty searches are logged, with an account when one is
+  authenticated; relevance ratings require an account.
 - **Business-owner self-service** and **city-level administrative scoping** are
   not implemented.
 - The **privacy notice** describes the behaviour of this implementation. It has
@@ -348,8 +359,11 @@ Read at runtime. The defaults are for local development, not public hosting:
 
 ### Database upgrade safety
 
-The retirement migration removes the approved retired-feature tables and their
-records. **Back up and verify the existing database first.** If those tables
+The previously approved retirement migration removes retired-feature tables and
+their records; it does not preserve those rows. The present review makes no
+database changes. If all existing records must remain intact, **do not run the
+retirement migration** until the user has reviewed this conflict and approved an
+exact, backed-up target. Back up and verify both database and media first. If those tables
 contain data, the migration stops unless the operator explicitly sets
 `EK_APPROVE_LEGACY_REMOVAL=1` for that migration. This guard is not a backup and
 MySQL/MariaDB DDL may be non-transactional. Never run the removal on the live
@@ -363,6 +377,17 @@ Run tests against isolated SQLite, never the existing MariaDB database. See
 The suite covers account, search, map page, reviews, saved places,
 administration, directory and survey flows. Automated tests do not
 prove that the laptop database, real map tiles, GPS or photo rights are correct.
+
+### Preparing the professor's concept paper
+
+The supplied guideline asks for four hard copies, letter-size paper, Times New
+Roman 12 pt, double spacing, a 1.5-inch left margin, 1-inch top/right/bottom
+margins and a 0.5-inch first-line paragraph indent. Use future tense for work
+not yet developed or completed. Keep the paper concise and omit an abstract,
+results, conclusions and recommendations. These print-format requirements
+cannot be guaranteed by a Markdown README; apply them in the final document.
+Confirm the approved project title, objectives, institutional agenda and
+proposed evaluation details with the professor before submission.
 
 ### Documentation
 
