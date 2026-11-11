@@ -52,6 +52,7 @@
             });
             tiles.addTo(map);
             const bounds = [];
+            const markers = new Map();
             const icon = L.divIcon({ className: '', html: '<span class="map-marker" aria-hidden="true"></span>', iconSize: [16,16], iconAnchor: [8,8] });
             valid.forEach(place => {
                 const point = [place.latitude, place.longitude]; bounds.push(point);
@@ -59,7 +60,20 @@
                 const label = document.createElement('strong'); label.textContent = place.title;
                 const link = document.createElement('a'); link.href = place.url; link.textContent = 'View place';
                 content.append(label, document.createElement('br'), link);
-                L.marker(point, { icon, title: place.title, alt: place.title }).addTo(map).bindPopup(content);
+                const marker = L.marker(point, { icon, title: place.title, alt: place.title }).addTo(map).bindPopup(content);
+                markers.set(place.url, marker);
+            });
+            document.querySelectorAll('[data-map-place]').forEach(link => {
+                link.addEventListener('click', event => {
+                    const marker = markers.get(link.getAttribute('href'));
+                    // Native details link remains useful if the map failed to load.
+                    if (!marker || container.hidden) return;
+                    event.preventDefault();
+                    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                    map.setView(marker.getLatLng(), 15, {animate: !reduced});
+                    marker.openPopup();
+                    container.scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block: 'nearest'});
+                });
             });
             map.fitBounds(bounds, { padding: [28,28], maxZoom: 15, animate: false });
             status.textContent = `Showing ${valid.length} mapped place${valid.length === 1 ? '' : 's'} in this preview. Use Browse places & map to see more.`;

@@ -72,13 +72,13 @@ class HomepageTests(TestCase):
         self.assertContains(response, 'img/places/new-kabankalan-cathedral.jpg')
         self.assertContains(response, 'Lightningscale / Wikimedia Commons')
 
-    def test_landing_uses_light_guide_and_respects_reduced_motion(self):
+    def test_landing_retains_shared_guide_and_respects_reduced_motion(self):
         from django.contrib.staticfiles import finders
         from pathlib import Path
 
         response = self.render_home()
-        self.assertContains(response, 'Find your place<br><em>in Kabankalan.</em>')
-        self.assertContains(response, 'content="#f8f6f1"')
+        self.assertContains(response, 'Discover<br><em>Kabankalan.</em>')
+        self.assertContains(response, 'content="#111b2a"')
         stylesheet = Path(finders.find('css/explore.css')).read_text()
         self.assertIn('--ek-bg: #f8f6f1', stylesheet)
         self.assertIn('--ek-primary: #1e7a5c', stylesheet)
@@ -89,6 +89,30 @@ class HomepageTests(TestCase):
         self.assertContains(response, 'aria-label="Your places links"')
         self.assertContains(response, '<strong>1</strong> published place')
 
+    def test_homepage_pilot_is_scoped_and_preserves_core_interactions(self):
+        response = self.render_home()
+        self.assertContains(response, 'css/homepage-pilot.css?v=5')
+        self.assertContains(response, 'class="hero-actions"')
+        html = response.content.decode()
+        self.assertContains(response, 'css/landing-field-guide.css?v=2')
+        self.assertContains(response, 'aria-label="Mobile navigation"')
+        self.assertLess(html.index('id="discover"'), html.index('id="map-preview-title"'))
+        self.assertLess(html.index('id="map-preview-title"'), html.index('id="hobbies"'))
+        self.assertLess(html.index('id="hobbies"'), html.index('id="how-it-works"'))
+        self.assertContains(response, f'href="{reverse("places:attraction_carousel")}?mode=nearby"')
+        self.assertContains(response, 'id="home-search"')
+        self.assertContains(response, 'type="submit"')
+        self.assertContains(response, 'id="home-places"')
+        self.assertContains(response, 'data-carousel-toggle')
+        self.assertContains(response, 'id="landing-map-places"')
+        self.assertContains(response, 'Photo not yet available')
+        self.assertContains(response, 'Wikimedia Commons')
+        from pathlib import Path
+        from django.contrib.staticfiles import finders
+        pilot_css = Path(finders.find('css/homepage-pilot.css')).read_text(encoding='utf-8')
+        self.assertIn('prefers-reduced-motion: no-preference', pilot_css)
+        self.assertIn('perspective(1200px)', pilot_css)
+
     def test_landing_search_and_main_links_use_existing_routes(self):
         response = self.render_home()
         self.assertContains(response, f'action="{reverse("places:smart_search")}"')
@@ -96,7 +120,6 @@ class HomepageTests(TestCase):
         self.assertContains(response, f'href="{reverse("info:city_information")}"')
         self.assertContains(response, f'href="{reverse("places:attraction_carousel")}?mode=nearby"')
         self.assertContains(response, f'href="{reverse("places:attraction_carousel")}?browse=all"')
-        self.assertNotContains(response, f'href="{reverse("itineraries:list")}"')
         self.assertContains(response, f'href="{reverse("login")}"')
         self.assertContains(response, f'href="{reverse("register")}"')
 
@@ -127,6 +150,8 @@ class HomepageTests(TestCase):
         response = self.render_home()
         self.assertContains(response, 'id="landing-map-places"')
         self.assertContains(response, 'Existing local place')
+        self.assertContains(response, 'data-map-place="0"')
+        self.assertContains(response, '9.9889, 122.8142')
         self.assertNotContains(response, 'Not public')
         self.assertContains(response, 'js/landing-map.js')
 
@@ -137,7 +162,7 @@ class HomepageTests(TestCase):
         script = Path(finders.find('js/landing-map.js')).read_text(encoding='utf-8')
         self.assertIn("https://tile.openstreetmap.org/{z}/{x}/{y}.png", script)
         self.assertIn("referrerPolicy: 'origin'", script)
-        self.assertContains(self.render_home(), 'js/landing-map.js?v=20261104-3')
+        self.assertContains(self.render_home(), 'js/landing-map.js?v=20261109-4')
 
     def test_landing_map_is_bounded_and_safely_serialized(self):
         self.place.title = '</script><script>alert(1)</script>'

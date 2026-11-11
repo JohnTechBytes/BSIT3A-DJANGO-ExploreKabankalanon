@@ -22,8 +22,6 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path('visits/', include('apps.visits.urls')),  # ExploreAnywhere phase3f visits-and-rewards v1
-    path('itineraries/', include('apps.itineraries.urls')),  # ExploreAnywhere phase3d itinerary integration v1
     path("cities/", include("apps.cities.urls")),
     path("places/", include("apps.places.urls")),
     path("hobbies/", include("apps.hobbies.urls")),

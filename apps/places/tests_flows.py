@@ -14,8 +14,6 @@ from django.urls import reverse
 
 from apps.cities.models import City
 from apps.core.models import Category, Hobby
-from apps.itineraries.models import Itinerary, ItineraryStop
-from apps.visits.models import VisitCheckIn
 
 from .models import Place, Review, SavedPlace
 
@@ -142,9 +140,6 @@ class AuthFlowTests(FlowFixture):
         for name, kwargs in [
             ("places:saved_places", {}),
             ("places:my_reviews", {}),
-            ("places:journey_dashboard", {}),
-            ("itineraries:list", {}),
-            ("visits:list", {}),
             ("places:place_detail", {"pk": self.place.pk}),
             ("places:attraction_carousel", {}),
         ]:
@@ -257,7 +252,7 @@ class CarouselLoopTests(FlowFixture):
         self.assertContains(response, 'id="ea-carousel-track"')
         self.assertContains(response, "data-marquee")
         self.assertContains(response, "ea-carousel-caption")
-        self.assertContains(response, "loop here automatically")
+        self.assertContains(response, "2 matching places shown. Open a place on the map to explore.")
         # Pagination is gone: one request holds the whole list.
         self.assertNotContains(response, "ea-pagination")
 
@@ -291,6 +286,7 @@ class CarouselLoopTests(FlowFixture):
         )
         four_places = self.client.get(self.url, {"browse": "all"})
         self.assertContains(four_places, 'id="ea-marquee-toggle"')
+        self.assertContains(four_places, 'All 4 matching places shown')
 
     def test_carousel_cap_truncates_with_a_visible_notice(self):
         with mock.patch("apps.places.views.MAX_CAROUSEL_PLACES", 1):
@@ -363,7 +359,8 @@ class ScoringDisplayTests(FlowFixture):
         response = self.client.get(self.url, {"browse": "all"})
         self.assertNotContains(response, "#16a34a")
         self.assertNotContains(response, "#dc2626")
-        self.assertContains(response, "#21d9c6")
+        self.assertContains(response, "selectAttraction(index)")
+        self.assertContains(response, "ea-map-pin")
 
     def test_recommended_sorting_still_works_without_the_badge(self):
         response = self.client.get(self.url, {"browse": "all", "sort": "recommended"})
@@ -450,23 +447,12 @@ class SavedPlacesFlowTests(FlowFixture):
         self.assertContains(response, '1 saved destination')
         self.assertContains(response, f'Remove {self.place.title} from saved places')
         self.assertContains(response, reverse("places:place_detail", args=[self.place.pk]))
-        self.assertNotContains(response, reverse("itineraries:choose_for_place", args=[self.place.pk]))
-        self.assertNotContains(response, f'href="{reverse("places:journey_dashboard")}"')
 
     def test_empty_saved_page_offers_a_way_to_explore(self):
         response = self.client.get(reverse("places:saved_places"))
         self.assertContains(response, 'No saved places yet')
         self.assertContains(response, reverse("places:attraction_carousel") + '?browse=all')
 
-    def test_journey_dashboard_counts_reflect_saved_itinerary_and_review(self):
-        SavedPlace.objects.create(user=self.user, place=self.place)
-        Review.objects.create(user=self.user, place=self.place, rating=4, comment="Good")
-        Itinerary.objects.create(user=self.user, city=self.city, title="Day trip")
-        response = self.client.get(reverse("places:journey_dashboard"))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["saved_count"], 1)
-        self.assertEqual(response.context["itinerary_count"], 1)
-        self.assertEqual(response.context["review_count"], 1)
 
 
 class ReviewFlowTests(FlowFixture):
@@ -532,155 +518,6 @@ class ReviewFlowTests(FlowFixture):
         self.assertEqual(self.client.post(
             reverse("places:submit_review", args=[self.hidden.pk]),
             {"rating": "5", "comment": "Ghost"}).status_code, 404)
-
-
-class ItineraryFlowTests(FlowFixture):
-    def setUp(self):
-        self.login()
-
-    def test_create_update_add_reorder_and_delete(self):
-        response = self.client.post(reverse("itineraries:create"), {
-            "title": "Weekend plan", "day_number": "2", "initial_place": "",
-        })
-        trip = Itinerary.objects.get(user=self.user)
-        self.assertRedirects(
-            response, reverse("itineraries:builder", args=[trip.pk]),
-            fetch_redirect_response=False)
-        self.assertEqual(trip.title, "Weekend plan")
-        self.assertEqual(trip.day_number, 2)
-
-        # Rename the trip.
-        self.client.post(reverse("itineraries:update", args=[trip.pk]), {
-            "title": "Renamed plan", "day_number": "1",
-        })
-        trip.refresh_from_db()
-        self.assertEqual(trip.title, "Renamed plan")
-        self.assertEqual(trip.day_number, 1)
-
-        # Add two stops.
-        for place, when in ((self.place, "09:00"), (self.cafe, "11:30")):
-            self.client.post(reverse("itineraries:add_stop", args=[trip.pk]), {
-                "place_id": str(place.pk), "start_time": when, "notes": "Visit",
-            })
-        stops = list(ItineraryStop.objects.filter(itinerary=trip).order_by("stop_order"))
-        self.assertEqual([s.place for s in stops], [self.place, self.cafe])
-        self.assertEqual([s.stop_order for s in stops], [1, 2])
-
-        # Move the second stop above the first.
-        response = self.client.post(
-            reverse("itineraries:move_stop", args=[trip.pk, stops[1].pk]),
-            {"direction": "up"})
-        self.assertEqual(response.status_code, 302)
-        stops = list(ItineraryStop.objects.filter(itinerary=trip).order_by("stop_order"))
-        self.assertEqual([s.place for s in stops], [self.cafe, self.place])
-
-        # Remove one stop.
-        self.client.post(
-            reverse("itineraries:remove_stop", args=[trip.pk, stops[0].pk]))
-        self.assertEqual(
-            ItineraryStop.objects.filter(itinerary=trip).count(), 1)
-
-        # Delete the itinerary.
-        response = self.client.post(reverse("itineraries:delete", args=[trip.pk]))
-        self.assertEqual(response.status_code, 302)
-        self.assertFalse(Itinerary.objects.filter(pk=trip.pk).exists())
-
-    def test_create_rejects_blank_title(self):
-        response = self.client.post(reverse("itineraries:create"), {
-            "title": "", "day_number": "1",
-        })
-        self.assertEqual(response.status_code, 200)
-        self.assertFalse(Itinerary.objects.filter(user=self.user).exists())
-
-    def test_choose_for_place_adds_a_stop_to_an_existing_trip(self):
-        trip = Itinerary.objects.create(user=self.user, city=self.city, title="Existing")
-        response = self.client.post(
-            reverse("itineraries:choose_for_place", args=[self.place.pk]), {
-                "itinerary_id": str(trip.pk), "start_time": "14:00", "notes": "Afternoon",
-            })
-        self.assertRedirects(
-            response, reverse("itineraries:builder", args=[trip.pk]),
-            fetch_redirect_response=False)
-        self.assertTrue(ItineraryStop.objects.filter(
-            itinerary=trip, place=self.place, notes="Afternoon").exists())
-
-    def test_other_users_cannot_open_or_change_my_trip(self):
-        trip = Itinerary.objects.create(user=self.other_user, city=self.city, title="Theirs")
-        self.assertEqual(
-            self.client.get(reverse("itineraries:builder", args=[trip.pk])).status_code, 404)
-        self.assertEqual(self.client.post(
-            reverse("itineraries:delete", args=[trip.pk])).status_code, 404)
-        self.assertTrue(Itinerary.objects.filter(pk=trip.pk).exists())
-
-    def test_itinerary_list_keeps_empty_and_populated_navigation(self):
-        response = self.client.get(reverse("itineraries:list"))
-        self.assertContains(response, "No itinerary yet")
-        self.assertContains(response, reverse("itineraries:create"))
-        trip = Itinerary.objects.create(user=self.user, city=self.city, title="My plan", day_number=2)
-        response = self.client.get(reverse("itineraries:list"))
-        self.assertContains(response, "My plan")
-        self.assertContains(response, "Day 2")
-        self.assertContains(response, "0 planned stops")
-        self.assertContains(response, reverse("itineraries:builder", args=[trip.pk]))
-        self.assertContains(response, reverse("places:journey_dashboard"))
-        self.assertContains(response, reverse("places:saved_places"))
-
-    def test_my_itineraries_lists_only_my_trips(self):
-        Itinerary.objects.create(user=self.user, city=self.city, title="Mine to keep")
-        Itinerary.objects.create(user=self.other_user, city=self.city, title="Not mine")
-        response = self.client.get(reverse("itineraries:list"))
-        self.assertContains(response, "Mine to keep")
-        self.assertNotContains(response, "Not mine")
-
-
-class VisitFlowTests(FlowFixture):
-    def setUp(self):
-        self.login()
-        self.today = date.today()
-
-    def test_check_in_page_renders_for_published_place(self):
-        response = self.client.get(reverse("visits:check_in", args=[self.place.pk]))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Submit your check-in")
-
-    def test_unpublished_place_check_in_is_hidden(self):
-        self.assertEqual(self.client.get(
-            reverse("visits:check_in", args=[self.hidden.pk])).status_code, 404)
-
-    def test_valid_check_in_is_pending_and_listed(self):
-        response = self.client.post(reverse("visits:check_in", args=[self.place.pk]), {
-            "visited_on": self.today.isoformat(),
-            "visit_note": "Walked the trail with my family and took photos at the ridge.",
-        })
-        self.assertRedirects(
-            response, reverse("visits:list"), fetch_redirect_response=False)
-        checkin = VisitCheckIn.objects.get(user=self.user, place=self.place)
-        self.assertEqual(checkin.status, VisitCheckIn.Status.PENDING)
-        listing = self.client.get(reverse("visits:list"))
-        self.assertContains(listing, "Published Falls")
-        self.assertContains(listing, "Check-in submitted for staff review.")
-
-    def test_duplicate_check_in_does_not_create_a_second_record(self):
-        payload = {
-            "visited_on": self.today.isoformat(),
-            "visit_note": "Walked the trail with my family and took photos at the ridge.",
-        }
-        self.client.post(reverse("visits:check_in", args=[self.place.pk]), payload)
-        self.client.post(reverse("visits:check_in", args=[self.place.pk]), payload)
-        self.assertEqual(
-            VisitCheckIn.objects.filter(user=self.user, place=self.place).count(), 1)
-
-    def test_short_note_and_future_date_are_rejected(self):
-        for payload in (
-            {"visited_on": self.today.isoformat(), "visit_note": "too short"},
-            {"visited_on": (self.today + timedelta(days=3)).isoformat(),
-             "visit_note": "Walked the trail with my family and took photos at the ridge."},
-        ):
-            with self.subTest(payload=payload):
-                self.client.post(
-                    reverse("visits:check_in", args=[self.place.pk]), payload)
-                self.assertFalse(VisitCheckIn.objects.filter(
-                    user=self.user, place=self.place).exists())
 
 
 class LegacyRouteTests(FlowFixture):

@@ -19,7 +19,6 @@ urlpatterns = [
     path("<int:pk>/review/delete/", review_views.delete_review, name="delete_review"),
     path("<int:pk>/relevance/", relevance_views.rate_relevance, name="rate_relevance"),
     path("saved/", journey_views.saved_places, name="saved_places"),
-    path("journey/", journey_views.journey_dashboard, name="journey_dashboard"),
     path("<int:pk>/save/", journey_views.save_place, name="save_place"),
     path("<int:pk>/unsave/", journey_views.unsave_place, name="unsave_place"),
 ]

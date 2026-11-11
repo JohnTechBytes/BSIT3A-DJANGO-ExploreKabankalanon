@@ -6,7 +6,7 @@
 {% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
 {% block footer_tagline %}Local places. Your adventure.{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby.css' %}">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby.css' %}?v=road-1"><link rel="stylesheet" href="{% static 'css/map-guide.css' %}?v=1">{% endblock %}
 {% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261106-illustrations-1">{% endblock %}
 {% block content %}
 <main class="ea6-main" id="nearby-main">
@@ -19,7 +19,7 @@
   {% include "places/_discovery_modes.html" %}
   <section class="ea6-box ea6-search-box" aria-labelledby="ea6-search-title">
     <div class="ea6-panel-heading">
-      <div><h2 id="ea6-search-title">Find your next stop</h2><p>Search by place or browse a local category.</p></div>
+      <div><h2 id="ea6-search-title">Search places</h2><p>Start with a place name, activity, or category.</p></div>
       <span class="ea6-panel-symbol" aria-hidden="true">✧</span>
     </div>
     <form method="get" action="{% url 'places:attraction_carousel' %}" class="ea6-search" id="ea6-search-form" autocomplete="off">
@@ -36,7 +36,6 @@
           <span class="ea6-voice-text">Speak</span>
         </button>
         <div id="ea6-suggestions" class="ea6-autocomplete" role="listbox" aria-label="Suggested published Kabankalan places" hidden></div>
-        <p class="ea6-voice-status" id="ea6-voice-status" role="status" aria-live="polite"></p>
       </div>
       <div class="ea6-field">
         <label for="ea6-service">Place type</label>
@@ -47,6 +46,7 @@
       </div>
       <button class="ea6-btn" type="submit">Find places <span aria-hidden="true">↗</span></button>
     </form>
+    <p class="ea6-voice-status" id="ea6-voice-status" role="status" aria-live="polite"></p>
     <div class="ea6-quick" aria-label="Quick searches for published Kabankalan listings">
       <span>QUICK SEARCHES</span>
       <a href="{% url 'places:attraction_carousel' %}?mode=nearby&amp;service=coffee" {% if selected_service == 'coffee' %}aria-current="true"{% endif %}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V7Zm12 1h2a2.5 2.5 0 0 1 0 5h-2M3 20h15M8 3v2m4-2v2"/></svg>Coffee</a>
@@ -62,13 +62,13 @@
     <div class="ea6k-location-top">
       <div class="ea6-location-title">
         <span class="ea6-location-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
-        <div><h2 id="ea6-nearby-title">Find places near you</h2>
-        <p>Optional: sort these results by distance from your location.</p></div>
+        <div><h2 id="ea6-nearby-title">Choose a starting point <span class="ea6-optional">Optional</span></h2>
+        <p>Use your location or a landmark to sort results by straight-line distance.</p></div>
       </div>
       <button id="ea6-use-gps" class="ea6-btn ea6-location-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg> Use my location</button>
     </div>
     <details class="ea6k-landmark" {% if selected_origin %}open{% endif %}>
-      <summary>Can't use GPS? Choose a Kabankalan landmark instead</summary>
+      <summary>Or choose a Kabankalan landmark</summary>
       <p>Optional: choose a familiar published Kabankalan landmark as a <strong>distance reference</strong>, not your current location. Only selected landmarks with recorded map coordinates are listed. Confirm the location before travelling.</p>
       {% if landmarks %}
       <form method="get" action="{% url 'places:attraction_carousel' %}" id="ea6-landmark-form" class="ea6k-landmark-form">
@@ -103,12 +103,13 @@
       <button type="button" class="ea6h-reset" id="ea6h-reset" disabled>Clear distance filter</button>
       <span id="ea6h-distance-help" class="ea6h-help" role="status" aria-live="polite">Choose a landmark or enable location permission to filter by distance. This does not use driving routes.</span>
     </div>
-    <p id="ea6-location-status" class="ea6-status" role="status" aria-live="polite">{% if selected_origin %}Distances are estimated from {{ selected_origin.title }}. This is a landmark reference, not your live GPS position.{% else %}Use GPS for distance sorting, or expand the optional Kabankalan landmark selector if GPS is unavailable. Without a reference, results are alphabetical.{% endif %}</p>
-    <p class="ea6-fineprint">Your location stays in this browser tab; distances are straight-line estimates, not driving times.</p>
+    <p id="ea6-location-status" class="ea6-status" role="status" aria-live="polite">{% if selected_origin %}Distances are estimated from {{ selected_origin.title }}. This is a landmark reference, not your live GPS position.{% else %}No starting point selected. Results are alphabetical until you choose one.{% endif %}</p>
+    <p class="ea6-fineprint">Location is requested once; use the button again to update it. Selecting a starting point and place sends their coordinates to the OSRM demo for a driving route. Map tiles come from MapTiler. List distances and radius filters are straight-line estimates, not driving distances.</p>
   </section>
+  <section class="ea6-results-heading" aria-labelledby="ea6-results-title">
   <div class="ea6-heading">
     <div>
-      <h2>{% if selected_service_label %}{{ selected_service_label }}{% elif query %}Results for “{{ query }}”{% else %}Discover local places{% endif %}</h2>
+      <h2 id="ea6-results-title">{% if selected_service_label %}{{ selected_service_label }}{% elif query %}Results for “{{ query }}”{% else %}Discover local places{% endif %}</h2>
       <p>Thoughtfully collected places in Kabankalan, ready for your next stop.</p>
     </div>
     <span class="ea6-pill" id="ea6h-result-count">{{ result_count }} matching listing{{ result_count|pluralize }}</span>
@@ -125,6 +126,7 @@
       <span id="ea6g-count" class="ea6g-small" role="status" aria-live="polite">The map only includes displayed listings with coordinates.</span>
     </div>
   {% endif %}
+  </section>
   {% if limit_reached %}<p class="ea6-warning">The page displays at most 250 listings. Distance sorting applies to these displayed results, not to any additional entries. Ask an administrator to refine the search if needed.</p>{% endif %}
   {% if results %}
     <p id="ea6h-no-results" class="ea6h-none" role="status" hidden>No displayed listings fall within that straight-line distance. Increase the radius or clear the distance filter to see all matches. Listings without recorded coordinates cannot be assessed against a radius.</p>
@@ -133,7 +135,7 @@
       {% for place in results %}
           {% sample_photo place as fallback_image %}
         <article class="ea6-card" data-place-id="{{ place.pk }}" data-title="{{ place.title }}" data-category="{% if place.category %}{{ place.category.name }}{% else %}Kabankalan place{% endif %}" data-detail-url="{% url 'places:place_detail' place.pk %}" {% if place.latitude != None and place.longitude != None %}data-lat="{{ place.latitude }}" data-lng="{{ place.longitude }}" data-directions-url="https://www.google.com/maps/dir/?api=1&amp;destination={{ place.latitude }},{{ place.longitude }}"{% endif %}>
-          <div class="ea6-cover"{% if place.latitude != None and place.longitude != None %} role="button" tabindex="0" aria-label="View on map: {{ place.title }}{% if place.cover_image or place.cover_image_url %}{% elif place.sample_image %} · Illustrative category sample{% else %} · Photo not yet available{% endif %}"{% endif %}>
+          <div class="ea6-cover"{% if place.latitude != None and place.longitude != None %} role="button" tabindex="0" aria-label="View on map: {{ place.title }}{% if place.cover_image or place.cover_image_url %}{% elif place.sample_image %} · Photo not yet available · Illustrative category sample · Not an actual photo{% else %} · PHOTO NOT YET AVAILABLE{% endif %}"{% endif %}>
             {% if place.cover_image %}<img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" loading="lazy" decoding="async" width="640" height="360" alt="{{ place.title }}" src="{{ place.cover_image.url }}">
             {% elif place.cover_image_url %}<img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" loading="lazy" decoding="async" width="640" height="360" alt="{{ place.title }}" src="{{ place.cover_image_url }}">
             {% elif place.sample_image %}<img data-place-cover data-sample-src="{{ fallback_image }}" data-place-title="{{ place.title }}" loading="lazy" decoding="async" width="640" height="360" alt="Illustrative category sample, not an actual photo of {{ place.title }}" src="{% static place.sample_image %}"><span class="ea6-sample-badge">Photo not yet available · Illustrative category sample · Not an actual photo</span>
@@ -169,16 +171,19 @@
         </article>
       {% endfor %}
     </div>
-    <aside id="ea6g-map-shell" class="ea6g-map-shell" aria-label="Map of current nearby search results" hidden>
-      <div class="ea6g-map-head"><h3>Nearby results map</h3><button type="button" class="ea6g-fit" id="ea6g-fit">Fit results</button></div>
+    <aside id="ea6g-map-shell" class="ea6g-map-shell" aria-label="Map of current nearby search results" tabindex="-1" hidden>
+      <div class="ea6g-map-head"><h3>Nearby results map</h3><div class="ea6g-map-actions"><button type="button" class="ea6g-fit" id="ea6g-fit">Fit results</button> <button type="button" class="ea6g-fit" id="ea6g-close">Back to results</button></div></div>
       <div class="ea6-drone-hud" id="ea6-drone-hud" hidden aria-hidden="true">
         <span class="ea6-drone-track"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 8h4l2-3h4l2 3h4v8h-4l-2 3h-4l-2-3H4Z"/><circle cx="12" cy="12" r="2.4"/></svg>Drone view</span>
         <strong id="ea6-drone-target">Kabankalan</strong>
         <span class="ea6-drone-scan"></span>
       </div>
+      <div class="ek-map-guide-tools"><button type="button" id="ea6g-use-gps">Use my location</button><button type="button" id="ea6g-retry-route" hidden>Retry driving route</button></div>
+      <p id="ea6-map-guide-status" class="ek-map-guide-status" role="status" aria-live="polite">Select a place and use your location to request a driving route.</p>
+      <p class="ek-map-guide-privacy">A starting point and selected place are sent to the OSRM demo to calculate a driving route. Roads and access may be incomplete; confirm conditions before travelling.</p>
       <div id="ea6g-map" class="ea6g-map" role="region" aria-label="Interactive map of nearby result pins"></div>
       <p id="ea6g-map-status" class="ea6g-map-status" role="status" aria-live="polite">Map loading will begin when you open this panel.</p>
-      <p class="ea6g-map-status">Only this search's published Kabankalan listings with recorded coordinates are pinned. Locations may need confirmation. Map marker colors indicate selected or unselected locations—not hobby scores or business quality. Map tiles © <a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener noreferrer">MapTiler</a>; map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>.</p>
+      <p class="ea6g-map-status">Only this search's published Kabankalan listings with recorded coordinates are pinned. Locations may need confirmation. Selecting a place shows its pin; Fit results restores all matching pins. Map tiles © <a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener noreferrer">MapTiler</a>; map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>.</p>
     </aside>
     </div>
   {% else %}
@@ -200,6 +205,7 @@
 </main>
 {% endblock %}
 {% block extra_js %}
+<script src="{% static 'js/map-guide.js' %}?v=2"></script>
 {{ approved_suggestions|json_script:"ea6-approved-data" }}
 <script src="{% static 'js/ea-voice.js' %}?v=20261104-2"></script>
 <script>
@@ -270,7 +276,11 @@
   }
   input?.addEventListener("input", () => { if (selectedId) selectedId.value=""; showSuggestions(); });
   input?.addEventListener("keydown", event => {
-    if (event.key === "Escape") { closeSuggestions(); return; }
+    if (event.key === "Escape") {
+      if (listbox && !listbox.hidden) event.preventDefault();
+      closeSuggestions();
+      return;
+    }
     if (!listbox || listbox.hidden || !displayed.length) return;
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
@@ -306,8 +316,21 @@
   });
   let resultsMap = null;
   let resultsMapMarkers = new Map();
+  let selectionVersion = 0;
+  let flightEnd = null;
+  let droneTimer = null;
+  const reducedMotion = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function clearFlight() {
+    if (resultsMap && flightEnd) resultsMap.off("moveend", flightEnd);
+    flightEnd = null;
+    clearTimeout(droneTimer);
+    const hud = document.getElementById("ea6-drone-hud");
+    if (hud) hud.hidden = true;
+  }
   let originPoint = null;
-  let originMarker = null;
+  let guide = null;
+  let selectedCard = null;
+  let mapOpener = null;
   let assetsPromise = null;
   function haversine(a, b, c, d) {
     const r = Math.PI / 180;
@@ -326,6 +349,9 @@
     return haversine(originPoint.lat,originPoint.lng,lat,lng) <= radius + 1e-8;
   }
   function refreshRadius() {
+    ++selectionVersion;
+    clearFlight();
+    if (resultsMap) resultsMap.stop();
     // The radius control is noise until a reference point exists.
     const radiusBox = document.getElementById("ea6h-radius");
     if (radiusBox) radiusBox.hidden = !originPoint;
@@ -351,7 +377,7 @@
     if (mapToggle) {
       const open = !!mapShell && !mapShell.hidden;
       mapToggle.disabled = pins.length === 0 && !open;
-      mapToggle.textContent = open ? "Hide nearby map"
+      mapToggle.textContent = open ? "Back to results"
         : pins.length ? "View nearby results on map ↗"
         : "Map unavailable for these results";
     }
@@ -360,10 +386,13 @@
         if (card.hidden && resultsMap.hasLayer(marker)) resultsMap.removeLayer(marker);
         else if (!card.hidden && !resultsMap.hasLayer(marker)) marker.addTo(resultsMap);
       });
-      selectCard(null);
-      if (pins.length) fitResultPins();
-      if (mapStatus) mapStatus.textContent = pins.length
-        ? pins.length + " mapped listing(s) currently shown; map pins match the distance filter."
+      if (selectedCard && selectedCard.hidden) selectCard(null);
+      else selectCard(selectedCard);
+      if (selectedCard && guide && guide.hasOrigin()) guide.fit();
+      else if (!selectedCard && pins.length) fitResultPins();
+      if (mapStatus) mapStatus.textContent = selectedCard
+        ? "Showing " + (selectedCard.dataset.title || "selected place") + ". Use Fit results to restore matching pins."
+        : pins.length ? pins.length + " mapped listing(s) currently shown; map pins match the distance filter."
         : "No mapped listings within the selected radius. Increase or clear the distance filter.";
     }
   }
@@ -390,30 +419,53 @@
       + " mapped listing(s) by estimated straight-line distance from " + label + ". Listings without coordinates appear last.";
     originPoint = {lat, lng, label};
     refreshRadius();
-    if (resultsMap) { placeOriginMarker(); syncPopupDistances(); }
+    if (resultsMap) {
+      guide.setOrigin(originPoint.lat, originPoint.lng, originPoint.label);
+      syncPopupDistances();
+      if (selectedCard) guide.fit();
+    }
   }
   if (container && container.dataset.originLat && container.dataset.originLng) {
     sortNearby(Number(container.dataset.originLat), Number(container.dataset.originLng), "landmark “" + container.dataset.originName + "”");
   }
   refreshRadius();
+  const mapGps = document.getElementById("ea6g-use-gps");
+  const guideStatus = document.getElementById("ea6-map-guide-status");
+  function locationMessage(message) {
+    if (status) status.textContent = message;
+    if (guideStatus) guideStatus.textContent = message;
+  }
+  mapGps?.addEventListener("click", () => gps?.click());
   gps?.addEventListener("click", function () {
     if (!window.isSecureContext) {
-      if (status) status.textContent = "Phone GPS generally requires HTTPS. Open the optional Kabankalan landmark selector instead, or test on localhost.";
+      locationMessage("Phone GPS generally requires HTTPS. Choose a landmark instead, or test on localhost.");
       return;
     }
     if (!navigator.geolocation) {
-      if (status) status.textContent = "This browser does not support location access. Choose a landmark instead.";
+      locationMessage("This browser does not support location access. Choose a landmark instead.");
       return;
     }
     gps.disabled = true;
-    if (status) status.textContent = "Requesting location permission…";
+    if (mapGps) mapGps.disabled = true;
+    locationMessage("Requesting location permission…");
     navigator.geolocation.getCurrentPosition(position => {
       gps.disabled = false;
+      if (mapGps) { mapGps.disabled = false; mapGps.textContent = "Update my location"; }
+      // Sorting cards and revealing the radius controls must not pull the
+      // viewport away from an open map panel when its GPS button is used.
+      const scrollTop = window.scrollY;
+      const root = document.documentElement;
+      const oldAnchor = root.style.overflowAnchor;
+      root.style.overflowAnchor = "none";
       sortNearby(position.coords.latitude, position.coords.longitude, "your current location");
+      window.scrollTo({top: scrollTop, behavior: "instant"});
+      requestAnimationFrame(() => { root.style.overflowAnchor = oldAnchor; });
+      if (gps.lastChild && gps.lastChild.nodeType === Node.TEXT_NODE) gps.lastChild.textContent = " Update my location";
     }, error => {
       gps.disabled = false;
-      if (status) status.textContent = error.code === 1 ? "Location permission denied. Choose a landmark instead."
-        : "Unable to obtain your location. Choose a landmark or try again.";
+      if (mapGps) mapGps.disabled = false;
+      locationMessage(error.code === 1 ? "Location permission denied. Choose a landmark instead."
+        : "Unable to obtain your location. Choose a landmark or try again.");
     }, {enableHighAccuracy:true,timeout:15000,maximumAge:60000});
   });
 
@@ -480,26 +532,23 @@
     return wrapper;
   }
   function selectCard(card) {
+    selectedCard = card;
     rows.forEach(row => row.classList.toggle("ea6g-selected", row === card));
-    resultsMapMarkers.forEach((marker,row) => marker.setStyle({
-      radius: row === card ? 12 : 9,
-      color: row === card ? "#0b3f8f" : "#0757d8",
-      fillColor: row === card ? "#f59e0b" : "#0d9488",
-      weight: row === card ? 3 : 2
-    }));
+    resultsMapMarkers.forEach((marker, row) => {
+      const show = !row.hidden && (!card || row === card);
+      if (show && !resultsMap.hasLayer(marker)) marker.addTo(resultsMap);
+      else if (!show && resultsMap.hasLayer(marker)) resultsMap.removeLayer(marker);
+      marker.setStyle({radius: row === card ? 11 : 9, color: "#0757d8", fillColor: "#0d9488", weight: 2});
+    });
+    if (guide) {
+      if (card) {
+        guide.setDestination(Number(card.dataset.lat), Number(card.dataset.lng), card.dataset.title || "selected place");
+        if (mapStatus) mapStatus.textContent = "Showing " + (card.dataset.title || "selected place") + ". Use Fit results to restore matching pins.";
+      } else guide.clearDestination();
+    }
   }
   function syncPopupDistances() {
     resultsMapMarkers.forEach((marker,card) => marker.setPopupContent(createPopup(card)));
-  }
-  function placeOriginMarker() {
-    if (!resultsMap || !originPoint) return;
-    if (originMarker) resultsMap.removeLayer(originMarker);
-    originMarker = L.circleMarker([originPoint.lat,originPoint.lng], {
-      radius:8,color:"#9a5704",fillColor:"#f59e0b",fillOpacity:.95,weight:3
-    }).addTo(resultsMap);
-    const note=document.createElement("div");
-    note.textContent="Distance reference: " + originPoint.label + " (not a business location)";
-    originMarker.bindPopup(note);
   }
   function fitResultPins() {
     if (!resultsMap || !mappedRows.length) return;
@@ -553,40 +602,46 @@
       'Satellite':nearbySatellite,
       'Hybrid (Street Overlay)':nearbyHybrid
     }, null, {position:'topright', collapsed:true}).addTo(resultsMap);
-    visibleMappedRows().forEach(card => {
+    guide = window.EKMapGuide.create(resultsMap, L, document.getElementById("ea6-map-guide-status"), document.getElementById("ea6g-retry-route"));
+    mappedRows.forEach(card => {
       const marker = L.circleMarker([Number(card.dataset.lat),Number(card.dataset.lng)], {
         radius:9,color:"#0757d8",fillColor:"#0d9488",fillOpacity:.92,weight:2
-      }).addTo(resultsMap);
-      marker.bindPopup(createPopup(card));
-      marker.on("click",() => selectCard(card));
+      });
+      if (!card.hidden) marker.addTo(resultsMap);
+      marker.bindPopup(createPopup(card), {autoPan:false});
+      marker.on("click",() => {
+        ++selectionVersion;
+        clearFlight();
+        resultsMap.stop();
+        selectCard(card);
+        if (guide.hasOrigin()) guide.fit();
+      });
       resultsMapMarkers.set(card,marker);
     });
-    placeOriginMarker();
+    if (originPoint) guide.setOrigin(originPoint.lat, originPoint.lng, originPoint.label);
     fitResultPins();
   }
-  async function openNearbyMap(cardToFocus=null) {
+  async function openNearbyMap(cardToFocus=null, selection=selectionVersion) {
     if (!mapShell || !mapLayout || !mapToggle || !visibleMappedRows().length) return;
+    if (mapShell.hidden) mapOpener = document.activeElement;
     mapShell.hidden = false;
+    if (container) container.hidden = true;
     mapLayout.classList.add("map-open");
     mapToggle.setAttribute("aria-expanded","true");
-    mapToggle.textContent = "Hide nearby map";
+    mapToggle.textContent = "Back to results";
     if (mapStatus) mapStatus.textContent = "Loading nearby results map…";
     try {
       await loadNearbyLeaflet();
+      if (mapShell.hidden || (selection !== null && selection !== selectionVersion)) return false;
       if (!resultsMap) createResultsMap();
+      guide.resume();
       // Leaflet must measure the panel after it becomes visible.
       resultsMap.invalidateSize();
-      if (cardToFocus) {
-        const marker = resultsMapMarkers.get(cardToFocus);
-        if (marker) {
-          selectCard(cardToFocus);
-          resultsMap.setView(marker.getLatLng(),Math.max(resultsMap.getZoom(),13));
-          marker.openPopup();
-        }
-      } else fitResultPins();
+      if (!cardToFocus && !selectedCard) fitResultPins();
       if (mapStatus) mapStatus.textContent = visibleMappedRows().length + " location pin(s) shown for these search results. Select a pin or use Show on map on a card.";
-      if (cardToFocus && window.matchMedia("(max-width:980px)").matches) mapShell.scrollIntoView({behavior:"smooth",block:"start"});
+      return true;
     } catch(error) {
+      if (mapShell.hidden || (selection !== null && selection !== selectionVersion)) return false;
       if (mapStatus) mapStatus.textContent = "Unable to load the map. Check your connection and click the map button again to retry. Your results list still works.";
       mapToggle.textContent = "Retry nearby map";
       mapToggle.setAttribute("aria-expanded","false");
@@ -594,8 +649,15 @@
   }
   function closeNearbyMap() {
     if (!mapShell || !mapLayout || !mapToggle) return;
+    ++selectionVersion;
+    clearFlight();
+    if (resultsMap) resultsMap.stop();
+    const returnFocus = mapShell.contains(document.activeElement);
+    if (guide) guide.pause();
     mapShell.hidden = true;
+    if (container) container.hidden = false;
     mapLayout.classList.remove("map-open");
+    if (returnFocus && mapOpener?.isConnected && typeof mapOpener.focus === "function") mapOpener.focus();
     mapToggle.textContent = "View nearby results on map ↗";
     mapToggle.setAttribute("aria-expanded","false");
   }
@@ -603,15 +665,21 @@
     if (mapShell?.hidden || mapToggle.getAttribute("aria-expanded") === "false") openNearbyMap();
     else closeNearbyMap();
   });
-  fitButton?.addEventListener("click", fitResultPins);
+  document.getElementById("ea6g-close")?.addEventListener("click", closeNearbyMap);
+  fitButton?.addEventListener("click", () => {
+    ++selectionVersion;
+    clearFlight();
+    if (resultsMap) resultsMap.stop();
+    resultsMap?.closePopup();
+    selectCard(null);
+    fitResultPins();
+    if (mapStatus) mapStatus.textContent = visibleMappedRows().length + " mapped listing(s) shown. Select a pin or a card.";
+  });
   // ---------------------------------------------------------------
   // Drone view: choosing a listing flies the camera down onto it
   // ---------------------------------------------------------------
   const droneHud = document.getElementById("ea6-drone-hud");
   const droneTarget = document.getElementById("ea6-drone-target");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  let droneRing = null;
-  let droneTimer = null;
 
   function showDroneHud(card) {
     if (!droneHud) return;
@@ -622,44 +690,39 @@
   }
 
   async function droneTo(card) {
-    if (!card || !card.hasAttribute("data-lat")) return;
-    await openNearbyMap(card);
-    if (!mapShell) return;
-    showDroneHud(card);
-    if (!resultsMap || !window.L?.circleMarker) return;
-    const lat = Number(card.dataset.lat);
-    const lng = Number(card.dataset.lng);
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-
-    if (droneRing) {
-      resultsMap.removeLayer(droneRing);
-      droneRing = null;
+    if (!card || !mappedRows.includes(card) || card.hidden) return;
+    const selection = ++selectionVersion;
+    clearFlight();
+    if (resultsMap) resultsMap.stop();
+    // Like Explore Places, replace the results with the map section.
+    const ready = openNearbyMap(card, selection);
+    if (mapShell && !mapShell.hidden) {
+      mapShell.focus({preventScroll:true});
+      mapShell.scrollIntoView({behavior:reducedMotion() ? "auto" : "smooth", block:"start"});
     }
-    droneRing = L.circleMarker([lat, lng], {
-      radius: 26, color: "#21d9c6", weight: 2,
-      fillColor: "#21d9c6", fillOpacity: .12, className: "ea6-drone-ring"
-    }).addTo(resultsMap);
-
+    if (!await ready || selection !== selectionVersion || mapShell.hidden || card.hidden) return;
+    const lat = Number(card.dataset.lat), lng = Number(card.dataset.lng);
+    const marker = resultsMapMarkers.get(card);
+    if (!marker) return;
+    selectCard(card);
+    if (!guide.hasOrigin()) showDroneHud(card);
     const finish = () => {
-      const marker = resultsMapMarkers.get(card);
-      if (marker) {
-        selectCard(card);
-        marker.openPopup();
-      }
-      const ring = droneRing;
-      droneRing = null;
-      if (ring) window.setTimeout(() => {
-        try { resultsMap.removeLayer(ring); } catch (error) { /* map closed */ }
-      }, 2600);
-    };
+      if (selection !== selectionVersion || mapShell.hidden || card.hidden) return;
+      flightEnd = null;
+      marker.openPopup();
 
-    if (reduceMotion.matches) {
+    };
+    if (guide.hasOrigin()) {
+      guide.fit();
+      finish();
+    } else if (reducedMotion()) {
       resultsMap.setView([lat, lng], 16.5, {animate:false});
       finish();
-      return;
+    } else {
+      flightEnd = finish;
+      resultsMap.once("moveend", flightEnd);
+      resultsMap.flyTo([lat, lng], 16.5, {duration:1.5, easeLinearity:.22});
     }
-    resultsMap.once("moveend", finish);
-    resultsMap.flyTo([lat, lng], 16.5, { duration: 2.6 });
   }
 
   rows.forEach(card => {
@@ -672,6 +735,9 @@
       }
     });
     card.querySelector(".ea6g-card-map")?.addEventListener("click", () => droneTo(card));
+    card.addEventListener("click", event => {
+      if (!event.target.closest("a, button, .ea6-cover")) droneTo(card);
+    });
   });
 
   // Voice search: the same shared module the Browse page uses.

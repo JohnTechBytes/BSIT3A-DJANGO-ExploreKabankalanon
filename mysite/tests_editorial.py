@@ -6,7 +6,6 @@ from django.urls import reverse
 
 from apps.cities.models import City
 from apps.core.models import Category
-from apps.itineraries.models import Itinerary
 from apps.places.models import Place
 
 
@@ -21,7 +20,6 @@ class EditorialScreenTests(TestCase):
             city=city, title="Published destination", slug="published-destination",
             is_active=True, is_verified=True,
         )
-        cls.trip = Itinerary.objects.create(user=cls.user, city=city, title="Trip", day_number=1)
 
     def test_account_forms_load_the_editorial_styles(self):
         for name in ("login", "register"):
@@ -35,10 +33,7 @@ class EditorialScreenTests(TestCase):
     def test_public_screens_retain_their_editorial_scope(self):
         self.client.force_login(self.user)
         routes = [
-            reverse("itineraries:create"), reverse("itineraries:builder", args=[self.trip.pk]),
-            reverse("itineraries:choose_for_place", args=[self.place.pk]),
-            reverse("places:my_reviews"), reverse("visits:list"),
-            reverse("visits:check_in", args=[self.place.pk]),
+            reverse("places:my_reviews"),
             reverse("evaluation:sus_survey"), reverse("evaluation:sus_thanks"),
             reverse("core:privacy_notice"),
         ]
@@ -52,9 +47,6 @@ class EditorialScreenTests(TestCase):
                 self.assertContains(response, 'css/public-night.css')
                 self.assertContains(response, 'js/public-reveal.js')
                 self.assertContains(response, 'js/public-motion.js')
-        self.assertContains(self.client.get(reverse("itineraries:create")), 'name="title"')
-        self.assertContains(self.client.get(reverse("itineraries:builder", args=[self.trip.pk])), 'name="place_id"')
-        self.assertContains(self.client.get(reverse("visits:check_in", args=[self.place.pk])), 'name="visit_note"')
         self.assertContains(self.client.get(reverse("evaluation:sus_survey")), 'name="q10"')
 
     def test_public_navigation_keeps_mobile_controls_and_links(self):
@@ -68,34 +60,14 @@ class EditorialScreenTests(TestCase):
         for route in ("home", "info:city_information", "places:saved_places", "places:my_reviews", "evaluation:sus_survey"):
             with self.subTest(route=route):
                 self.assertContains(member, reverse(route))
-        for route in ("places:journey_dashboard", "itineraries:list", "visits:list"):
-            with self.subTest(hidden_route=route):
-                self.assertNotContains(member, f'href="{reverse(route)}"')
-                # Existing bookmarks remain functional, but are no longer promoted.
-                self.assertEqual(self.client.get(reverse(route)).status_code, 200)
         self.assertContains(member, 'class="ea-nav-more"')
         self.assertContains(member, 'name="csrfmiddlewaretoken"')
 
-    def test_core_navigation_hides_planning_features_without_deleting_routes(self):
+    def test_removed_features_are_not_routed(self):
         self.client.force_login(self.user)
-        for url in (reverse('home'), reverse('places:attraction_carousel') + '?browse=all',
-                    reverse('places:attraction_carousel') + '?mode=nearby',
-                    reverse('places:place_detail', args=[self.place.pk]),
-                    reverse('places:saved_places'), reverse('places:my_reviews'),
-                    reverse('info:city_information')):
+        for url in ('/places/journey/', '/itineraries/', '/visits/'):
             with self.subTest(url=url):
-                response = self.client.get(url)
-                self.assertEqual(response.status_code, 200)
-                for route in ('places:journey_dashboard', 'itineraries:list', 'visits:list'):
-                    self.assertNotContains(response, f'href="{reverse(route)}"')
-                self.assertNotContains(response, f'href="{reverse("itineraries:choose_for_place", args=[self.place.pk])}"')
-                self.assertNotContains(response, f'href="{reverse("visits:check_in", args=[self.place.pk])}"')
-        for url in (reverse('places:journey_dashboard'), reverse('itineraries:list'),
-                    reverse('visits:list'), reverse('itineraries:choose_for_place', args=[self.place.pk]),
-                    reverse('visits:check_in', args=[self.place.pk])):
-            with self.subTest(retained_url=url):
-                self.assertEqual(self.client.get(url).status_code, 200)
-        self.assertTrue(Itinerary.objects.filter(pk=self.trip.pk).exists())
+                self.assertEqual(self.client.get(url).status_code, 404)
 
     def test_discovery_screens_opt_in_without_changing_routes_or_actions(self):
         self.client.force_login(self.user)
@@ -112,30 +84,16 @@ class EditorialScreenTests(TestCase):
         self.assertContains(detail, reverse('places:submit_review', args=[self.place.pk]))
         self.assertContains(detail, 'name="csrfmiddlewaretoken"')
 
-    def test_journey_planning_and_public_information_use_warm_theme(self):
+    def test_saved_reviews_and_public_information_use_warm_theme(self):
         self.client.force_login(self.user)
-        routes = (
-            reverse("places:journey_dashboard"), reverse("places:saved_places"),
-            reverse("places:my_reviews"), reverse("itineraries:list"),
-            reverse("itineraries:create"), reverse("itineraries:builder", args=[self.trip.pk]),
-            reverse("itineraries:choose_for_place", args=[self.place.pk]),
-            reverse("info:city_information"), reverse("visits:list"),
-            reverse("visits:check_in", args=[self.place.pk]),
-            reverse("evaluation:sus_survey"), reverse("evaluation:sus_thanks"),
-            reverse("core:privacy_notice"),
-        )
+        routes = (reverse("places:saved_places"), reverse("places:my_reviews"),
+                  reverse("info:city_information"), reverse("evaluation:sus_survey"),
+                  reverse("evaluation:sus_thanks"), reverse("core:privacy_notice"))
         for url in routes:
             with self.subTest(url=url):
                 response = self.client.get(url)
                 self.assertContains(response, 'ek-journey-theme')
                 self.assertContains(response, 'css/explore.css')
-        journey = self.client.get(reverse("places:journey_dashboard"))
-        self.assertContains(journey, reverse("itineraries:builder", args=[self.trip.pk]))
-        self.assertContains(journey, '</main>')
-        builder = self.client.get(reverse("itineraries:builder", args=[self.trip.pk]))
-        self.assertContains(builder, reverse("itineraries:update", args=[self.trip.pk]))
-        self.assertContains(builder, reverse("itineraries:add_stop", args=[self.trip.pk]))
-        self.assertContains(builder, 'name="csrfmiddlewaretoken"')
         survey = self.client.get(reverse("evaluation:sus_survey"))
         for i in range(1, 11):
             self.assertContains(survey, f'name="q{i}"')
@@ -224,7 +182,6 @@ class EditorialScreenTests(TestCase):
         self.assertNotContains(response, 'Pending visits')
         self.assertNotContains(response, 'User accounts')
         self.assertNotContains(response, reverse("admin:users_user_changelist"))
-        self.assertNotContains(response, reverse("admin:visits_visitcheckin_changelist"))
 
     def test_admin_navigation_retains_account_actions_and_csrf_logout(self):
         self.client.force_login(self.user)
@@ -246,13 +203,13 @@ class EditorialScreenTests(TestCase):
     def test_sidebar_sections_load_shared_workspace_styles_and_native_controls(self):
         self.client.force_login(self.user)
         for name in ("admin:places_place_changelist", "admin:places_place_osm_review",
-                     "admin:info_cityinformation_changelist", "admin:visits_visitcheckin_changelist",
+                     "admin:info_cityinformation_changelist",
                      "admin:users_user_changelist"):
             with self.subTest(name=name):
                 response = self.client.get(reverse(name))
                 self.assertContains(response, "css/admin-workspace.css")
                 self.assertContains(response, 'id="ea-admin-sidebar"')
-        for name in ("admin:info_cityinformation_changelist", "admin:visits_visitcheckin_changelist",
+        for name in ("admin:info_cityinformation_changelist",
                      "admin:users_user_changelist"):
             with self.subTest(name=name):
                 response = self.client.get(reverse(name))

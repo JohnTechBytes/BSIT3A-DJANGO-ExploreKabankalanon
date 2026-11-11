@@ -1,0 +1,123 @@
+/* ExploreKabankalan public UI. Loaded last; presentation only. */
+:root {
+  --ek-ui-dark: #101b18;
+  --ek-ui-forest: #1c3428;
+  --ek-ui-accent: #d1e2c7;
+  --ek-ui-text-on-dark: #f3f6ef;
+  --ek-ui-muted-on-dark: #d2dfd2;
+  --ek-ui-focus: #d79745;
+}
+body :is(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--ek-ui-focus) !important;
+  outline-offset: 3px;
+}
+body :is(button, summary, input[type=submit], input[type=checkbox], input[type=radio]) { cursor: pointer; }
+body ::selection { background: #c9dfbc; color: #14291f; }
+
+/* Shared chrome links the task pages back to the cinematic home page. */
+body .ea-site-header, body.ek-discovery-theme .ea-site-header {
+  background: var(--ek-ui-dark) !important;
+  border-bottom: 1px solid #36493e;
+}
+body .ea-nav-container { max-width: 1264px; min-height: 76px; }
+body :is(.ea-site-logo,.ea-site-logo:hover,.ek-brand-name),
+body.ek-discovery-theme :is(.ea-site-logo,.ea-site-logo:hover,.ek-brand-name) { color: #f1f6ed; }
+body .ek-brand-mark, body.ek-discovery-theme .ek-brand-mark { background: var(--ek-ui-accent); color: #14271c; }
+body :is(.ea-nav-links > a,.ea-nav-more > summary),
+body.ek-discovery-theme :is(.ea-nav-links > a,.ea-nav-more > summary) { color: #e1ebe0; }
+body :is(.ea-nav-links > a:hover,.ea-nav-more > summary:hover),
+body.ek-discovery-theme :is(.ea-nav-links > a:hover,.ea-nav-more > summary:hover) { color: #fff; border-color: var(--ek-ui-accent); }
+body .ea-nav-submenu, body.ek-discovery-theme .ea-nav-submenu { background: #1c3025; border-color: #526c5a; }
+body .ea-nav-submenu a, body.ek-discovery-theme .ea-nav-submenu a { color: #f2f6ee; }
+body .ea-nav-submenu a:hover, body.ek-discovery-theme .ea-nav-submenu a:hover { background: #344c3b; color: #fff; }
+body :is(.ea-nav-outline,.ea-mobile-menu), body.ek-discovery-theme :is(.ea-nav-outline,.ea-mobile-menu) { background: transparent; border-color: #96aa9a; color: #f3f7f0; }
+body :is(.ea-nav-outline,.ea-mobile-menu):hover, body.ek-discovery-theme :is(.ea-nav-outline,.ea-mobile-menu):hover { background: #304737; color: #fff; }
+body .ea-nav-primary, body.ek-discovery-theme .ea-nav-primary { background: var(--ek-ui-accent); border-color: var(--ek-ui-accent); color: #15281d; }
+body .ea-nav-primary:hover, body.ek-discovery-theme .ea-nav-primary:hover { background: #e6f0df; border-color: #e6f0df; color: #15281d; }
+body .ea-site-footer, body.ek-discovery-theme .ea-site-footer { background: #0b1511; border-color: #394d40; color: #cfdfd1; }
+body .ea-site-footer a, body.ek-discovery-theme .ea-site-footer a { color: #e4efe1; }
+@media (max-width: 900px) {
+  body .ea-site-header.menu-open .ea-nav-links,
+  body.ek-discovery-theme .ea-site-header.menu-open .ea-nav-links { background: var(--ek-ui-dark); }
+  body .ea-site-header.menu-open .ea-nav-links a,
+  body.ek-discovery-theme .ea-site-header.menu-open .ea-nav-links a { color: #eef5eb; }
+}
+
+/* Expressive cover, practical light content: no change to data or controls. */
+body:is(.browse-page,.nearby-page,.site-dark,.discovery-page) :is(
+  .ea-attractions-header,.ea6-top,.pd-heading,.eainfo-hero,.discovery-header,
+  .ea4b-hero,.ea-saved .ea-c-page-hero,.ea-trip .hero,.ea-choose .hero,
+  .ea-checkin .hero,.ea-myreviews .ea-c-page-hero,.ea-visits .ea-c-page-hero,
+  .easus-hero,.eath-hero,.eapriv-hero
+) { background: var(--ek-ui-forest) !important; border: 0; border-radius: 8px; box-shadow: none; color: var(--ek-ui-text-on-dark); }
+body:is(.browse-page,.nearby-page,.site-dark,.discovery-page) :is(
+  .ea-attractions-header,.ea6-top,.pd-heading,.eainfo-hero,.discovery-header,
+  .ea4b-hero,.ea-saved .ea-c-page-hero,.ea-trip .hero,.ea-choose .hero,
+  .ea-checkin .hero,.ea-myreviews .ea-c-page-hero,.ea-visits .ea-c-page-hero,
+  .easus-hero,.eath-hero,.eapriv-hero
+) :is(h1,h1 span,h1 b) { color: var(--ek-ui-text-on-dark) !important; }
+body:is(.browse-page,.nearby-page,.site-dark,.discovery-page) :is(
+  .ea-attractions-header,.ea6-top,.pd-heading,.eainfo-hero,.discovery-header,
+  .ea4b-hero,.ea-saved .ea-c-page-hero,.ea-trip .hero,.ea-choose .hero,
+  .ea-checkin .hero,.ea-myreviews .ea-c-page-hero,.ea-visits .ea-c-page-hero,
+  .easus-hero,.eath-hero,.eapriv-hero
+) :is(p,.ea6-muted,.pd-subtitle,.pd-hobbies-label,.ea-guide-kicker,.ea-guide-kicker span) { color: var(--ek-ui-muted-on-dark) !important; opacity: 1; }
+body.site-dark.detail-page .pd-heading .pd-pin { color: #d5e8d1; }
+body .public-motion-surface::before, body .public-motion-surface::after { animation: none !important; }
+body.nearby-page .ea6-panel-symbol { display: none; }
+
+/* Keep content surfaces and form feedback readable; avoid expensive effects. */
+body.ek-discovery-theme { --ek-primary: #1c5946; --ek-primary-hover: #124732; --ek-focus: #b46a27; }
+body:is(.browse-page,.nearby-page,.site-dark,.discovery-page) :is(
+  .ea-discovery-tools,.ea-attraction-card,.ea6-box,.ea6-card,.pd-card,.pd-actions,
+  .eainfo-card,.ea-saved-item,.ea-myr-card,.easus-item,.eapriv-card,.eath-card
+) { box-shadow: none; }
+body :is(.ea-discovery-tools,.ea6-box,.pd-card,.eainfo-card,.ea-saved-item,.ea-myr-card,.eapriv-card) { overflow-wrap: anywhere; }
+
+/* Auth retains light, native form controls; the photo panel carries the mood. */
+body.auth-page .auth-brand-panel { background: var(--ek-ui-forest); color: var(--ek-ui-text-on-dark); }
+body.auth-page .auth-logo, body.auth-page .auth-logo:hover { color: #f3f6ef; }
+body.auth-page .auth-logo-mark { background: var(--ek-ui-accent); color: #14271c; }
+body.auth-page .auth-logo-mark span { color: #31593b; }
+body.auth-page :is(.auth-eyebrow,.auth-brand-description,.auth-panel-note) { color: #d2dfd2; }
+body.auth-page .auth-landmark { border: 0; border-radius: 4px; box-shadow: none; }
+body.auth-page .auth-landmark img { object-fit: cover; }
+body.auth-page .auth-landmark figcaption { color: #172a25; }
+body.auth-page .auth-button { background: #1c5946; border-color: #1c5946; }
+body.auth-page .auth-button:hover { background: #124732; border-color: #124732; }
+
+@media (prefers-reduced-motion: reduce) {
+  body :is(.ea-site-header,.ea-site-footer) * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
+/* Recovery pages use the same dark identity with an unmistakable way back. */
+body.ek-error-theme, body.ek-error-theme .error-shell { background: var(--ek-ui-dark); color: #f3f6ef; }
+body.ek-error-theme .error-shell::after { display: none; }
+body.ek-error-theme .error-shell :is(.error-brand,.error-title) { color: #f3f6ef; }
+body.ek-error-theme .error-shell :is(.error-brand b span,.error-brand small,.error-copy,.error-foot) { color: #ceddce; }
+body.ek-error-theme .error-shell .error-eyebrow { color: #c9dfc5; }
+body.ek-error-theme .error-shell .error-code { color: #9fbaa1; }
+body.ek-error-theme .error-shell .error-brand-mark { background: var(--ek-ui-accent); color: #14271c; }
+body.ek-error-theme .error-btn { color: #e5efe2; background: transparent; border-color: #a3bbaa; }
+body.ek-error-theme .error-btn.primary { color: #14271c; background: var(--ek-ui-accent); border-color: var(--ek-ui-accent); }
+body.ek-error-theme .error-btn.primary:hover { color: #14271c; background: #e6f0df; }
+
+/* Higher-specificity legacy rules need explicit contrast on dark covers. */
+body.ek-discovery-theme.nearby-page .ea-nav-links a:nth-child(2) { color: #f1f6ed; border-color: #c9dfc5; }
+body.ek-discovery-theme.nearby-page .ea6-main .ea6-top h1,
+body.site-dark.ek-journey-theme :is(.ea-trip,.ea-choose,.ea-saved,.ea-myreviews) :is(.hero,.ea-c-page-hero) h1 { color: #f3f6ef !important; }
+body.ek-journey-theme :is(.ea-trip .hero,.ea-choose .hero,.ea-saved .ea-c-page-hero,.ea-myreviews .ea-c-page-hero) :is(.eyebrow,.ea-c-eyebrow,p:first-child) { color: #d2dfd2 !important; }
+body .ek-brand-mark { display: flex; align-items: center; justify-content: center; }
+body.site-dark.ek-journey-theme :is(.ea-trip,.ea-choose,.ea-saved,.ea-myreviews) :is(.hero,.ea-c-page-hero) :is(p:first-child,.eyebrow,.ea-c-eyebrow) { color: #d2dfd2 !important; }
+body .ek-brand-mark span { margin-left: 0; }
+
+/* Search first, then a compact results summary instead of another panel. */
+body.ek-discovery-theme.browse-page .ea-summary {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid #d3ddd1;
+  border-bottom: 1px solid #d3ddd1;
+  border-radius: 0;
+  padding: 15px 0;
+  margin: 28px 0 34px;
+}

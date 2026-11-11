@@ -23,13 +23,10 @@
       <div><p class="ea-section-kicker">AT A GLANCE</p><h2 id="ea-metrics-title">Your overview</h2></div>
       <p>Current figures from the database</p>
     </div>
-    {% if stats.published is not None or stats.pending is not None or stats.missing_photos is not None or stats.users is not None %}
+    {% if stats.published is not None or stats.missing_photos is not None or stats.users is not None %}
     <div class="ea-metrics-grid">
       {% if stats.published is not None %}
       <div class="ea-metric"><span class="ea-metric-label">Published places</span><strong>{{ stats.published }}</strong><span class="ea-metric-detail">Verified destinations available to visitors</span></div>
-      {% endif %}
-      {% if stats.pending is not None %}
-      <div class="ea-metric"><span class="ea-metric-label">Pending visits</span><strong>{{ stats.pending }}</strong><span class="ea-metric-detail">Check-ins awaiting staff review</span></div>
       {% endif %}
       {% if stats.missing_photos is not None %}
       <div class="ea-metric"><span class="ea-metric-label">Without cover photos</span><strong>{{ stats.missing_photos }}</strong><span class="ea-metric-detail">Kabankalan place records needing a cover</span></div>
@@ -56,8 +53,6 @@
               {% if app.app_label == 'places' and model.object_name == 'Place' %}
                 <a class="ea-shortcut" href="{{ model.admin_url }}"><span class="ea-shortcut-icon" aria-hidden="true">D</span><span class="ea-shortcut-copy"><b>Destinations</b><span>Manage places, hobbies, photos and publication.</span></span><span class="ea-shortcut-arrow" aria-hidden="true">↗</span></a>
                 <a class="ea-shortcut" href="{% url 'admin:places_place_osm_review' %}"><span class="ea-shortcut-icon" aria-hidden="true">B</span><span class="ea-shortcut-copy"><b>Business review</b><span>Verify imported OSM listings before publication.</span></span><span class="ea-shortcut-arrow" aria-hidden="true">↗</span></a>
-              {% elif app.app_label == 'visits' and model.object_name == 'VisitCheckIn' %}
-                <a class="ea-shortcut" href="{{ model.admin_url }}"><span class="ea-shortcut-icon" aria-hidden="true">V</span><span class="ea-shortcut-copy"><b>Visit approvals</b><span>Review check-ins using independent evidence.</span></span><span class="ea-shortcut-arrow" aria-hidden="true">↗</span></a>
               {% elif app.app_label == 'users' and model.object_name == 'User' %}
                 <a class="ea-shortcut" href="{{ model.admin_url }}"><span class="ea-shortcut-icon" aria-hidden="true">U</span><span class="ea-shortcut-copy"><b>Manage users</b><span>View and administer authorized accounts.</span></span><span class="ea-shortcut-arrow" aria-hidden="true">↗</span></a>
               {% elif app.app_label == 'info' and model.object_name == 'CityInformation' %}
@@ -76,7 +71,7 @@
       <ul>
         <li><span aria-hidden="true">01</span><div><strong>Verify locations</strong><p>Check destination details before publishing.</p></div></li>
         <li><span aria-hidden="true">02</span><div><strong>Respect photo rights</strong><p>Use genuine images with documented permission.</p></div></li>
-        <li><span aria-hidden="true">03</span><div><strong>Review independently</strong><p>Check visits against independent evidence.</p></div></li>
+        <li><span aria-hidden="true">03</span><div><strong>Review information</strong><p>Check listing details against reliable sources.</p></div></li>
       </ul>
     </aside>
   </div>

@@ -639,6 +639,7 @@
 
 </style>
 <link rel="stylesheet" href="{% static 'css/browse.css' %}?v=20261031-3">
+<link rel="stylesheet" href="{% static 'css/map-guide.css' %}?v=1">
 {% endblock %}
 
 {% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261106-illustrations-1">{% endblock %}
@@ -685,33 +686,6 @@
   </header>
 
   {% include "places/_discovery_modes.html" %}
-
-  <section class="ea-summary" aria-live="polite">
-    <strong>
-      {% if search_query or selected_category or selected_hobby %}
-        {{ total_attractions }} Matching Place{{ total_attractions|pluralize }}
-      {% else %}
-        {{ published_total }} Published Place{{ published_total|pluralize }}
-      {% endif %}
-    </strong>
-    {% if search_query or selected_category or selected_hobby %}
-      <p class="ea-summary-note">Filtered from {{ published_total }} published Kabankalan places.</p>
-    {% else %}
-      <p class="ea-summary-note">Published Kabankalan places and businesses. Details may need confirmation.</p>
-    {% endif %}
-    {% if search_note %}
-      <p class="ea-search-note" role="status">{{ search_note }}</p>
-    {% endif %}
-
-    <p>
-      {{ selected_city.name }}
-      {% if selected_city.province_ref %}
-        &middot; {{ selected_city.province_ref.name }}
-      {% elif selected_city.province %}
-        &middot; {{ selected_city.province }}
-      {% endif %}
-    </p>
-  </section>
 
   {# exploreanywhere-phase5a-discovery-controls-v1 #}
   <section class="ea-discovery-tools" aria-label="Find and filter Kabankalan places">
@@ -786,6 +760,33 @@
         </div>
       </div>
     {% endif %}
+  </section>
+
+  <section class="ea-summary" aria-live="polite">
+    <strong>
+      {% if search_query or selected_category or selected_hobby %}
+        {{ total_attractions }} Matching Place{{ total_attractions|pluralize }}
+      {% else %}
+        {{ published_total }} Published Place{{ published_total|pluralize }}
+      {% endif %}
+    </strong>
+    {% if search_query or selected_category or selected_hobby %}
+      <p class="ea-summary-note">Filtered from {{ published_total }} published Kabankalan places.</p>
+    {% else %}
+      <p class="ea-summary-note">Published Kabankalan places and businesses. Details may need confirmation.</p>
+    {% endif %}
+    {% if search_note %}
+      <p class="ea-search-note" role="status">{{ search_note }}</p>
+    {% endif %}
+
+    <p>
+      {{ selected_city.name }}
+      {% if selected_city.province_ref %}
+        &middot; {{ selected_city.province_ref.name }}
+      {% elif selected_city.province %}
+        &middot; {{ selected_city.province }}
+      {% endif %}
+    </p>
   </section>
 
   {% if attractions %}
@@ -985,8 +986,10 @@
       <p class="ea-carousel-caption">
         {% if carousel_truncated %}
           Showing the first {{ attractions|length }} of {{ total_attractions }} matching places.
+        {% elif total_attractions <= 3 %}
+          {{ total_attractions }} matching place{{ total_attractions|pluralize }} shown. Open a place on the map to explore.
         {% else %}
-          All {{ total_attractions }} matching place{{ total_attractions|pluralize }} loop here automatically — drag, pause, or open one on the map.
+          All {{ total_attractions }} matching places shown — drag or use the controls to explore, or open one on the map.
         {% endif %}
       </p>
 
@@ -995,6 +998,13 @@
 <section id="ea-map-panel" hidden tabindex="-1"
          aria-label="Attractions map">
 
+    <div class="ek-map-guide-tools" role="group" aria-label="Map location options">
+      <button type="button" id="ea-map-locate">Use my location</button>
+      <button type="button" id="ea-map-fit">Fit results</button>
+      <button type="button" id="ea-map-retry-route" hidden>Retry driving route</button>
+    </div>
+    <p id="ea-map-guide-status" class="ek-map-guide-status" role="status" aria-live="polite">Select a place and use your location to request a driving route.</p>
+    <p class="ek-map-guide-privacy">Location is requested once; use the button again to update it. When a starting point and place are selected, their coordinates are sent to the OSRM demo for a driving route. Map tiles are requested from MapTiler. Routes may be incomplete; confirm road conditions.</p>
     <div id="ea-attraction-map"></div>
 
     <div class="ea-drone-hud" id="ea-drone-hud" hidden aria-hidden="true">
@@ -1007,7 +1017,7 @@
     </div>
 
     <p id="ea-map-note" class="ea-map-note">
-        Map shows every matching attraction; pick a photo to fly the drone view in.
+        Map shows matching attractions. Select a place to focus its pin; Fit results restores all pins.
     </p>
 </section>
 
@@ -1039,6 +1049,7 @@
 
 
 {% block extra_js %}
+<script src="{% static 'js/map-guide.js' %}?v=2"></script>
 <script src="{% static 'js/ea-voice.js' %}?v=20261104-2"></script>
 
 <script>
@@ -1129,6 +1140,8 @@
 
     let map = null;
     let markers = new Map();
+    let guide = null;
+    let selectedIndex = null;
 
     // --------------------------------------------------
     // 1. Looping "Places to Explore" marquee
@@ -1149,6 +1162,7 @@
         playing: true,      // the visitor's intent
         hovering: false,
         focusing: false,
+        visible: true,
         dragging: false,
         tween: null,
         clones: 0
@@ -1156,8 +1170,10 @@
 
     function applyMarqueeOffset() {
         if (track) {
-            track.style.transform =
-                "translate3d(" + marquee.offset.toFixed(2) + "px, 0, 0)";
+            const transform = "translate3d(" + marquee.offset.toFixed(2) + "px, 0, 0)";
+            track.style.transform = transform;
+            // Reduced motion disables autoplay but must retain instant manual navigation.
+            track.style.setProperty("--xp-carousel-transform", transform);
         }
     }
 
@@ -1172,7 +1188,7 @@
     function marqueeRunning() {
         return marquee.ready && marquee.playing &&
             !marquee.hovering && !marquee.focusing &&
-            !marquee.dragging && !document.hidden && !listPanel.hidden &&
+            !marquee.dragging && marquee.visible && !document.hidden && !listPanel.hidden &&
             !reduceMotionQuery.matches;
     }
 
@@ -1193,6 +1209,7 @@
             started: performance.now(),
             duration: 420
         };
+        resumeMarquee();
     }
 
     // One step forward shows the next place; a negative step goes back.
@@ -1213,51 +1230,50 @@
             if (label) label.textContent = playing ? "Pause" : "Play";
         }
         if (!playing) marquee.tween = null;
+        resumeMarquee();
     }
 
     let resumeMarquee = function () {};
     function setupMarquee() {
-        if (!carousel || !track) return;
+        if (!carousel || !track || carousel.classList.contains("ea-carousel--compact")) return;
 
         const cards = Array.from(track.querySelectorAll(".ea-card"));
         if (cards.length < 2) return;
 
-        const gap = parseFloat(getComputedStyle(track).gap) || 18;
-        const cardWidth = cards[0].getBoundingClientRect().width + gap;
-        const viewport = carousel.clientWidth;
-
-        if (!cardWidth || cardWidth * cards.length <= viewport + cardWidth) {
-            return; // Everything already fits: a static grid is clearer.
-        }
-
-        // Clone a prefix wide enough to cover the viewport, so the strip can
-        // wrap from the last card back to the first without a visible jump.
-        const needed = Math.ceil(viewport / cardWidth) + 2;
-        const cloneCount = Math.min(cards.length, needed);
-
-        for (let index = 0; index < cloneCount; index += 1) {
-            const clone = cards[index].cloneNode(true);
-            clone.classList.add("ea-clone");
-            clone.setAttribute("aria-hidden", "true");
-            clone.removeAttribute("tabindex");
-            clone.querySelectorAll("a, button").forEach(function (element) {
-                element.tabIndex = -1;
-            });
-            track.appendChild(clone);
-            // Coordinate-less cards are not present in attractions. Match the
-            // original card, not its position in the filtered marker array.
-            const markerIndex = attractions.findIndex(item => item.card === cards[index]);
-            if (markerIndex !== -1) {
-                bindCard(clone, attractions[markerIndex], markerIndex, true);
+        function measure() {
+            const oldLoop = marquee.loop;
+            const progress = oldLoop ? -marquee.offset / oldLoop : 0;
+            track.querySelectorAll(".ea-clone").forEach(clone => clone.remove());
+            const gap = parseFloat(getComputedStyle(track).gap) || 18;
+            const cardWidth = cards[0].getBoundingClientRect().width + gap;
+            const viewport = carousel.clientWidth;
+            if (!cardWidth) return;
+            const cloneCount = Math.min(cards.length, Math.ceil(viewport / cardWidth) + 2);
+            for (let index = 0; index < cloneCount; index += 1) {
+                const clone = cards[index].cloneNode(true);
+                clone.classList.add("ea-clone");
+                clone.setAttribute("aria-hidden", "true");
+                clone.removeAttribute("tabindex");
+                clone.querySelectorAll("a, button").forEach(element => { element.tabIndex = -1; });
+                track.appendChild(clone);
+                const markerIndex = attractions.findIndex(item => item.card === cards[index]);
+                if (markerIndex !== -1) bindCard(clone, attractions[markerIndex], markerIndex, true);
             }
+            marquee.ready = true;
+            marquee.clones = cloneCount;
+            marquee.span = cardWidth;
+            marquee.loop = cardWidth * cards.length;
+            marquee.offset = normalizeOffset(-progress * marquee.loop);
+            marquee.tween = null;
+            carousel.classList.add("is-cloned");
+            applyMarqueeOffset();
         }
-
-        marquee.ready = true;
-        marquee.clones = cloneCount;
-        marquee.span = cardWidth;
-        marquee.loop = cardWidth * cards.length;
-        carousel.classList.add("is-cloned");
-        applyMarqueeOffset();
+        measure();
+        let resizeTimer;
+        window.addEventListener("resize", function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () { measure(); resumeMarquee(); }, 150);
+        });
 
         let lastFrame = 0;
         let frameRequest = 0;
@@ -1292,32 +1308,65 @@
                 applyMarqueeOffset();
             }
 
-            frameRequest = requestAnimationFrame(frame);
+            if (marquee.tween || marqueeRunning()) frameRequest = requestAnimationFrame(frame);
+            else lastFrame = 0;
         }
 
         resumeMarquee = function () {
-            if (!frameRequest) frameRequest = requestAnimationFrame(frame);
+            if ((marquee.tween || marqueeRunning()) && !frameRequest) frameRequest = requestAnimationFrame(frame);
+            else if (!(marquee.tween || marqueeRunning()) && frameRequest) {
+                cancelAnimationFrame(frameRequest);
+                frameRequest = 0;
+                lastFrame = 0;
+            }
         };
         resumeMarquee();
 
         // Pause while the visitor is reading or interacting.
         carousel.addEventListener("pointerenter", function (event) {
             if (event.pointerType !== "touch") marquee.hovering = true;
+            resumeMarquee();
         });
         carousel.addEventListener("pointerleave", function () {
             marquee.hovering = false;
+            resumeMarquee();
         });
-        carousel.addEventListener("focusin", function () {
+        carousel.addEventListener("focusin", function (event) {
             marquee.focusing = true;
+            marquee.tween = null;
+            const card = event.target.closest(".ea-card:not(.ea-clone)");
+            const index = cards.indexOf(card);
+            if (index >= 0) {
+                const left = index * marquee.span + marquee.offset;
+                const right = left + card.getBoundingClientRect().width;
+                if (left < 0 || right > carousel.clientWidth) {
+                    marquee.offset = normalizeOffset(-index * marquee.span);
+                    applyMarqueeOffset();
+                }
+            }
+            resumeMarquee();
         });
         carousel.addEventListener("focusout", function (event) {
             if (!carousel.contains(event.relatedTarget)) {
                 marquee.focusing = false;
+                resumeMarquee();
             }
         });
         document.addEventListener("visibilitychange", function () {
             marquee.tween = null;
+            resumeMarquee();
         });
+        reduceMotionQuery.addEventListener("change", function () {
+            if (reduceMotionQuery.matches) setMarqueePlaying(false);
+            resumeMarquee();
+        });
+        if ("IntersectionObserver" in window) {
+            marquee.visible = false;
+            new IntersectionObserver(function (entries) {
+                marquee.visible = entries[0].isIntersecting;
+                resumeMarquee();
+            }).observe(carousel);
+        }
 
         // Drag to scrub the loop manually.
         let dragStartX = 0;
@@ -1331,6 +1380,7 @@
             dragStartOffset = marquee.offset;
             dragMoved = 0;
             marquee.tween = null;
+            resumeMarquee();
             carousel.classList.add("is-dragging");
         });
 
@@ -1338,7 +1388,7 @@
             if (!marquee.dragging) return;
             const distance = event.clientX - dragStartX;
             dragMoved = Math.max(dragMoved, Math.abs(distance));
-            marquee.offset = dragStartOffset + distance;
+            marquee.offset = normalizeOffset(dragStartOffset + distance);
             applyMarqueeOffset();
         });
 
@@ -1348,6 +1398,7 @@
             carousel.classList.remove("is-dragging");
             marquee.offset = normalizeOffset(marquee.offset);
             applyMarqueeOffset();
+            resumeMarquee();
         }
 
         carousel.addEventListener("pointerup", endDrag);
@@ -1578,8 +1629,7 @@
         // ----------------------------------------------
 
         const coordinates = [];
-
-
+        guide = window.EKMapGuide.create(map, L, document.getElementById("ea-map-guide-status"), document.getElementById("ea-map-retry-route"));
 
         // A DOM marker keeps its pixel size during Leaflet's zooming flight.
         // SVG circle markers scale with the map and briefly become enormous.
@@ -1607,10 +1657,14 @@
             popup.append(popupTitle, popupCategory);
 
 
-            marker.bindPopup(popup);
+            marker.bindPopup(popup, {autoPan: false});
 
             marker.on("click", function () {
+                ++selectionVersion;
+                clearFlight();
+                selectAttraction(index);
                 showDetails(attraction);
+                if (guide.hasOrigin()) guide.fit();
             });
 
             markers.set(index, marker);
@@ -1641,6 +1695,62 @@
         }
     }
 
+    function selectAttraction(index) {
+        selectedIndex = index;
+        markers.forEach(function (marker, markerIndex) {
+            if (index === null || markerIndex === index) {
+                if (!map.hasLayer(marker)) marker.addTo(map);
+            } else if (map.hasLayer(marker)) map.removeLayer(marker);
+        });
+        if (!guide) return;
+        if (index === null) guide.clearDestination();
+        else {
+            const item = attractions[index];
+            guide.setDestination(item.lat, item.lng, item.title);
+            if (mapNote) mapNote.textContent = "Showing " + item.title + ". Use Fit results to restore all mapped pins.";
+        }
+    }
+
+    document.getElementById("ea-map-fit")?.addEventListener("click", function () {
+        if (!map) return;
+        ++selectionVersion;
+        clearFlight();
+        map.closePopup();
+        selectAttraction(null);
+        const points = attractions.map(item => [item.lat, item.lng]);
+        if (points.length) map.fitBounds(L.latLngBounds(points).pad(.25), {maxZoom: 15, animate: false});
+        if (mapNote) mapNote.textContent = "Showing all mapped results. Select a place to focus its pin.";
+    });
+
+    document.getElementById("ea-map-locate")?.addEventListener("click", function () {
+        const button = this;
+        const status = document.getElementById("ea-map-guide-status");
+        if (!window.isSecureContext || !navigator.geolocation) {
+            status.textContent = "Location is unavailable. Use HTTPS or localhost and a browser that supports location.";
+            return;
+        }
+        button.disabled = true;
+        status.textContent = "Requesting location permission…";
+        navigator.geolocation.getCurrentPosition(function (position) {
+            button.disabled = false;
+            if (!map || !guide) return;
+            if (!guide.setOrigin(position.coords.latitude, position.coords.longitude, "your current location")) {
+                status.textContent = "The browser returned an invalid location. Please try again.";
+                return;
+            }
+            button.textContent = "Update my location";
+            if (selectedIndex !== null) {
+                ++selectionVersion;
+                clearFlight();
+                guide.fit();
+            }
+        }, function (error) {
+            button.disabled = false;
+            status.textContent = error.code === 1 ? "Location permission denied. Allow location access in your browser to use the guide."
+                : "Unable to get your location. Please try again.";
+        }, {enableHighAccuracy: true, timeout: 15000, maximumAge: 60000});
+    });
+
     // --------------------------------------------------
     // 7. Toggle List and Map views
     // --------------------------------------------------
@@ -1667,6 +1777,7 @@
         if (!showingMap) {
             selectionVersion += 1;
             clearFlight();
+            if (guide) guide.pause();
             resumeMarquee();
             return Promise.resolve(null);
         }
@@ -1692,6 +1803,7 @@
             // A visitor can switch back to List while Leaflet is loading.
             if (mapPanel.hidden) return null;
             initializeMap();
+            guide?.resume();
             requestAnimationFrame(function () {
                 if (map && !mapPanel.hidden) map.invalidateSize();
             });
@@ -1726,9 +1838,7 @@
 
     const droneHud = document.getElementById("ea-drone-hud");
     const droneTarget = document.getElementById("ea-drone-target");
-    let droneRing = null;
     let droneTimer = null;
-    let ringTimer = null;
     let flightEnd = null;
     let selectionVersion = 0;
 
@@ -1736,10 +1846,7 @@
         if (map && flightEnd) map.off("moveend", flightEnd);
         flightEnd = null;
         if (map) map.stop();
-        clearTimeout(ringTimer);
         clearTimeout(droneTimer);
-        if (droneRing) droneRing.remove();
-        droneRing = null;
         if (droneHud) droneHud.hidden = true;
     }
 
@@ -1756,8 +1863,6 @@
     function flyDrone(attraction, index) {
         const selection = ++selectionVersion;
         clearFlight();
-        showDroneHud(attraction);
-
         const mapReady = showView("map");
         mapPanel.focus({preventScroll: true});
         mapPanel.scrollIntoView({behavior: reduceMotionQuery.matches ? "auto" : "smooth", block: "start"});
@@ -1765,27 +1870,20 @@
             if (!readyMap || mapPanel.hidden || selection !== selectionVersion) return;
 
             readyMap.invalidateSize({animate: false});
+            selectAttraction(index);
             showDetails(attraction);
+            if (!guide.hasOrigin()) showDroneHud(attraction);
             function finishFlight() {
                 if (selection !== selectionVersion || mapPanel.hidden) return;
                 flightEnd = null;
-                // Add the highlight only after zooming ends; a vector drawn
-                // during flight is scaled along with the map and looks huge.
-                const ring = L.circleMarker([attraction.lat, attraction.lng], {
-                    radius: 26, color: "#21d9c6", weight: 2, opacity: 0.95,
-                    fillColor: "#21d9c6", fillOpacity: 0.14,
-                    className: "ea-drone-ring", interactive: false
-                }).addTo(readyMap);
-                droneRing = ring;
                 markers.get(index)?.openPopup();
-                ringTimer = setTimeout(function () {
-                    ring.remove();
-                    if (droneRing === ring) droneRing = null;
-                }, 2600);
             }
 
             const target = [attraction.lat, attraction.lng];
-            if (reduceMotionQuery.matches) {
+            if (guide.hasOrigin()) {
+                guide.fit();
+                finishFlight();
+            } else if (reduceMotionQuery.matches) {
                 readyMap.setView(target, 16.5, {animate: false});
                 finishFlight();
             } else {

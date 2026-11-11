@@ -64,7 +64,7 @@ class NearbyRedesignTests(TestCase):
         self.assertTemplateUsed(response, "places/nearby_places.html")
         for content in [
             'class="nearby-page ek-theme ek-discovery-theme"', 'css/nearby.css', 'css/editorial.css', 'css/explore.css', 'class="ek-brand-name"',
-            'Find places near you.', 'Find your next stop',
+            'Find places near you.', 'Search places',
             'id="ea6-search-form"', 'id="ea6-use-gps"', 'id="ea6-origin"',
             'id="ea6h-distance"', 'id="ea6g-toggle"', 'id="ea6g-map-shell"',
             'id="ea6-results"', 'View details', 'Directions', 'Show on map',
@@ -86,9 +86,6 @@ class NearbyRedesignTests(TestCase):
         self.assertContains(response, reverse("places:save_place", args=[self.cafe.pk]))
         self.assertContains(response, reverse("places:submit_review", args=[self.cafe.pk]))
         self.assertContains(response, reverse("places:saved_places"))
-        self.assertNotContains(response, reverse("itineraries:choose_for_place", args=[self.cafe.pk]))
-        self.assertNotContains(response, reverse("visits:check_in", args=[self.cafe.pk]))
-        self.assertNotContains(response, f'href="{reverse("places:journey_dashboard")}"')
 
     def test_missing_photos_have_clear_messages_and_real_photos_are_not_labelled_missing(self):
         for url, params in [

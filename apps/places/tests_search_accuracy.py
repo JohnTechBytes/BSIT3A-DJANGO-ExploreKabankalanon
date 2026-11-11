@@ -226,3 +226,59 @@ class SearchAccuracyTests(TestCase):
         titles = [place.title for place in response.context["results"]]
         self.assertEqual(sorted(titles), ["City Mall", "Corner Store"])
         self.assertIn("Matched by category", response.context["search_note"])
+
+    def test_natural_language_complete_names_are_prioritized_in_both_modes(self):
+        sol = Place.objects.create(
+            city=self.city, title="Sol's Garden Café", slug="sols-garden-cafe",
+            category=self.cafe, is_active=True, is_verified=True,
+        )
+        for query, expected in (
+            ("Where is Mag Aso Falls in Kabankalan?", self.falls),
+            ("Saan ang Mag-Aso Falls?", self.falls),
+            ("How do I get to Sols Garden Cafe?", sol),
+            ("Show me Local Diner", self.diner),
+        ):
+            for mode in ("explore", "nearby"):
+                with self.subTest(query=query, mode=mode):
+                    params = {"q": query}
+                    if mode == "nearby":
+                        params["mode"] = "nearby"
+                    response = self.client.get(self.url, params, follow=True)
+                    results = response.context.get("results", response.context.get("attractions"))
+                    self.assertEqual([p.pk for p in results], [expected.pk])
+                    self.assertEqual(response.context["search_note"], "")
+
+    def test_generic_query_does_not_get_confused_with_a_generic_title(self):
+        Place.objects.create(city=self.city, title="Coffee", slug="generic-coffee",
+                             category=self.cafe, is_active=True, is_verified=True)
+        response = self.client.get(self.url, {"mode": "nearby", "q": "where can i find coffee"})
+        self.assertIn(self.cafe_place.pk, [p.pk for p in response.context["results"]])
+        self.assertGreaterEqual(len(response.context["results"]), 2)
+
+    def test_filipino_buying_is_category_only_and_unconfirmed(self):
+        for params in ({"q": "saan makabili ng phone case"},
+                       {"mode": "nearby", "q": "saan makabili ng phone case"}):
+            with self.subTest(params=params):
+                response = self.client.get(self.url, params, follow=True)
+                results = response.context.get("results", response.context.get("attractions"))
+                self.assertEqual({p.pk for p in results}, {self.shop.pk, self.store.pk})
+                self.assertIn("availability is not confirmed", response.context["search_note"])
+
+    def test_simple_food_and_coffee_questions_find_services(self):
+        for query, expected in (("where can i eat", self.diner),
+                                ("saan kakain", self.diner),
+                                ("saan may kape", self.cafe_place)):
+            response = self.client.get(self.url, {"mode": "nearby", "q": query})
+            self.assertIn(expected.pk, [p.pk for p in response.context["results"]])
+
+    def test_named_question_does_not_expose_unpublished_or_other_city(self):
+        other = City.objects.create(name="Other City", slug="other-city")
+        for title, city, active in (("Hidden Secret", self.city, False),
+                                    ("Other Secret", other, True)):
+            Place.objects.create(city=city, title=title, slug=title.lower().replace(' ', '-'),
+                                 category=self.cafe, is_active=active, is_verified=True)
+            for params in ({"q": "where is " + title},
+                           {"mode": "nearby", "q": "where is " + title}):
+                response = self.client.get(self.url, params, follow=True)
+                results = response.context.get("results", response.context.get("attractions"))
+                self.assertNotIn(title, [p.title for p in results])

@@ -79,12 +79,8 @@ def nearby_places(request, *, unified=False):
             # A service keyword can also occur in an explicit hobby or buying
             # question. Those retain their more specific meaning; a selected
             # service filter, on the other hand, remains authoritative.
-            from .hobby_search import hobby_for_query
-            from .search_intents import maybe_buying, wants_to_buy, question_matches
-            if wants_to_buy(query) or maybe_buying(query) or hobby_for_query(query):
-                predicate, search_note = question_matches(query, published)
-            else:
-                predicate = None
+            from .search_intents import question_matches
+            predicate, search_note = question_matches(query, published)
             if predicate is not None:
                 selected_service = ""
                 matched = iter(published.filter(predicate).distinct())
