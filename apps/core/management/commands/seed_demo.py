@@ -8,7 +8,6 @@ from decimal import Decimal
 from apps.cities.models import City
 from apps.core.models import Hobby, Category
 from apps.places.models import Place, OpeningHours, PlacePhoto, Review
-from apps.itineraries.models import Itinerary, ItineraryStop
 from apps.info.models import CityInformation, SusResponse, RecommendationRating
 
 User = get_user_model()
@@ -307,32 +306,6 @@ class Command(BaseCommand):
                 user=user_obj,
                 defaults={"rating": rating, "comment": text}
             )
-
-        # 7. Sample Itinerary (Screen 9: My Itinerary - Day 1 in Kabankalan)
-        itinerary, _ = Itinerary.objects.get_or_create(
-            user=demo_user,
-            city=kab,
-            day_number=1,
-            defaults={"title": "Day 1 - Kabankalan (4 stops)"}
-        )
-        stops_plan = [
-            (created_places["Coffee Corner"], time(9, 0), 1, "Breakfast espresso & pastries", Decimal("0.0")),
-            (created_places["R&B Billiard Hall"], time(11, 30), 2, "Recreation pool session", Decimal("1.2")),
-            (created_places["B Burger"], time(13, 0), 3, "Lunch & smash burgers", Decimal("0.8")),
-            (created_places["Kabankalan Freedom Park"], time(16, 0), 4, "Sunset stroll & photos", Decimal("1.5")),
-        ]
-        for place_obj, st_time, order, notes, dist in stops_plan:
-            ItineraryStop.objects.get_or_create(
-                itinerary=itinerary,
-                place=place_obj,
-                stop_order=order,
-                defaults={
-                    "start_time": st_time,
-                    "notes": notes,
-                    "distance_from_prev_km": dist,
-                }
-            )
-        self.stdout.write(self.style.SUCCESS("✓ Seeded Itinerary & 4 Stops"))
 
         # 8. City Information (Screen 10: Kabankalan City tabs)
         info_items = [

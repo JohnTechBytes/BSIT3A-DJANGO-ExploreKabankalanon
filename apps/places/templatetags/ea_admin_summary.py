@@ -9,7 +9,6 @@ register = template.Library()
 def ea_admin_summary(context):
     result = {
         "published": None,
-        "pending": None,
         "missing_photos": None,
         "users": None,
     }
@@ -24,12 +23,6 @@ def ea_admin_summary(context):
         result["missing_photos"] = places.filter(
             (Q(cover_image__isnull=True) | Q(cover_image=""))
             & (Q(cover_image_url__isnull=True) | Q(cover_image_url=""))
-        ).count()
-
-    if request.user.has_perm("visits.view_visitcheckin") or request.user.has_perm("visits.change_visitcheckin"):
-        from apps.visits.models import VisitCheckIn
-        result["pending"] = VisitCheckIn.objects.filter(
-            place__city_id=2, status=VisitCheckIn.Status.PENDING
         ).count()
 
     # The active user model is apps.users.User, so the matching permissions

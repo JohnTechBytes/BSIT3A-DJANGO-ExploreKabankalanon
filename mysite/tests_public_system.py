@@ -107,9 +107,6 @@ class PublicSystemTests(TestCase):
         urls = (reverse('places:attraction_carousel'), reverse('places:city_discover'),
                 reverse('info:city_information'), reverse('places:place_detail', args=[self.place.pk]),
                 reverse('places:saved_places'), reverse('places:my_reviews'),
-                reverse('places:journey_dashboard'), reverse('itineraries:list'),
-                reverse('itineraries:create'), reverse('itineraries:choose_for_place', args=[self.place.pk]),
-                reverse('visits:list'), reverse('visits:check_in', args=[self.place.pk]),
                 reverse('core:privacy_notice'), reverse('evaluation:sus_survey'))
         for url in urls:
             with self.subTest(url=url):

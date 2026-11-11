@@ -86,9 +86,6 @@ class NearbyRedesignTests(TestCase):
         self.assertContains(response, reverse("places:save_place", args=[self.cafe.pk]))
         self.assertContains(response, reverse("places:submit_review", args=[self.cafe.pk]))
         self.assertContains(response, reverse("places:saved_places"))
-        self.assertNotContains(response, reverse("itineraries:choose_for_place", args=[self.cafe.pk]))
-        self.assertNotContains(response, reverse("visits:check_in", args=[self.cafe.pk]))
-        self.assertNotContains(response, f'href="{reverse("places:journey_dashboard")}"')
 
     def test_missing_photos_have_clear_messages_and_real_photos_are_not_labelled_missing(self):
         for url, params in [

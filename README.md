@@ -3,9 +3,7 @@
 A Django web system for exploring **Kabankalan City, Negros Occidental**: a
 shared place directory, hobby-based matching, natural-language search, a Leaflet map with
 live GPS, reviews, saved places and a customized administrative panel, backed by
-locally imported OpenStreetMap and PSGC data. Itinerary, journey and visit-reward
-features remain accessible through their existing URLs but are not promoted in
-the main navigation.
+locally imported OpenStreetMap and PSGC data.
 
 > **Documentation note.** This document states what the system does today. A
 > feature that is only partly built, or that is planned but not yet written, is
@@ -40,9 +38,7 @@ published places of Kabankalan, filter them by category and hobby,
 search in natural language, view results on an interactive map, sort and filter
 nearby places by straight-line distance from the device's GPS position or from a
 chosen city landmark, read and write reviews, save places, read the city's
-public information page and answer a short usability survey. Previous journey,
-itinerary and visit-reward pages are retained at their existing URLs but are no
-longer linked from the main discovery interface. City staff
+public information page and answer a short usability survey. City staff
 manage the same records through a customized administrative panel that includes
 an OpenStreetMap review queue. Public listing requires the active and
 `is_verified` flags, but the flags alone do not establish that the information,
@@ -88,29 +84,25 @@ Specifically, the project accomplishes the following technical objectives:
    can be incomplete or require independent verification.
 5. **Saved places.** Let signed-in visitors keep a personal list of published
    places and remove places from it.
-6. **Retained legacy features.** The existing itinerary builder, My Journey and
-   staff-reviewed visit rewards still work at their direct URLs, but are hidden
-   from main discovery navigation. Their records have not been deleted. Stops
-   are manual; the system does not generate suggested itineraries.
-7. **Administrative panel and data import.** Provide city administrators and
+6. **Administrative panel and data import.** Provide city administrators and
    staff with a customized Django admin for place listings, verification,
-   photo management, bulk publication actions, visit moderation, a business
+   photo management, bulk publication actions, a business
    review queue for OSM imports, and city information records, together with
    management commands that import PSGC codes, an OSM extract and Wikimedia
    imagery.
-8. **Accounts and administrative access.** Define four roles on the custom
+7. **Accounts and administrative access.** Define four roles on the custom
    user model (user, business owner, city administrator, system administrator).
    Administrative access is controlled by Django's staff, superuser and model
    permissions, not automatically granted by the role field. A business-owner
    portal and role-based city scoping are not implemented.
-9. **Evaluation instruments.** Build the System Usability Scale (SUS)
+8. **Evaluation instruments.** Build the System Usability Scale (SUS)
    instrument and a recommendation-relevance instrument into the system's data
    model, including the standard 0–100 SUS scoring, so that a usability
    evaluation can be administered with residents, visitors, and city or
    business representatives. Both instruments are reachable by respondents: the
    survey at `/evaluation/sus/` and the relevance control on a destination
    reached from a search.
-10. **Privacy and data protection.** Publish a privacy notice that states what
+9. **Privacy and data protection.** Publish a privacy notice that states what
     the system stores and what it deliberately does not store, and record a
     visitor's acceptance of it when an account is created.
 
@@ -160,7 +152,7 @@ development and verification process.
 | **Setting and Coverage** | The directory and public city information focus on Kabankalan City, Negros Occidental (city pk 2). `KabankalanOnlyMiddleware` pins the session to this city, and the Place admin is city-scoped. Accounts and survey respondents are not restricted by their physical location. |
 | **Accounts and Roles** | Custom user model with the four roles required by the system — user, business owner, city administrator, system administrator — plus a managed-city field, avatar, bio and coordinates. Registration creates a `user`. Administrative access is governed by Django's staff, superuser and model permissions. |
 | **Kabankalan City Information** | `/info/` combines a browsable directory of existing published Places with separate staff-published `CityInformation` guides. A relevant Place can appear both here and in hobby search without duplicating it. Grouping is a search aid, not independent verification. Staff can publish and unpublish guides. |
-| **Hobbies and Hobby Selection** | Hobbies are attached to places. Visitors filter the directory by category and by a single hobby from the search panel, and the chosen hobby is kept in the session, so it also shapes the recommendation score on later pages and is listed in My Journey. The earlier standalone hobby-selection route now redirects to the place directory. |
+| **Hobbies and Hobby Selection** | Hobbies are attached to places. Visitors filter the directory by category and by a single hobby from the search panel, and the chosen hobby is kept in the session, so it also shapes the recommendation score on later pages. The earlier standalone hobby-selection route now redirects to the place directory. |
 | **Places Directory with Details and Map Location** | Active places with the `is_verified` publication flag are publicly listed. Category, hobbies, descriptions, coordinates and photographs may be missing or need confirmation. The flag is not proof of independent verification or photo rights. The public listing is a looping carousel with list and map views and a details panel. |
 | **Natural-Language Search** | A local intent-and-keyword parser handles supported queries such as "coffee shops", "mag aso falls" or "places in Kabankalan". Exact-title matches take priority, but duplicate names can match multiple records and other queries may be ambiguous. A buying question such as "where to buy a phone case" suggests a business category and discloses that inventory is unconfirmed. Clear hobby phrases use existing assigned tags and disclose that untagged places may also be relevant. Search does not call an external AI service or understand every possible question. |
 | **Content Scope and Guardrail** | The shared directory is intended for Kabankalan places relevant to hobbies or local needs; educational institutions are outside the intended scope. Existing records still require review, and missing hobby tags are not proof that a place is irrelevant. `check_content_scope` is a read-only audit using narrow title patterns and cannot find every school. `purge_off_scope_places` is a separate potentially destructive action and must not be applied without review, explicit approval and backup. |
@@ -170,11 +162,8 @@ development and verification process.
 | **Place Photos** | Recorded covers take priority. Missing covers use shared category or generic illustrative samples, clearly labelled as not actual photos; the generic street scene is AI-generated. With JavaScript enabled a broken recorded cover also falls back to a labelled illustration, or an unavailable message if that fails. Samples do not depict the listed place. |
 | **Nearby Search and Live GPS** | The Nearby view reads the browser's geolocation, computes straight-line distance to each place, and filters or sorts results by distance (any distance, 1, 3, 5, 10 or 25 km). A curated Kabankalan landmark can serve as the reference point when GPS is unavailable or declined. Distances are straight-line estimates, not driving routes or travel times. |
 | **Reviews and Ratings** | One review per user per place, 1–5 stars plus an optional comment; reviews can be updated or deleted; the average rating feeds both the place page and the recommender. Reviews are opinions and do not by themselves prove an in-person visit. |
-| **Saved Places** | Visitors save and unsave places; saved places appear on a dedicated page and on the My Journey dashboard. |
-| **Itinerary Builder** | Retained at existing direct URLs but hidden from main navigation and place/saved actions. Trips and manual stops can still be managed there; no itinerary suggestions are generated. Existing data is preserved. |
-| **My Journey Dashboard** | Retained at its existing direct URL but hidden from main navigation. It aggregates saved places, itineraries, reviews, visit check-ins, interests, recent searches and relevance feedback. |
-| **Visit Check-ins and Rewards** | Retained at existing direct URLs but hidden from main navigation and place actions. Staff can still approve or reject reports; only approved visits count toward points and badges. Data remains stored. |
-| **Administrative Panel** | Customized Django admin with destination management (search, category/verification/publication filters), bulk publication actions, per-place verification, photo actions, a business review queue for OSM imports, visit moderation, city information records, the evaluation records and account management (role and managed city). The index lists only the modules the city office uses; Django's own group editor stays reachable at `/admin/auth/group/` for a superuser. Native Django permissions and safeguards are preserved. |
+| **Saved Places** | Visitors save and unsave places; saved places appear on a dedicated page. |
+| **Administrative Panel** | Customized Django admin with destination management (search, category/verification/publication filters), bulk publication actions, per-place verification, photo actions, a business review queue for OSM imports, city information records, the evaluation records and account management (role and managed city). The index lists only the modules the city office uses; Django's own group editor stays reachable at `/admin/auth/group/` for a superuser. Native Django permissions and safeguards are preserved. |
 | **Data Import** | Management commands import PSA PSGC codes, an OpenStreetMap extract and Wikimedia imagery, and enrich, categorize or attach photos to imported places. |
 | **Evaluation Instruments** | The public System Usability Scale survey (`/evaluation/sus/`) asks the ten standard items on a 1–5 scale and scores them with the standard 0–100 formula, then shows the score and the interpretation band. `RecommendationRating` stores relevant, partially relevant or irrelevant ratings for a query and place; a destination reached from a search offers that control. Both records are also managed in the administrative panel. |
 | **Privacy and Data Protection** | A public privacy notice (`/privacy/`) states what the system stores, what it never stores (the live GPS position is calculated in the browser and never sent to the server), who can see the data and how to have it deleted. Creating an account requires accepting the notice, and the acceptance and its date are stored with the account. |
@@ -195,10 +184,6 @@ development and verification process.
 | Nearby search, live GPS, radius filter | Implemented | Straight-line distance |
 | Reviews and ratings | Implemented | One review per user per place |
 | Saved places | Implemented | — |
-| Itinerary builder | Retained; hidden from main interface | Direct URLs and existing data remain; manual stops only |
-| Itinerary suggestions | Planned | Not present |
-| My Journey dashboard | Retained; hidden from main interface | Direct URL and existing data remain |
-| Visit check-ins and rewards | Retained; hidden from main interface | Direct URLs and existing data remain; staff approval required |
 | Administrative panel and OSM review queue | Implemented | Bulk approval refuses unverified OSM imports |
 | Data import commands | Implemented | PSGC, OSM extract, Wikimedia imagery |
 | City Information | Implemented | Shared directory of published Places plus separately published guides at `/info/`. |
@@ -206,7 +191,7 @@ development and verification process.
 | SUS instrument | Implemented | Public survey at `/evaluation/sus/` with the standard 0–100 scoring |
 | Recommendation relevance rating | Implemented | In-page control on a destination reached from a search |
 | Privacy notice and registration consent | Implemented | Public notice at `/privacy/`; the acceptance and its date are stored with the account |
-| Search history and remembered interests | Implemented | Nonempty Browse and Nearby searches are logged; signed-in visitors can see their history. The chosen hobby is kept in the session. |
+| Search history and remembered interests | Implemented | Nonempty Browse and Nearby searches are logged; the chosen hobby is kept in the session. |
 | Account management in the staff dashboard | Implemented | Roles and managed city are editable at `/admin/users/user/` |
 | Environment-driven deployment configuration | Partially implemented | Secret, debug, hosts, database and map token can be configured; HTTPS, secure cookies and production deployment still require configuration and verification. |
 | Content scope guardrail | Partial | Narrow title-based audit only; manual review is required and deletion or unpublishing is never automatic. |
@@ -311,8 +296,8 @@ actual database, not inferred from historical exports.
 ```
 manage.py
 mysite/      settings, urls, wsgi, compat (Django/Python context-copy shim)
-apps/        cities, core, evaluation, hobbies, info, itineraries, places,
-             users, visits
+apps/        cities, core, evaluation, hobbies, info, places, users
+             (migration histories for retired modules remain for upgrades)
 templates/   Django templates
 static/      css, js, images, third-party libraries  (served at /static/)
 media/       uploaded images                        (served at /media/)
@@ -361,12 +346,22 @@ Read at runtime. The defaults are for local development, not public hosting:
 
 `.env` is not tracked by git; export these in your shell instead.
 
+### Database upgrade safety
+
+The retirement migration removes the approved retired-feature tables and their
+records. **Back up and verify the existing database first.** If those tables
+contain data, the migration stops unless the operator explicitly sets
+`EK_APPROVE_LEGACY_REMOVAL=1` for that migration. This guard is not a backup and
+MySQL/MariaDB DDL may be non-transactional. Never run the removal on the live
+database until the backup is independently verified and the exact target is
+confirmed. The migration-only app histories must stay installed for upgrades.
+
 ### Tests
 
 Run tests against isolated SQLite, never the existing MariaDB database. See
 [local test checklist](docs/LOCAL_TEST_CHECKLIST.md) for PowerShell commands.
-The suite covers account, search, map page, reviews, saved places, itinerary,
-visits, administration, directory and survey flows. Automated tests do not
+The suite covers account, search, map page, reviews, saved places,
+administration, directory and survey flows. Automated tests do not
 prove that the laptop database, real map tiles, GPS or photo rights are correct.
 
 ### Documentation
