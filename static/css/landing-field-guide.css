@@ -178,3 +178,47 @@
 @media (min-width:600px) { .landing-page .places-carousel { --field-card-width:calc((100cqw - 18px) / 2); } }
 @media (min-width:1000px) { .landing-page .places-carousel { --field-card-width:calc((100cqw - 36px) / 3); } }
 .landing-page .place-card :is(.address,.description,.card-credit,.place-tags) { overflow-wrap:anywhere; }
+
+/* Local directory: keep the existing interactions, with a quieter hierarchy. */
+.landing-page .hero-inner { gap:clamp(36px,5vw,72px); padding-block:64px 76px; }
+.landing-page #hero-title { font-size:clamp(54px,5.4vw,76px); line-height:.98; }
+.landing-page .hero-description { margin:24px 0; max-width:40ch; }
+.landing-page .search { padding:0; border:0; background:transparent; }
+.landing-page .search-label { margin-bottom:10px; font-size:13px; letter-spacing:0; }
+.landing-page .suggestions { align-items:center; margin-top:12px; }
+.landing-page .suggestions > span { letter-spacing:0; text-transform:none; font-size:12px; }
+.landing-page .ek-chip { min-height:40px; border:0; border-bottom:1px solid #52665e; padding:7px 4px; margin-right:8px; background:transparent; color:#d9e9df; font-size:11px; }
+.landing-page .ek-chip:hover { background:transparent; color:#9ce7c5; border-color:#9ce7c5; }
+.landing-page .hero-visual { padding:0; border:0; background:transparent; }
+.landing-page .hero-photo-note { display:none; }
+.landing-page .hero-photo-caption { padding:14px 0 5px; }
+.landing-page .hero-photo-credit { padding:4px 0; }
+.landing-page .hero-visual:hover, .landing-page .hero-photo:hover img, .landing-page .place-card:hover { transform:none; }
+.landing-page .discover { padding-block:68px 72px; }
+.landing-page .section-heading h2, .landing-page .intro-heading h2, .landing-page .map-copy h2 { font-size:clamp(38px,4vw,52px); }
+.landing-page .filters { gap:0; border-bottom:1px solid #34404e; }
+.landing-page .filters a { border:0; border-bottom:2px solid transparent; background:transparent; padding-inline:12px; }
+.landing-page .filters a.selected { color:#a2e8c8; background:transparent; border-color:#71dfb4; }
+.landing-page .directory-meta { margin-block:14px 20px; }
+.landing-page .place-card { border:0; background:transparent; border-bottom:1px solid #3a4652; }
+.landing-page .place-card .card-body { padding-inline:0; }
+.landing-page .map-preview { padding-block:72px 50px; }
+.landing-page .introduction { padding-block:24px 72px; border-top:0; }
+.landing-page .interest-links { gap:0; }
+.landing-page .interest-links a { min-height:0; padding:18px 0; margin-right:24px; border:0; border-top:1px solid #3a4652; background:transparent; }
+.landing-page .interest-links a:hover { background:transparent; transform:none; }
+.landing-page .interest-links a strong { font-size:24px; }
+.landing-page .interest-links a span span { font-size:12px; }
+@media(max-width:768px) {
+  .landing-page .hero-inner { padding-block:40px 56px; }
+  .landing-page .discover { padding-block:55px; }
+  .landing-page .map-preview { padding-block:55px 28px; }
+  .landing-page .introduction { padding-block:20px 55px; }
+}
+@media(max-width:520px) {
+  .landing-page .search { padding:0; }
+  .landing-page .interest-links { grid-template-columns:1fr 1fr; }
+  .landing-page .interest-links a { min-height:0; margin-right:14px; }
+}
+/* Directory content is visible immediately, including to keyboard and print users. */
+.landing-page .landing-reveal.is-reveal-pending { opacity:1; transform:none; transition:none; }

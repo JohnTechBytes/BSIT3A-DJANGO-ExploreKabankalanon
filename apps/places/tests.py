@@ -173,7 +173,7 @@ class NearbyRedesignTests(TestCase):
         self.assertNotContains(response, 'class="nearby-page"')
         self.assertNotContains(response, "css/nearby.css")
         self.assertContains(response, "css/browse-guide.css")
-        self.assertContains(response, "THE LOCAL GUIDE")
+        self.assertContains(response, "KABANKALAN CITY")
         # The marker icon stays a fixed pixel size while Leaflet animates zoom.
         self.assertContains(response, 'className: "ea-map-pin"')
         self.assertContains(response, 'iconSize: [20, 20]')

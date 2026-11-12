@@ -85,20 +85,18 @@ class HomepageTests(TestCase):
         self.assertIn('backdrop-filter: blur(8px)', stylesheet)
         self.assertIn('prefers-reduced-motion: reduce', stylesheet)
         self.assertIn('landing-reveal.is-reveal-pending', stylesheet)
-        self.assertContains(response, 'aria-label="Ways to explore Kabankalan"')
         self.assertContains(response, 'aria-label="Your places links"')
         self.assertContains(response, '<strong>1</strong> published place')
 
     def test_homepage_pilot_is_scoped_and_preserves_core_interactions(self):
         response = self.render_home()
         self.assertContains(response, 'css/homepage-pilot.css?v=5')
-        self.assertContains(response, 'class="hero-actions"')
         html = response.content.decode()
-        self.assertContains(response, 'css/landing-field-guide.css?v=2')
+        self.assertContains(response, 'css/landing-field-guide.css?v=3')
         self.assertContains(response, 'aria-label="Mobile navigation"')
         self.assertLess(html.index('id="discover"'), html.index('id="map-preview-title"'))
         self.assertLess(html.index('id="map-preview-title"'), html.index('id="hobbies"'))
-        self.assertLess(html.index('id="hobbies"'), html.index('id="how-it-works"'))
+        self.assertNotIn('id="how-it-works"', html)
         self.assertContains(response, f'href="{reverse("places:attraction_carousel")}?mode=nearby"')
         self.assertContains(response, 'id="home-search"')
         self.assertContains(response, 'type="submit"')
@@ -123,12 +121,13 @@ class HomepageTests(TestCase):
         self.assertContains(response, f'href="{reverse("login")}"')
         self.assertContains(response, f'href="{reverse("register")}"')
 
-    def test_landing_quick_explore_links_use_existing_routes(self):
+    def test_landing_category_suggestions_use_published_categories(self):
         response = self.render_home()
-        self.assertContains(response, 'aria-label="Ways to explore Kabankalan"')
-        self.assertContains(response, f'href="{reverse("places:attraction_carousel")}?browse=all"><span>Explore places</span>')
-        self.assertContains(response, f'href="{reverse("places:attraction_carousel")}?mode=nearby"><span>Find nearby</span>')
-        self.assertContains(response, f'href="{reverse("info:city_information")}"><span>City information</span>')
+        self.assertContains(response, 'aria-label="Browse categories"')
+        self.assertContains(response, '?category=nature#discover')
+        self.assertNotContains(response, 'Popular:')
+        self.assertNotContains(response, 'SPATIAL CARTOGRAPHY')
+        self.assertNotContains(response, 'id="how-it-works"')
 
     def test_landing_carousel_contains_all_published_places(self):
         for number in range(12):

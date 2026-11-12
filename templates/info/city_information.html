@@ -5,7 +5,7 @@
 {% block skip_link %}<a class="sd-skip" href="#main-content">Skip to content</a>{% endblock %}
 {% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
-{% block footer_tagline %}Local places. Your adventure.{% endblock %}
+{% block footer_tagline %}Kabankalan City, Negros Occidental{% endblock %}
 {% block extra_css_after %}<link rel="stylesheet" href="{% static 'css/site-dark.css' %}">{% endblock %}
 {% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261106-illustrations-1">{% endblock %}
 
@@ -30,7 +30,7 @@
 
   {% if show_guides %}
   <section class="eainfo-guides" aria-labelledby="city-guides-heading">
-  <div class="eainfo-section-heading"><div><p class="eainfo-eyebrow">Local knowledge</p><h2 id="city-guides-heading">City guides</h2><p>Staff-published notes about Kabankalan.</p></div></div>
+  <div class="eainfo-section-heading"><div><p class="eainfo-eyebrow">CITY GUIDES</p><h2 id="city-guides-heading">City guides</h2><p>Staff-published notes about Kabankalan.</p></div></div>
   <nav class="eainfo-chips" aria-label="City guide types">
     <a class="eainfo-chip{% if not selected_type %} active{% endif %}"{% if not selected_type %} aria-current="page"{% endif %} href="?directory=guides{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}">All<span>{{ total_count }}</span></a>
     {% for link in type_links %}
@@ -76,9 +76,7 @@
         {% if search_query or selected_type %}
           No published entry matches the current filter. Try another search term or clear the category filter.
         {% else %}
-          Staff publish these notes from the staff dashboard
-          (Admin &rsaquo; City information). Nothing is shown here until an entry is published,
-          so this page only displays published entries.
+          There are no staff-published guides to show yet.
         {% endif %}
       </p>
       <div class="eainfo-actions">
@@ -97,13 +95,13 @@
   {% if show_places %}
   <section class="eainfo-directory" aria-labelledby="city-places-heading">
     <div class="eainfo-section-heading">
-      <div><p class="eainfo-eyebrow">The shared place catalogue</p>
+      <div><p class="eainfo-eyebrow">LOCAL PLACES</p>
         <h2 id="city-places-heading">{% if selected_directory == "all" %}Places in Kabankalan{% else %}{{ directory_label }}{% endif %}</h2>
-        <p>Browse existing published places. Some also appear in hobby discovery.</p>
+        <p>Browse published places from the same directory used in Explore Places.</p>
       </div>
       <span class="eainfo-directory-count">{{ place_page.paginator.count }} {{ place_page.paginator.count|pluralize:"place,places" }}</span>
     </div>
-    <p class="eainfo-directory-note">Groups use existing categories and some place names; they may need review. A missing hobby tag does not mean a place is irrelevant.</p>
+    <p class="eainfo-directory-note">Place groups use categories and some names, so results may not be complete. A missing hobby tag does not mean a place is unsuitable.</p>
     {% if place_page.object_list %}
     <div class="eainfo-grid eainfo-place-grid">
       {% for place in place_page %}

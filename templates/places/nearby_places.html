@@ -5,7 +5,7 @@
 {% block skip_link %}<a class="ea6-skip" href="#nearby-main">Skip to content</a>{% endblock %}
 {% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
-{% block footer_tagline %}Local places. Your adventure.{% endblock %}
+{% block footer_tagline %}Kabankalan City, Negros Occidental{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby.css' %}?v=road-1"><link rel="stylesheet" href="{% static 'css/map-guide.css' %}?v=1">{% endblock %}
 {% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261106-illustrations-1">{% endblock %}
 {% block content %}
@@ -20,7 +20,6 @@
   <section class="ea6-box ea6-search-box" aria-labelledby="ea6-search-title">
     <div class="ea6-panel-heading">
       <div><h2 id="ea6-search-title">Search places</h2><p>Start with a place name, activity, or category.</p></div>
-      <span class="ea6-panel-symbol" aria-hidden="true">✧</span>
     </div>
     <form method="get" action="{% url 'places:attraction_carousel' %}" class="ea6-search" id="ea6-search-form" autocomplete="off">
       <input type="hidden" name="mode" value="nearby">
@@ -48,7 +47,7 @@
     </form>
     <p class="ea6-voice-status" id="ea6-voice-status" role="status" aria-live="polite"></p>
     <div class="ea6-quick" aria-label="Quick searches for published Kabankalan listings">
-      <span>QUICK SEARCHES</span>
+      <span>Try a place type</span>
       <a href="{% url 'places:attraction_carousel' %}?mode=nearby&amp;service=coffee" {% if selected_service == 'coffee' %}aria-current="true"{% endif %}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V7Zm12 1h2a2.5 2.5 0 0 1 0 5h-2M3 20h15M8 3v2m4-2v2"/></svg>Coffee</a>
       <a href="{% url 'places:attraction_carousel' %}?mode=nearby&amp;service=restaurant" {% if selected_service == 'restaurant' %}aria-current="true"{% endif %}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3v5a3 3 0 0 0 6 0V3M8 3v18M17 21V3c-2 2-3 5-3 8h3"/></svg>Restaurants</a>
       <a href="{% url 'places:attraction_carousel' %}?mode=nearby&amp;service=barber" {% if selected_service == 'barber' %}aria-current="true"{% endif %}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="m8.2 8.2 11 10.8M8.2 15.8 19 5"/></svg>Barbers</a>
@@ -110,7 +109,7 @@
   <div class="ea6-heading">
     <div>
       <h2 id="ea6-results-title">{% if selected_service_label %}{{ selected_service_label }}{% elif query %}Results for “{{ query }}”{% else %}Discover local places{% endif %}</h2>
-      <p>Thoughtfully collected places in Kabankalan, ready for your next stop.</p>
+      <p>Published places in Kabankalan. Confirm details before visiting.</p>
     </div>
     <span class="ea6-pill" id="ea6h-result-count">{{ result_count }} matching listing{{ result_count|pluralize }}</span>
   </div>

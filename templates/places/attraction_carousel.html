@@ -6,7 +6,7 @@
 {% block skip_link %}<a class="browse-skip" href="#browse-main">Skip to content</a>{% endblock %}
 {% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
-{% block footer_tagline %}Local places. Your adventure.{% endblock %}
+{% block footer_tagline %}Kabankalan City, Negros Occidental{% endblock %}
 {% block page_styles %}<link rel="stylesheet" href="{% static 'css/browse-guide.css' %}?v=20261031-1">{% endblock %}
 
 {% block extra_css %}
@@ -669,11 +669,11 @@
 
   <header class="ea-attractions-header">
     <div>
-      <p class="ea-guide-kicker">THE LOCAL GUIDE <span aria-hidden="true"> / </span> EXPLORE PLACES</p>
+      <p class="ea-guide-kicker">KABANKALAN CITY <span aria-hidden="true"> / </span> PLACES</p>
       <h1>Explore places in <span>{{ selected_city.name }}</span><b>.</b></h1>
 
       <p class="ea-subtitle">
-        Search local places by name, category, or hobby and find somewhere that fits your day.
+        Search local places by name, category, or hobby and find a place that interests you.
       </p>
     </div>
 
@@ -691,7 +691,7 @@
   <section class="ea-discovery-tools" aria-label="Find and filter Kabankalan places">
     <div class="ea-tools-heading">
       <div>
-        <h2>Find your next stop</h2>
+        <h2>Find a place</h2>
         <p>Search and filter published Kabankalan places.</p>
       </div>
       <span class="ea-discovery-count">{{ total_attractions }} of {{ published_total }} published</span>
@@ -854,14 +854,6 @@
             <svg class="ea-view-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 6 6-2 6 2 6-2v14l-6 2-6-2-6 2V6Zm6-2v14m6-12v14"/></svg> Map
         </button>
 
-        <div class="ea-view-sort-group">
-            <label for="ea-inline-sort">Sort:</label>
-            <select id="ea-inline-sort" name="inline_sort" onchange="var eaSort = document.getElementById('ea-filter-sort'); eaSort.value = this.value; var eaForm = eaSort.form; if (eaForm.requestSubmit) { eaForm.requestSubmit(); } else { eaForm.submit(); }">
-                <option value="recommended" {% if selected_sort == 'recommended' %}selected{% endif %}>Recommended</option>
-                <option value="rating" {% if selected_sort == 'rating' %}selected{% endif %}>Highest rated</option>
-                <option value="name" {% if selected_sort == 'name' %}selected{% endif %}>Name A–Z</option>
-            </select>
-        </div>
       </div>
 
 <div id="ea-list-panel">

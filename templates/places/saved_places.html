@@ -94,7 +94,7 @@
 {% block skip_link %}<a class="sd-skip" href="#main-content">Skip to content</a>{% endblock %}
 {% block brand_content %}{% include "theme/_brand.html" %}{% endblock %}
 {% block footer_brand %}ExploreKabankalan{% endblock %}
-{% block footer_tagline %}Local places. Your adventure.{% endblock %}
+{% block footer_tagline %}Kabankalan City, Negros Occidental{% endblock %}
 {% block extra_css_after %}<link rel="stylesheet" href="{% static 'css/site-dark.css' %}">{% endblock %}
 {% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261106-illustrations-1">{% endblock %}
 
@@ -102,12 +102,14 @@
 <main class="ea-saved" id="main-content">
   <header class="ea-c-page-hero">
     <h1>Saved Places</h1>
-    <p>Your personal collection of published Kabankalan destinations.</p>
+    <p>Places you have saved from the Kabankalan directory.</p>
     <span class="ea-c-count">{{ entries|length }} saved destination{{ entries|length|pluralize }}</span>
   </header>
+  {% if entries %}
   <nav class="ea-actions" aria-label="Saved places navigation">
     <a class="ea-action ea-action-secondary" href="{% url 'places:attraction_carousel' %}?browse=all">Explore Places</a>
   </nav>
+  {% endif %}
   {% if messages %}
   <div class="sd-flash" role="status" aria-live="polite">
     {% for message in messages %}<p class="sd-flash-item {{ message.tags }}">{{ message }}</p>{% endfor %}
@@ -140,7 +142,7 @@
       {% endif %}
       <h2>{{ entry.place.title }}</h2>
       <p class="ea-muted">{% if entry.place.category %}{{ entry.place.category.name }} · {% endif %}Kabankalan, Negros Occidental</p>
-      <p class="ea-muted">{{ entry.place.description|default:"Destination information coming soon."|truncatechars:130 }}</p>
+      <p class="ea-muted">{{ entry.place.description|default:"Description not available yet."|truncatechars:130 }}</p>
       <a class="ea-action" href="{% url 'places:place_detail' entry.place.pk %}">View Details</a>
       <form method="post" action="{% url 'places:unsave_place' entry.place.pk %}">
         {% csrf_token %}

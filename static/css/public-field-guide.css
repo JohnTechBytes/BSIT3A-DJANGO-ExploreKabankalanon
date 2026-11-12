@@ -265,3 +265,55 @@ body.ek-discovery-theme.browse-page .ea-carousel--single .ea-card-image { width:
   body.ek-discovery-theme.browse-page .ea-carousel--single .ea-carousel-track { grid-template-columns:repeat(3,minmax(0,1fr)); }
 }
 body.ek-discovery-theme.browse-page .ea-card :is(.ea-category,.ea-card-location,.ea-card-description,.ea-card-credit,.ea-search-relevance) { overflow-wrap:anywhere; }
+
+/* Keep discovery controls prominent without making the page feel like a dashboard. */
+body.ek-discovery-theme.browse-page .ea-attractions-header { padding-block:36px 30px; }
+body.ek-discovery-theme.browse-page .ea-attractions-header :is(h1,h1 span,h1 b) { font-size:clamp(40px,5vw,60px); }
+body.ek-discovery-theme.browse-page .ea-discovery-tools { background:transparent; border:0; border-bottom:1px solid #43515f; padding-inline:0; }
+body.ek-discovery-theme.browse-page .ea-card { background:transparent; border:0; border-bottom:1px solid #43515f; }
+body.ek-discovery-theme.browse-page .ea-card:hover { transform:none; box-shadow:none; }
+body.site-dark.ek-discovery-theme.detail-page .pd-heading { padding-bottom:20px; border-bottom:1px solid #43515f; }
+body.site-dark.ek-discovery-theme.detail-page .pd-card { background:transparent; border:0; border-top:1px solid #43515f; padding-inline:0; }
+body.site-dark.ek-discovery-theme.detail-page .pd-gallery-link:hover img { transform:none; }
+body.ek-discovery-theme.browse-page .public-reveal.is-reveal-pending { opacity:1; transform:none; transition:none; }
+
+/* Visitor tools share the same lighter, task-first hierarchy as Browse. */
+body.ek-discovery-theme.nearby-page .ea6-intro h1 { font-size:clamp(40px,5vw,60px); }
+body.ek-discovery-theme.nearby-page :is(.ea6-search-box,.ea6-nearby-box) {
+  background:transparent; border:0; border-bottom:1px solid #43515f;
+  border-radius:0; padding-inline:0; animation:none;
+}
+body.ek-discovery-theme.nearby-page .ea6-quick a {
+  background:transparent; border:0; border-bottom:1px solid #536b65;
+  padding-inline:4px; margin-right:8px; min-height:42px;
+}
+body.ek-discovery-theme.nearby-page .ea6-quick a:hover { transform:none; color:#a5edcb; }
+body.ek-discovery-theme.nearby-page .ea6-card { background:transparent; border:0; border-bottom:1px solid #43515f; }
+body.ek-discovery-theme.nearby-page .ea6-card:hover { transform:none; box-shadow:none; }
+body.ek-discovery-theme.nearby-page .ea6-card:hover .ea6-cover img { transform:none; }
+body.ek-discovery-theme.nearby-page .ea6-card-body { padding-inline:0; }
+body.ek-discovery-theme.nearby-page .public-reveal.is-reveal-pending,
+body.site-dark.city-info-page .public-reveal.is-reveal-pending { opacity:1; transform:none; transition:none; }
+body.site-dark.city-info-page.ek-journey-theme .eainfo-hero,
+body.site-dark.saved-page.ek-journey-theme .ea-c-page-hero {
+  background:transparent !important; border:0; border-bottom:1px solid #43515f; padding-inline:0; box-shadow:none;
+}
+body.site-dark.city-info-page.ek-journey-theme .eainfo-card {
+  background:transparent; border:0 !important; border-bottom:1px solid #43515f !important; box-shadow:none;
+}
+body.site-dark.saved-page.ek-journey-theme .ea-saved-item {
+  background:transparent; border:0; border-bottom:1px solid #43515f; box-shadow:none;
+}
+body.site-dark.saved-page.ek-journey-theme .ea-saved-item:hover { transform:none; box-shadow:none; }
+/* Override older light-theme controls as well as their placeholder colors. */
+body.ek-discovery-theme.nearby-page .ea6-main .ea6-field :is(input,select),
+body.site-dark.city-info-page.ek-journey-theme .eainfo-page .eainfo-search input {
+  background:#1b2839 !important; color:#f2f3ee !important; border:1px solid #536374 !important; border-radius:0 !important; color-scheme:dark;
+}
+body.ek-discovery-theme.nearby-page .ea6-main .ea6-field input::placeholder,
+body.site-dark.city-info-page.ek-journey-theme .eainfo-page .eainfo-search input::placeholder {
+  color:#c1cbd1; opacity:1;
+}
+body.site-dark.city-info-page.ek-journey-theme .eainfo-page .eainfo-search input[type="search"]:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]) {
+  background:#1b2839 !important; color:#f2f3ee !important; border-color:#536374 !important; border-radius:0 !important;
+}

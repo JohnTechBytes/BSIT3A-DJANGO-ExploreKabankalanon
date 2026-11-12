@@ -46,7 +46,7 @@ class SharedCityDirectoryTests(TestCase):
         self.assertContains(response, reverse("places:place_detail", args=[self.mall.pk]))
         self.assertContains(response, "No hobby tags assigned")
         self.assertContains(response, "Hobbies: Shopping")
-        self.assertContains(response, "missing hobby tag does not mean a place is irrelevant")
+        self.assertContains(response, "missing hobby tag does not mean a place is unsuitable")
 
     def test_directory_groups_and_overlapping_attractions(self):
         tests = {
