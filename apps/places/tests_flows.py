@@ -370,35 +370,28 @@ class ScoringDisplayTests(FlowFixture):
         self.assertIn("Published Cafe", titles)
 
 
-class InlineSortControlTests(FlowFixture):
-    """The inline sort must submit its own search form, never another one.
-
-    The shared header renders a logout form before the page content, so
-    ``document.forms[0]`` pointed at logout: changing the sort signed the
-    visitor out and dropped them on the home page.
-    """
+class SortControlTests(FlowFixture):
+    """Browse exposes one sort control inside the primary search form."""
 
     def setUp(self):
         self.login()
         self.url = reverse("places:attraction_carousel")
 
-    def test_inline_sort_submits_the_search_form(self):
+    def test_duplicate_inline_sort_is_not_rendered(self):
         response = self.client.get(self.url, {"browse": "all"})
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "id=\"ea-inline-sort\"")
-        self.assertContains(response, "eaSort.form")
-        self.assertContains(response, "requestSubmit")
+        self.assertNotContains(response, "id=\"ea-inline-sort\"")
         self.assertNotContains(response, "document.forms[0]")
 
     def test_sort_select_is_rendered_once(self):
         response = self.client.get(self.url, {"browse": "all"})
         html = response.content.decode()
-        self.assertEqual(html.count('id="ea-inline-sort"'), 1)
+        self.assertEqual(html.count('id="ea-inline-sort"'), 0)
         self.assertEqual(html.count('id="ea-filter-sort"'), 1)
 
     def test_sort_choice_survives_in_the_search_form(self):
         # Browse-all pins the recommended order; an explicit sort applies once
-        # the visitor leaves that scope, which is what the inline control sends.
+        # the visitor leaves that scope.
         response = self.client.get(self.url, {"sort": "rating"})
         self.assertEqual(response.status_code, 200)
         body = response.content.decode()

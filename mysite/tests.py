@@ -72,46 +72,48 @@ class HomepageTests(TestCase):
         self.assertContains(response, 'img/places/new-kabankalan-cathedral.jpg')
         self.assertContains(response, 'Lightningscale / Wikimedia Commons')
 
-    def test_landing_retains_shared_guide_and_respects_reduced_motion(self):
+    def test_landing_retains_shared_foundation_and_local_content(self):
         from django.contrib.staticfiles import finders
         from pathlib import Path
 
         response = self.render_home()
-        self.assertContains(response, 'Discover<br><em>Kabankalan.</em>')
-        self.assertContains(response, 'content="#111b2a"')
+        self.assertContains(response, 'Kabankalan,<br><em>place by place.</em>')
+        self.assertContains(response, 'content="#f2eee4"')
         stylesheet = Path(finders.find('css/explore.css')).read_text()
         self.assertIn('--ek-bg: #f8f6f1', stylesheet)
         self.assertIn('--ek-primary: #1e7a5c', stylesheet)
         self.assertIn('backdrop-filter: blur(8px)', stylesheet)
         self.assertIn('prefers-reduced-motion: reduce', stylesheet)
         self.assertIn('landing-reveal.is-reveal-pending', stylesheet)
-        self.assertContains(response, 'aria-label="Ways to explore Kabankalan"')
+        self.assertContains(response, 'A practical directory of places around Kabankalan City.')
         self.assertContains(response, 'aria-label="Your places links"')
-        self.assertContains(response, '<strong>1</strong> published place')
+        self.assertContains(response, '<strong>1</strong> published local listing')
 
-    def test_homepage_pilot_is_scoped_and_preserves_core_interactions(self):
+    def test_local_guide_is_scoped_and_preserves_core_interactions(self):
         response = self.render_home()
-        self.assertContains(response, 'css/homepage-pilot.css?v=5')
-        self.assertContains(response, 'class="hero-actions"')
+        self.assertContains(response, 'css/landing-local-guide.css?v=1')
+        self.assertNotContains(response, 'css/homepage-pilot.css')
+        self.assertNotContains(response, 'css/landing-field-guide.css')
         html = response.content.decode()
-        self.assertContains(response, 'css/landing-field-guide.css?v=2')
         self.assertContains(response, 'aria-label="Mobile navigation"')
         self.assertLess(html.index('id="discover"'), html.index('id="map-preview-title"'))
         self.assertLess(html.index('id="map-preview-title"'), html.index('id="hobbies"'))
-        self.assertLess(html.index('id="hobbies"'), html.index('id="how-it-works"'))
+        self.assertNotContains(response, 'id="how-it-works"')
         self.assertContains(response, f'href="{reverse("places:attraction_carousel")}?mode=nearby"')
         self.assertContains(response, 'id="home-search"')
         self.assertContains(response, 'type="submit"')
         self.assertContains(response, 'id="home-places"')
-        self.assertContains(response, 'data-carousel-toggle')
+        self.assertContains(response, 'data-carousel-prev')
+        self.assertContains(response, 'data-carousel-next')
+        self.assertNotContains(response, 'data-carousel-toggle')
         self.assertContains(response, 'id="landing-map-places"')
         self.assertContains(response, 'Photo not yet available')
         self.assertContains(response, 'Wikimedia Commons')
         from pathlib import Path
         from django.contrib.staticfiles import finders
-        pilot_css = Path(finders.find('css/homepage-pilot.css')).read_text(encoding='utf-8')
-        self.assertIn('prefers-reduced-motion: no-preference', pilot_css)
-        self.assertIn('perspective(1200px)', pilot_css)
+        guide_css = Path(finders.find('css/landing-local-guide.css')).read_text(encoding='utf-8')
+        self.assertIn('prefers-reduced-motion: reduce', guide_css)
+        self.assertIn('--local-paper: #f2eee4', guide_css)
 
     def test_landing_search_and_main_links_use_existing_routes(self):
         response = self.render_home()
@@ -123,12 +125,12 @@ class HomepageTests(TestCase):
         self.assertContains(response, f'href="{reverse("login")}"')
         self.assertContains(response, f'href="{reverse("register")}"')
 
-    def test_landing_quick_explore_links_use_existing_routes(self):
+    def test_landing_avoids_duplicate_marketing_sections(self):
         response = self.render_home()
-        self.assertContains(response, 'aria-label="Ways to explore Kabankalan"')
-        self.assertContains(response, f'href="{reverse("places:attraction_carousel")}?browse=all"><span>Explore places</span>')
-        self.assertContains(response, f'href="{reverse("places:attraction_carousel")}?mode=nearby"><span>Find nearby</span>')
-        self.assertContains(response, f'href="{reverse("info:city_information")}"><span>City information</span>')
+        self.assertNotContains(response, 'aria-label="Ways to explore Kabankalan"')
+        self.assertNotContains(response, 'How it works')
+        self.assertNotContains(response, 'YOUR NEXT LOCAL ADVENTURE')
+        self.assertContains(response, 'Browse the full directory')
 
     def test_landing_carousel_contains_all_published_places(self):
         for number in range(12):
@@ -137,7 +139,9 @@ class HomepageTests(TestCase):
         response = self.render_home()
         for number in range(12):
             self.assertContains(response, f"Published {number:02}")
-        self.assertContains(response, 'data-carousel-toggle')
+        self.assertContains(response, 'data-carousel-prev')
+        self.assertContains(response, 'data-carousel-next')
+        self.assertNotContains(response, 'data-carousel-toggle')
         self.assertContains(response, 'landing-carousel.js')
         self.assertNotContains(response, "Unverified place")
 
