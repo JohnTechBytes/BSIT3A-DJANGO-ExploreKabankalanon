@@ -149,11 +149,11 @@ class SearchAccuracyTests(TestCase):
                 self.assertEqual(sorted(titles), ["City Mall", "Corner Store"])
 
     def test_buying_question_for_a_haircut_returns_the_barbershop(self):
-        # "haircut" is a known service, so the carousel hands the question to
-        # the nearby page, which answers it with the barbershop.
+        # Service matching is preserved without switching the chosen mode.
         response = self.client.get(self.url, {"q": "where to get a haircut"}, follow=True)
 
-        titles = [place.title for place in response.context["results"]]
+        self.assertTemplateUsed(response, 'places/attraction_carousel.html')
+        titles = [place.title for place in response.context["attractions"]]
         self.assertEqual(titles, ["Local Barbershop"])
 
     def test_buying_question_explains_that_the_match_came_from_the_category(self):

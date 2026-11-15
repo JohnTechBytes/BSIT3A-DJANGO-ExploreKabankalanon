@@ -72,17 +72,8 @@ def attraction_carousel(request):
             request.session.get("attraction_search_query") or ""
         ).strip()[:200]
 
-    # Phase 6A: natural-language service requests open nearby results directly.
-    # Avoid changing hobby search sessions or normal attraction queries.
-    if "q" in request.GET and search_query:
-        from urllib.parse import urlencode as ea6_urlencode
-        from django.urls import reverse as ea6_reverse
-        from .nearby_intent import detect_service_intent
-        if detect_service_intent(search_query):
-            return redirect(
-                ea6_reverse("places:attraction_carousel") + "?" +
-                ea6_urlencode({"mode": "nearby", "q": search_query})
-            )
+    # Searches submitted in All Places remain in All Places. The nearby
+    # service vocabulary is shared below, without switching discovery modes.
 
     # Only offer category/hobby filters used by published Kabankalan places.
     # Performance: the option lists are built with small aggregate queries
@@ -151,9 +142,24 @@ def attraction_carousel(request):
     # the honest note that tells the visitor where the answer came from.
     search_note = ""
     if search_query:
-        search_filter, search_note = question_matches(search_query, published_places)
-        if search_filter is None:
-            search_filter = build_attraction_filter(search_query)
+        from django.db.models import Q
+        from .nearby_intent import detect_service_intent, matches_service
+
+        # Match the existing Nearby precedence: exact title, question/hobby
+        # intent, then service aliases. Preserve active category/hobby filters.
+        service = detect_service_intent(search_query)
+        exact_ids = (list(published_places.filter(title__iexact=search_query)
+                          .values_list('pk', flat=True)[:20]) if service else [])
+        if exact_ids:
+            search_filter = Q(pk__in=exact_ids)
+        else:
+            search_filter, search_note = question_matches(search_query, published_places)
+            if search_filter is None and service:
+                service_ids = [p.pk for p in attractions.select_related('category').prefetch_related('hobbies')
+                               if matches_service(p, service)]
+                search_filter = Q(pk__in=service_ids)
+            elif search_filter is None:
+                search_filter = build_attraction_filter(search_query)
 
         if search_filter is not None:
             attractions = attractions.filter(search_filter)

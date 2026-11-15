@@ -133,13 +133,16 @@ class PublicSystemTests(TestCase):
     def test_nearby_search_location_and_results_have_clear_order_and_controls(self):
         self.client.force_login(self.user)
         html = self.client.get(reverse('places:attraction_carousel'), {'mode': 'nearby'}).content.decode()
-        self.assertLess(html.index('id="ea6-search-title"'), html.index('id="ea6-nearby-title"'))
-        self.assertLess(html.index('id="ea6-nearby-title"'), html.index('id="ea6-results-title"'))
+        self.assertLess(html.index('id="ea6-nearby-title"'), html.index('id="ea6-search-title"'))
+        self.assertLess(html.index('id="ea6-search-title"'), html.index('id="ea6-results-title"'))
         for item in ('id="ea6-query"', 'id="ea6-service"', 'id="ea6-voice-status"',
                      'id="ea6-use-gps"', 'id="ea6h-distance"', 'id="ea6g-toggle"',
                      'id="ea6g-map-shell"', 'aria-current="page">Nearby</a>'):
             self.assertIn(item, html)
-        self.assertIn('No starting point selected. Results are alphabetical', html)
+        self.assertIn('Choose your location or a landmark to see nearby results', html)
+        self.assertIn('id="ea6-search-panel" class="ea6-box ea6-search-box" hidden', html)
+        self.assertIn('id="ea6-results-section" hidden', html)
+        self.assertIn('<option value="5" selected>', html)
         self.assertIn('if (listbox && !listbox.hidden) event.preventDefault()', html)
 
     def test_driving_route_guides_keep_existing_map_controls(self):

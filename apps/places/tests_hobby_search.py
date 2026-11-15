@@ -148,7 +148,8 @@ class HobbyQueryTests(TestCase):
             for params in ({'q': query}, {'mode': 'nearby', 'q': query}):
                 with self.subTest(query=query, params=params):
                     response = self.client.get(reverse('places:attraction_carousel'), params, follow=True)
-                    self.assertEqual([p.pk for p in response.context['results']], [expected.pk])
+                    results = response.context.get('results', response.context.get('attractions'))
+                    self.assertEqual([p.pk for p in results], [expected.pk])
                     self.assertContains(response, 'Matched by assigned hobby tags')
                     self.assertContains(response, 'Untagged places may also be relevant')
         # Selecting the coffee service explicitly continues to use category matches.
@@ -166,6 +167,7 @@ class HobbyQueryTests(TestCase):
         self.client.force_login(self.user)
         response = self.client.get(reverse('places:attraction_carousel'),
                                    {'q': 'where to buy coffee'}, follow=True)
-        self.assertEqual([p.pk for p in response.context['results']], [cafe.pk])
+        self.assertTemplateUsed(response, 'places/attraction_carousel.html')
+        self.assertEqual([p.pk for p in response.context['attractions']], [cafe.pk])
         self.assertContains(response, 'availability is not confirmed')
         self.assertNotContains(response, 'Matched by assigned hobby tags')
