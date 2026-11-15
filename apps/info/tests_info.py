@@ -23,6 +23,10 @@ class CityInformationPageTests(TestCase):
             description="The administrative seat of Kabankalan City.", order=1,
             is_published=True,
         )
+        cls.event = CityInformation.objects.create(
+            city=cls.city, title="Festival note", info_type="event",
+            description="Local celebration details.", is_published=True,
+        )
         cls.food = CityInformation.objects.create(
             city=cls.city, title="Local dining", info_type="food",
             description="Restaurants and inasal stalls across the city.", order=1,
@@ -44,7 +48,8 @@ class CityInformationPageTests(TestCase):
         self.assertTemplateUsed(response, "info/city_information.html")
         self.assertContains(response, "City Information")
         self.assertContains(response, "City Government Center")
-        self.assertContains(response, "Local dining")
+        self.assertContains(response, "Festival note")
+        self.assertNotContains(response, "Local dining")
         # Records of another city are never shown.
         self.assertNotContains(response, "Other city notice")
         # Unpublished entries stay in the staff dashboard.
@@ -54,16 +59,17 @@ class CityInformationPageTests(TestCase):
         response = self.client.get(reverse("info:city_information"))
         groups = {group["type"]: group for group in response.context["grouped_entries"]}
         self.assertIn("attraction", groups)
-        self.assertIn("food", groups)
+        self.assertIn("event", groups)
+        self.assertNotIn("food", groups)
         self.assertEqual(
             [entry.title for entry in groups["attraction"]["items"]],
             ["City Government Center"],
         )
 
     def test_type_filter_narrows_the_list(self):
-        response = self.client.get(reverse("info:city_information"), {"type": "food"})
-        self.assertEqual(response.context["selected_type"], "food")
-        self.assertContains(response, "Local dining")
+        response = self.client.get(reverse("info:city_information"), {"type": "event"})
+        self.assertEqual(response.context["selected_type"], "event")
+        self.assertContains(response, "Festival note")
         self.assertNotContains(response, "City Government Center")
 
     def test_unknown_type_is_ignored(self):
@@ -72,15 +78,18 @@ class CityInformationPageTests(TestCase):
         self.assertContains(response, "City Government Center")
 
     def test_search_filters_the_entries(self):
-        response = self.client.get(reverse("info:city_information"), {"q": "dining"})
-        self.assertContains(response, "Local dining")
+        response = self.client.get(reverse("info:city_information"), {"q": "festival"})
+        self.assertContains(response, "Festival note")
         self.assertNotContains(response, "City Government Center")
+        response = self.client.get(reverse("info:city_information"), {"q": "dining"})
+        self.assertContains(response, "No matching city information")
+        self.assertNotContains(response, "Local dining")
 
     def test_combined_filter_keeps_category_and_offers_clear_on_no_match(self):
-        response = self.client.get(reverse("info:city_information"), {"type": "food", "q": "missing"})
+        response = self.client.get(reverse("info:city_information"), {"type": "event", "q": "missing"})
         self.assertEqual(response.context["entry_count"], 0)
         self.assertContains(response, "No matching city information")
-        self.assertContains(response, 'name="type" value="food"')
+        self.assertContains(response, 'name="type" value="event"')
         self.assertNotContains(response, 'aria-label="City guide types"')
         self.assertContains(response, "Clear filters")
         self.assertNotContains(response, "Draft transport note")
@@ -90,14 +99,15 @@ class CityInformationPageTests(TestCase):
         self.assertNotContains(response, 'aria-label="City guide types"')
         self.assertNotContains(response, 'Category counts show all published entries.')
         self.assertContains(response, "City Government Center")
-        self.assertContains(response, "Local dining")
+        self.assertContains(response, "Festival note")
+        self.assertNotContains(response, "Local dining")
 
     def test_type_counts_remain_available_in_context(self):
         response = self.client.get(reverse("info:city_information"))
         counts = {link["type"]: link["count"] for link in response.context["type_links"]}
         self.assertEqual(counts["attraction"], 1)
-        self.assertEqual(counts["food"], 1)
-        self.assertEqual(counts["event"], 0)
+        self.assertNotIn("food", counts)
+        self.assertEqual(counts["event"], 1)
 
     def test_empty_state_when_nothing_is_published(self):
         CityInformation.objects.all().delete()

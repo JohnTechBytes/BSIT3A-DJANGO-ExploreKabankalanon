@@ -44,7 +44,7 @@ class CityFilterInstallerTests(unittest.TestCase):
                 self.template.write_bytes(original)
                 backup = u.apply(self.root, self.base)
                 self.assertEqual((backup / NAME).read_bytes(), original)
-                self.assertEqual(self.template.read_bytes(), (ROOT / NAME).read_bytes())
+                self.assertEqual(self.template.read_bytes(), u.download(NAME))
                 self.assertNotIn(b'aria-label="City guide types"', self.template.read_bytes())
                 self.assertNotIn(b'aria-label="Explore city information by category"', self.template.read_bytes())
                 self.assertEqual((self.root / 'db.sqlite3').read_bytes(), b'database unchanged')

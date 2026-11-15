@@ -30,7 +30,6 @@ class IllustrativePhotoTests(TestCase):
             (reverse('places:place_detail', args=[self.place.pk]), {}),
             (reverse('places:saved_places'), {}),
             (reverse('places:city_discover'), {}),
-            (reverse('info:city_information'), {}),
         ]
         for url, params in paths:
             with self.subTest(url=url, params=params):

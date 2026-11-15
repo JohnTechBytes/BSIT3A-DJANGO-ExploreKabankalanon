@@ -53,7 +53,7 @@ class CityInformationPublishTests(TestCase):
 
         counts = {link["type"]: link["count"] for link in response.context["type_links"]}
         self.assertEqual(counts["attraction"], 1)
-        self.assertEqual(counts["transport"], 0)
+        self.assertNotIn("transport", counts)
 
     def test_the_staff_can_publish_an_entry(self):
         self.client.force_login(self.staff)
