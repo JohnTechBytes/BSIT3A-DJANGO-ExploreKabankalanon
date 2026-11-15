@@ -71,6 +71,13 @@
       <input type="hidden" name="section" value="{% if selected_section == 'about' %}all{% else %}{{ selected_section }}{% endif %}">
       {% if selected_section == 'official' %}
         <div class="ek-city-type-field">
+          <label for="official-topic">Topic / interest</label>
+          <select id="official-topic" class="ek-official-select" name="topic" aria-describedby="official-topic-help">
+            <option value="">All topics</option>
+            {% for value, label in official_topics %}<option value="{{ value }}"{% if official_topic == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="ek-city-type-field">
           <label for="official-kind">Record type</label>
           <select id="official-kind" class="ek-official-select" name="kind">
             <option value="">All sitemap types</option>
@@ -80,7 +87,7 @@
           </select>
         </div>
       {% endif %}
-      <button type="submit">Search</button>
+      <button type="submit">{% if selected_section == 'official' %}Apply filters{% else %}Search{% endif %}</button>
     </form>
     {% if selected_section == 'about' %}<p>Search looks through published attraction and event guides, not the city overview.</p>{% endif %}
   </header>
@@ -149,8 +156,9 @@
     <h2 id="ek-official-heading">Official City Information</h2>
     <p>Browse a snapshot of the City Government of Kabankalan’s public sitemap links, supplied on October 28, 2026. This is an index of links, not copies of the records. It does not update automatically; a listed page may have changed or become unavailable.</p>
     <p>Labels below are generated from URL paths, not verified document titles. Search matches those URL labels and addresses, not the full text. The sitemap’s last-modified date is not necessarily the date of the event or record. Open the source for details and current information.</p>
+    <p id="official-topic-help">Topics are estimated from words in each URL, not the page contents. Some relevant links may be missing from a topic. Choose All topics or Other / unclassified to explore more.</p>
     <p><a href="https://kabankalancity.gov.ph/">Official city website</a> · <a href="https://kabankalancity.gov.ph/citizens-charter/">Citizen’s Charter</a> · <a href="https://kabankalancity.gov.ph/contact-us/">Contact the city</a> · <a href="https://kabankalancity.gov.ph/wp-sitemap.xml">Official sitemap</a></p>
-    <p>{{ official_page.paginator.count }} matching sitemap {{ official_page.paginator.count|pluralize:"entry,entries" }}.</p>
+    <p>{{ official_page.paginator.count }} matching sitemap {{ official_page.paginator.count|pluralize:"entry,entries" }}.{% if official_topic or official_kind or search_query %} <a href="?section=official">Clear all filters</a>{% endif %}</p>
     {% if official_page.object_list %}
       <ul class="ek-official-list">
         {% for item in official_page %}
@@ -163,8 +171,7 @@
         {% if next_official_url %}<a href="{{ next_official_url }}">Next</a>{% endif %}
       </nav>
     {% else %}
-      <p>No sitemap entries match your search and record type.</p>
-      <p><a href="?section=official">Clear search and type</a></p>
+      <p>No sitemap entries match your search and filters. Try All topics or another search.</p>
     {% endif %}
   </section>
   {% endif %}

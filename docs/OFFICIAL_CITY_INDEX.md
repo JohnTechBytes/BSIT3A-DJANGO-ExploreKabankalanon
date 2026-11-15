@@ -12,4 +12,6 @@ The user-supplied source files were:
 
 All 1,297 source entries are retained, including an executive-order URL present in both pages and posts. Sitemap index: https://kabankalancity.gov.ph/wp-sitemap.xml. Additional URLs not included in these three files, including documents linked from pages, are not individually indexed. No page or document body has been bulk downloaded, and the accessibility and current status of individual links have not been checked. The site's API returned an authentication requirement. The site's images were not copied: individual attribution and reuse permissions were not verified. Festival photos remain subject to prior user approval.
 
+The optional topic / interest filter matches words in decoded URL paths, not verified article content or official classifications. A URL can match multiple topics; links without a recognized keyword appear under Other / unclassified. Topic filters can miss relevant links (especially cryptic or truncated slugs), so All topics and the official archives remain available. Search, type, and topic can be combined and are preserved while paging.
+
 The snapshot is included as code data, not as database records. Updating it requires a newly reviewed snapshot; it does not modify City Information, Place, media or publication records.

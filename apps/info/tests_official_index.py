@@ -58,7 +58,7 @@ class OfficialIndexTests(TestCase):
         self.assertTrue(second.context['previous_official_url'])
         response = self.client.get(url, {'section': 'official', 'q': 'no such sitemap entry xyz'})
         self.assertContains(response, 'No sitemap entries match')
-        self.assertContains(response, 'Clear search and type')
+        self.assertContains(response, 'Clear all filters')
         response = self.client.get(url, {'section': 'official', 'page': '9999999999999999', 'kind': 'invalid'})
         self.assertEqual(response.context['official_page'].number, 1)
         self.assertEqual(response.context['official_kind'], '')

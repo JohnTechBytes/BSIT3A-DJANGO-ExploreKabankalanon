@@ -10,7 +10,7 @@ from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.shortcuts import render
 
-from .official_index import KINDS, search_entries
+from .official_index import KINDS, TOPICS, search_entries
 
 from apps.cities.locking import LOCKED_CITY_PK, locked_city
 from apps.cities.models import City
@@ -66,12 +66,16 @@ def city_information(request):
 
     official_page = None
     official_kind = ""
+    official_topic = ""
     previous_official_url = next_official_url = ""
     if section == "official":
         official_kind = (request.GET.get("kind") or "").strip()
         if official_kind not in KINDS:
             official_kind = ""
-        matches = search_entries(search_query, official_kind)
+        official_topic = (request.GET.get("topic") or "").strip()
+        if official_topic not in TOPICS:
+            official_topic = ""
+        matches = search_entries(search_query, official_kind, official_topic)
         page_number = request.GET.get("page", "1")
         if not page_number.isascii() or not page_number.isdecimal() or len(page_number) > 9:
             page_number = "1"
@@ -83,6 +87,8 @@ def city_information(request):
                 params["q"] = search_query
             if official_kind:
                 params["kind"] = official_kind
+            if official_topic:
+                params["topic"] = official_topic
             return "?" + urlencode(params)
 
         if official_page.has_previous():
@@ -104,6 +110,8 @@ def city_information(request):
         "search_query": search_query,
         "official_page": official_page,
         "official_kind": official_kind,
+        "official_topic": official_topic,
+        "official_topics": TOPICS.items(),
         "previous_official_url": previous_official_url,
         "next_official_url": next_official_url,
     })
