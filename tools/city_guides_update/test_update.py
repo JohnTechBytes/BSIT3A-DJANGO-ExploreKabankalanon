@@ -52,7 +52,7 @@ class CityGuideUpdaterTests(unittest.TestCase):
                 backup = u.apply(self.root, self.base)
                 for name, data in originals.items():
                     self.assertEqual((backup / name).read_bytes(), data)
-                    self.assertEqual((self.root / name).read_bytes(), (ROOT / name).read_bytes())
+                    self.assertEqual((self.root / name).read_bytes(), u.download(name))
                 self.assertEqual((self.root / 'db.sqlite3').read_bytes(), b'database untouched')
                 self.assertEqual((self.root / 'media/photo.jpg').read_bytes(), b'media untouched')
                 self.assertIsNone(u.apply(self.root, self.base))

@@ -8,6 +8,24 @@
 {% block footer_tagline %}Kabankalan City, Negros Occidental{% endblock %}
 {% block extra_css_after %}<link rel="stylesheet" href="{% static 'css/site-dark.css' %}">{% endblock %}
 {% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261106-illustrations-1">{% endblock %}
+{% block page_styles %}
+<style>
+  body.city-info-page .ek-city-profile { margin:56px 0 24px; padding-top:28px; border-top:1px solid #43515f; }
+  body.city-info-page .ek-city-profile-intro { max-width:75ch; }
+  body.city-info-page .ek-city-profile-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin:24px 0; }
+  body.city-info-page .ek-city-profile details { padding:18px 20px; background:#121b29; border:1px solid #43515f; color:#e0e7e1; }
+  body.city-info-page .ek-city-profile summary { cursor:pointer; min-height:32px; color:#f0ece2; font-size:18px; font-weight:600; }
+  body.city-info-page .ek-city-profile summary:focus-visible, body.city-info-page .ek-city-profile a:focus-visible { outline:3px solid #9be8c6; outline-offset:3px; }
+  body.city-info-page .ek-city-profile details p { margin:12px 0 0; line-height:1.65; }
+  body.city-info-page .ek-city-profile-images { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin:28px 0; }
+  body.city-info-page .ek-city-profile figure { margin:0; padding:16px; background:#121b29; border:1px solid #43515f; }
+  body.city-info-page .ek-city-profile figure img { display:block; width:100%; height:230px; object-fit:contain; background:#0b1019; }
+  body.city-info-page .ek-city-profile figcaption { margin-top:10px; color:#c8d1ce; font-size:13px; line-height:1.6; }
+  body.site-dark.ek-journey-theme.city-info-page .eainfo-page .ek-city-profile a { color:#a5edcb; text-decoration:underline; text-underline-offset:3px; }
+  body.city-info-page .ek-city-profile-source { font-size:13px; line-height:1.6; }
+  @media(max-width:680px) { body.city-info-page .ek-city-profile-grid, body.city-info-page .ek-city-profile-images { grid-template-columns:1fr; } }
+</style>
+{% endblock %}
 
 {% block content %}
 <main class="eainfo-page" id="main-content">
@@ -15,7 +33,7 @@
     <h1>City Information</h1>
     <p>Discover published Kabankalan attraction and event guides.</p>
     <form class="eainfo-search" method="get" action="{% url 'info:city_information' %}" role="search">
-      <input type="search" name="q" value="{{ search_query }}" placeholder="Search city information…" aria-label="Search city information">
+      <input type="search" name="q" value="{{ search_query }}" placeholder="Search published guides…" aria-label="Search published city guides">
       {% if selected_type %}<input type="hidden" name="type" value="{{ selected_type }}">{% endif %}
       <button type="submit">Search</button>
     </form>
@@ -75,6 +93,73 @@
   {% endif %}
 
   </section>
+
+  {% if not search_query and not selected_type %}
+  <section class="ek-city-profile" aria-labelledby="ek-city-profile-heading">
+    <p class="eainfo-eyebrow">ABOUT THE CITY</p>
+    <h2 id="ek-city-profile-heading">About Kabankalan</h2>
+    <p class="ek-city-profile-intro">A short overview adapted from Wikipedia, with links to original sources where available. Open a topic to learn more. The guide search above searches published guides, not these summaries.</p>
+
+    <div class="ek-city-profile-grid">
+      <details><summary>City overview and government</summary>
+        <p>Kabankalan is a component city in Negros Occidental, in the Negros Island Region of the Philippines. Republic Act No. 8297 established its city charter. The city has a mayor, vice mayor and city council; consult official sources for current officials.</p>
+        <p><a href="https://lawphil.net/statutes/repacts/ra1997/ra_8297_1997.html">Read the city charter</a></p>
+      </details>
+      <details><summary>Attractions and celebrations</summary>
+        <p>Wikipedia names Mag-aso Falls and Balicaocao Resort among local attractions. It also mentions Sinulog sa Kabankalan, Udyakan sa Kabankalan and the city’s Charter Anniversary. Check official announcements for current festival programs.</p>
+        <p><a href="https://en.wikipedia.org/wiki/Kabankalan">Read the article overview</a></p>
+      </details>
+      <details><summary>History and cityhood</summary>
+        <p>Wikipedia describes the name as connected to the locally named bangkal tree and recounts the area’s Spanish, American and wartime history. Its history section is marked as lacking sources, so those accounts need further verification. Wikipedia dates cityhood to August 2, 1997; the city charter is Republic Act No. 8297.</p>
+        <p><a href="https://en.wikipedia.org/wiki/Kabankalan#History">Read the history section</a></p>
+      </details>
+      <details><summary>Geography</summary>
+        <p>Kabankalan is in southern Negros. Wikipedia lists Himamaylan, Ilog, Mabinay and Bayawan among its neighboring areas and reports an area of 697.35 square kilometers.</p>
+        <p><a href="https://en.wikipedia.org/wiki/Kabankalan#Geography">Read about its geography</a></p>
+      </details>
+      <details><summary>Climate</summary>
+        <p>Wikipedia describes a Type III climate, with a drier period from December to May and a wetter period from June to November. These are broad patterns, not a forecast; check current weather before traveling.</p>
+        <p><a href="https://en.wikipedia.org/wiki/Kabankalan#Climate">Read the climate information</a></p>
+      </details>
+      <details><summary>Barangays</summary>
+        <p>The Philippine Statistics Authority lists 32 barangays in Kabankalan as of July 31, 2025. They include Barangays 1–9 in the poblacion and communities such as Oringao, Tampalon and Tapi.</p>
+        <p><a href="https://psa.gov.ph/classification/psgc/barangays/1804515000">See the PSA barangay list</a></p>
+      </details>
+      <details><summary>Population and demographics</summary>
+        <p>The Philippine Statistics Authority lists a population of 210,893 for Kabankalan in the 2024 census. This is a census count, not a live population figure.</p>
+        <p><a href="https://psa.gov.ph/classification/psgc/barangays/1804515000">See the PSA city and barangay figures</a></p>
+      </details>
+      <details><summary>Languages</summary>
+        <p>Wikipedia identifies Hiligaynon and Cebuano as major local languages and also mentions Tagalog, English and the Karol-an language.</p>
+        <p><a href="https://en.wikipedia.org/wiki/Kabankalan#Languages">Read about languages</a></p>
+      </details>
+      <details><summary>Economy</summary>
+        <p>The article includes historical poverty estimates from the Philippine Statistics Authority and describes the role of sugar and trade in the city’s development. Economic figures refer to particular years and can change.</p>
+        <p><a href="https://en.wikipedia.org/wiki/Kabankalan#Economy">See the economy section and its sources</a></p>
+      </details>
+      <details><summary>Transportation and infrastructure</summary>
+        <p>Wikipedia describes road connections between Kabankalan, Bacolod and Dumaguete via the Kabankalan–Mabinay route. Its statement about the city airport cites a 2014 report, so its current status should be checked separately. Confirm routes, travel times and services locally before a trip.</p>
+        <p><a href="https://en.wikipedia.org/wiki/Kabankalan#Transportation">Read the transportation section</a></p>
+      </details>
+      <details><summary>Notable people</summary>
+        <p>The article lists people associated with Kabankalan from public service, religion, writing and sport, including Alex Lacson and Jonah Sabete. See Wikipedia for the full list and individual references.</p>
+        <p><a href="https://en.wikipedia.org/wiki/Kabankalan#Notable_people">See the notable people list</a></p>
+      </details>
+    </div>
+
+    <div class="ek-city-profile-images">
+      <figure>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/cb/New_Kabankalan_Cathedral.jpg" alt="Facade of the new Kabankalan Cathedral" loading="lazy">
+        <figcaption>Kabankalan Cathedral. Photo by Lightningscale, <a href="https://commons.wikimedia.org/wiki/File:New_Kabankalan_Cathedral.jpg">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>; displayed without edits.</figcaption>
+      </figure>
+      <figure>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Barangays_of_Kabankalan%2C_Negros_Occidental.png" alt="Map showing the barangays of Kabankalan" loading="lazy">
+        <figcaption>Barangay map by Chaelo86, <a href="https://commons.wikimedia.org/wiki/File:Barangays_of_Kabankalan,_Negros_Occidental.png">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>; displayed without edits.</figcaption>
+      </figure>
+    </div>
+    <p class="ek-city-profile-source">Text summarized and adapted from <a href="https://en.wikipedia.org/w/index.php?title=Kabankalan&amp;oldid=1374685263">Wikipedia’s Kabankalan article</a> by <a href="https://en.wikipedia.org/w/index.php?title=Kabankalan&amp;action=history">Wikipedia contributors</a>, under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Summarized and reorganized; details may change. Images have their own credits above.</p>
+  </section>
+  {% endif %}
   <p class="eainfo-note">Publication does not guarantee independent verification. Confirm important details before visiting.</p>
 </main>
 {% endblock %}

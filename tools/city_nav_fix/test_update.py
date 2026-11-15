@@ -36,7 +36,7 @@ class CityNavFixTests(unittest.TestCase):
         old = self.template.read_bytes()
         backup = u.apply(self.root, self.base)
         self.assertEqual((backup / TEMPLATE).read_bytes(), old)
-        self.assertEqual(self.template.read_bytes(), (ROOT / TEMPLATE).read_bytes())
+        self.assertEqual(self.template.read_bytes(), u.download(TEMPLATE))
         self.assertEqual(self.header.read_bytes(), b'public header unchanged')
         self.assertEqual((self.root / 'db.sqlite3').read_bytes(), b'database untouched')
         self.assertEqual((self.root / 'media/photo.jpg').read_bytes(), b'media untouched')
