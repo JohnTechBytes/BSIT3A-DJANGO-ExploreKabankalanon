@@ -26,7 +26,7 @@ class PublicSystemTests(TestCase):
         for url in (reverse('places:attraction_carousel'), reverse('info:city_information'),
                     reverse('places:place_detail', args=[self.place.pk]),
                     reverse('places:saved_places'), reverse('places:my_reviews'),
-                    reverse('core:privacy_notice'), reverse('evaluation:sus_survey')):
+                    reverse('core:privacy_notice')):
             with self.subTest(url=url):
                 response = self.client.get(url)
                 self.assertEqual(response.status_code, 200)
@@ -59,7 +59,7 @@ class PublicSystemTests(TestCase):
         for url in (reverse('home'), reverse('places:attraction_carousel'),
                     reverse('info:city_information'), reverse('places:place_detail', args=[self.place.pk]),
                     reverse('places:saved_places'), reverse('places:my_reviews'),
-                    reverse('core:privacy_notice'), reverse('evaluation:sus_survey')):
+                    reverse('core:privacy_notice')):
             with self.subTest(url=url):
                 self.assertContains(self.client.get(url), 'css/public-experience.css?v=1')
         self.client.logout()
@@ -107,7 +107,7 @@ class PublicSystemTests(TestCase):
         urls = (reverse('places:attraction_carousel'), reverse('places:city_discover'),
                 reverse('info:city_information'), reverse('places:place_detail', args=[self.place.pk]),
                 reverse('places:saved_places'), reverse('places:my_reviews'),
-                reverse('core:privacy_notice'), reverse('evaluation:sus_survey'))
+                reverse('core:privacy_notice'))
         for url in urls:
             with self.subTest(url=url):
                 response = self.client.get(url)

@@ -40,7 +40,7 @@ browse the published places of Kabankalan, filter them by category and hobby,
 search in natural language, view results on an interactive map, sort and filter
 nearby places by straight-line distance from the device's GPS position or from a
 chosen city landmark, read and write reviews, save places, read the city's
-public information page and answer a short usability survey. City staff
+public information page. City staff
 manage the same records through a customized administrative panel that includes
 an OpenStreetMap review queue. Public listing requires the active and
 `is_verified` flags, but the flags alone do not establish that the information,
@@ -98,15 +98,16 @@ Specifically, the project aims to:
    review queue for OSM imports, and city information records, together with
    management commands that import PSGC codes, an OSM extract and Wikimedia
    imagery.
-7. **Accounts and administrative access.** Define four roles on the custom
-   user model (user, business owner, city administrator, system administrator).
-   Administrative access is controlled by Django's staff, superuser and model
-   permissions, not automatically granted by the role field. A business-owner
-   portal and role-based city scoping are not implemented.
-8. **Evaluation instruments.** Provide a System Usability Scale (SUS) survey
-   with standard 0–100 scoring and a recommendation-relevance control. The
-   survey is at `/evaluation/sus/`; signed-in visitors can rate relevance on a
-   destination reached from a search. A future evaluation will require an
+7. **Accounts and administrative access.** Support visitor accounts and a
+   permission-controlled Django administrative panel. Public registration
+   creates a regular `user`. The custom user model also defines `business_owner`,
+   `city_admin` and `super_admin` role values, but these labels do not grant
+   access or provide separate workflows. Administrative access depends on
+   Django's active, staff, superuser and model permissions. A business-owner
+   portal and per-administrator city scoping are not implemented.
+8. **Recommendation relevance feedback.** Signed-in visitors can rate the
+   relevance of a destination reached from a search. The SUS survey is retired;
+   previously submitted responses remain stored. Any evaluation requires an
    approved participant and testing plan; no completed evaluation is claimed.
 9. **Privacy and data protection.** Publish a privacy notice that states what
     the system stores and what it deliberately does not store, and record a
@@ -154,8 +155,8 @@ connections, not measured outcomes or verified institutional approvals:
 
 | Component | Description and Coverage |
 |---|---|
-| **Setting and Coverage** | The directory and public city information focus on Kabankalan City, Negros Occidental (city pk 2). `KabankalanOnlyMiddleware` pins the session to this city, and the Place admin is city-scoped. Accounts and survey respondents are not restricted by their physical location. |
-| **Accounts and Roles** | Custom user model with the four roles required by the system — user, business owner, city administrator, system administrator — plus a managed-city field, avatar, bio and coordinates. Registration creates a `user`. Administrative access is governed by Django's staff, superuser and model permissions. |
+| **Setting and Coverage** | The directory and public city information focus on Kabankalan City, Negros Occidental (city pk 2). `KabankalanOnlyMiddleware` pins the session to this city, and the Place admin is city-scoped. Accounts are not restricted by their physical location. |
+| **Accounts and Access** | The implemented access paths are visitor accounts and the Django staff administration panel. Registration creates a regular `user`. Active staff can enter the admin; their available actions depend on Django permissions, while active superusers have all permissions. The model defines four role values (`user`, `business_owner`, `city_admin`, `super_admin`), but the role field does not itself grant these permissions or provide separate business-owner and city-admin workflows. A managed-city field, avatar, bio and coordinates are also present. |
 | **Kabankalan City Information** | `/info/` combines a browsable directory of existing published Places with separate staff-published `CityInformation` guides. A relevant Place can appear both here and in hobby search without duplicating it. Grouping is a search aid, not independent verification. Staff can publish and unpublish guides. |
 | **Hobbies and Hobby Selection** | Hobbies are attached to places. Visitors filter the directory by category and by a single hobby from the search panel, and the chosen hobby is kept in the session, so it also shapes the recommendation score on later pages. The earlier standalone hobby-selection route now redirects to the place directory. |
 | **Places Directory with Details and Map Location** | Active places with the `is_verified` publication flag are publicly listed. Category, hobbies, descriptions, coordinates and photographs may be missing or need confirmation. The flag is not proof of independent verification or photo rights. The public listing is a looping carousel with list and map views and a details panel. |
@@ -168,9 +169,9 @@ connections, not measured outcomes or verified institutional approvals:
 | **Nearby Search and Live GPS** | The Nearby view reads the browser's geolocation, computes straight-line distance to each place, and filters or sorts results by distance (any distance, 1, 3, 5, 10 or 25 km). A curated Kabankalan landmark can serve as the reference point. List distances are straight-line estimates. The map can separately request an approximate driving route from the public OSRM demo, sending it the selected origin and destination coordinates. |
 | **Reviews and Ratings** | One review per user per place, 1–5 stars plus an optional comment; reviews can be updated or deleted; the average rating feeds both the place page and the recommender. Reviews are opinions and do not by themselves prove an in-person visit. |
 | **Saved Places** | Visitors save and unsave places; saved places appear on a dedicated page. |
-| **Administrative Panel** | Customized Django admin with destination management (search, category/verification/publication filters), bulk publication actions, per-place verification, photo actions, a business review queue for OSM imports, city information records, the evaluation records and account management (role and managed city). The index lists only the modules the city office uses; Django's own group editor stays reachable at `/admin/auth/group/` for a superuser. Native Django permissions and safeguards are preserved. |
+| **Administrative Panel** | Customized Django admin with destination management (search, category/verification/publication filters), bulk publication actions, per-place verification, photo actions, a business review queue for OSM imports, city information records, recommendation-relevance records and account management (role and managed city). The index lists only the modules the city office uses; Django's own group editor stays reachable at `/admin/auth/group/` for a superuser. Native Django permissions and safeguards are preserved. |
 | **Data Import** | Management commands import PSA PSGC codes, an OpenStreetMap extract and Wikimedia imagery, and enrich, categorize or attach photos to imported places. |
-| **Evaluation Instruments** | The public System Usability Scale survey (`/evaluation/sus/`) asks the ten standard items on a 1–5 scale and scores them with the standard 0–100 formula, then shows the score and the interpretation band. `RecommendationRating` stores relevant, partially relevant or irrelevant ratings for a query and place; a destination reached from a search offers that control. Both records are also managed in the administrative panel. |
+| **Recommendation Relevance** | `RecommendationRating` stores relevant, partially relevant or irrelevant ratings for a query and place; a destination reached from a search offers that control. The SUS survey is retired; previous responses are retained in the database. |
 | **Privacy and Data Protection** | The public privacy notice (`/privacy/`) describes stored data, deletion and external services. Distance calculations occur in the browser without sending the coordinates to the Django server; requesting a driving route sends the origin and destination to the external OSRM demo. Creating an account requires accepting the notice, and the acceptance and its date are stored with the account. |
 | **Technology Stack** | Python and Django (see the compatibility profiles below) for the server; MySQL or compatible MariaDB for storage, accessed through the PyMySQL driver; HTML5, CSS3 and JavaScript with Bootstrap 5.3.3 for the interface; Leaflet 1.9.4 with MapTiler tiles for maps; Pillow for image handling. Deployment values (secret key, debug flag, allowed hosts, database credentials, MapTiler token) are read from environment variables with development defaults. |
 | **Target Users** | Residents, visitors and tourists who look for places that match their hobbies; business owners whose listings appear in the directory; city administrators and tourism personnel who verify and publish places and maintain city information records; and system administrators. |
@@ -196,8 +197,8 @@ results or proof that the laptop or hosted system has been verified.
 | Administrative panel and OSM review queue | Implemented | Bulk approval refuses unverified OSM imports |
 | Data import commands | Implemented | PSGC, OSM extract, Wikimedia imagery |
 | City Information | Implemented | Shared directory of published Places plus separately published guides at `/info/`. |
-| Roles and access control | Partially implemented | Four roles defined; enforced through Django permissions; no business-owner portal and no city-level scoping |
-| SUS instrument | Implemented | Public survey at `/evaluation/sus/` with the standard 0–100 scoring |
+| Roles and access control | Partially implemented | Four role values are defined, but access is controlled separately through Django staff and permissions; no business-owner portal or per-administrator city scoping |
+| SUS instrument | Retired | Public survey and admin entry disabled; existing response records are retained |
 | Recommendation relevance rating | Implemented | In-page control on a destination reached from a search |
 | Privacy notice and registration consent | Implemented | Public notice at `/privacy/`; the acceptance and its date are stored with the account |
 | Search history and remembered interests | Implemented | Nonempty Browse and Nearby searches are logged; the chosen hobby is kept in the session. |
@@ -209,7 +210,7 @@ results or proof that the laptop or hosted system has been verified.
 ### Limitations
 
 - The place directory and city information focus on **Kabankalan City**.
-  Accounts and survey respondents are not restricted by physical location.
+  Accounts are not restricted by physical location.
 - **Maps and GPS are browser-dependent**: external tiles require connectivity;
   geolocation requires browser permission and a secure context (localhost may be
   treated as secure). Availability and accuracy vary. Search and recommendation
@@ -237,8 +238,8 @@ results or proof that the laptop or hosted system has been verified.
   published guides. Guide content and individual listings require review;
   seed commands write to the database and should not be run on existing data
   without explicit approval and backup.
-- The **SUS survey** can be answered more than once and an anonymous answer is
-  not linked to a person. A signed-in answer is stored with the account.
+- The **SUS survey is retired**. Existing responses remain stored, including
+  any account links, and no new responses can be submitted through the site.
 - The **chosen hobby is held in the browser session** and is lost when the
   session ends. Nonempty searches are logged, with an account when one is
   authenticated; relevance ratings require an account.
@@ -375,7 +376,7 @@ confirmed. The migration-only app histories must stay installed for upgrades.
 Run tests against isolated SQLite, never the existing MariaDB database. See
 [local test checklist](docs/LOCAL_TEST_CHECKLIST.md) for PowerShell commands.
 The suite covers account, search, map page, reviews, saved places,
-administration, directory and survey flows. Automated tests do not
+administration and directory flows. Automated tests do not
 prove that the laptop database, real map tiles, GPS or photo rights are correct.
 
 ### Preparing the professor's concept paper

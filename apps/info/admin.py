@@ -4,7 +4,6 @@ from django.contrib import messages
 
 from .models import (
     CityInformation,
-    SusResponse,
     RecommendationRating,
     QueryLog,
 )
@@ -42,13 +41,6 @@ class CityInformationAdmin(admin.ModelAdmin):
             f"{count} City Information entr{'y' if count == 1 else 'ies'} unpublished.",
             level=messages.SUCCESS,
         )
-
-
-@admin.register(SusResponse)
-class SusResponseAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "score", "created_at")
-    list_filter = ("created_at",)
-    readonly_fields = ("score", "created_at")
 
 
 @admin.register(RecommendationRating)

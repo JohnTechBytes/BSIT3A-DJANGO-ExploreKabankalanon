@@ -34,7 +34,6 @@ class EditorialScreenTests(TestCase):
         self.client.force_login(self.user)
         routes = [
             reverse("places:my_reviews"),
-            reverse("evaluation:sus_survey"), reverse("evaluation:sus_thanks"),
             reverse("core:privacy_notice"),
         ]
         for url in routes:
@@ -47,7 +46,6 @@ class EditorialScreenTests(TestCase):
                 self.assertContains(response, 'css/public-night.css')
                 self.assertContains(response, 'js/public-reveal.js')
                 self.assertContains(response, 'js/public-motion.js')
-        self.assertContains(self.client.get(reverse("evaluation:sus_survey")), 'name="q10"')
 
     def test_public_navigation_keeps_mobile_controls_and_links(self):
         public = self.client.get(reverse("info:city_information"))
@@ -57,7 +55,7 @@ class EditorialScreenTests(TestCase):
         self.assertContains(public, reverse("login"))
         self.client.force_login(self.user)
         member = self.client.get(reverse("places:attraction_carousel") + "?browse=all")
-        for route in ("home", "info:city_information", "places:saved_places", "places:my_reviews", "evaluation:sus_survey"):
+        for route in ("home", "info:city_information", "places:saved_places", "places:my_reviews"):
             with self.subTest(route=route):
                 self.assertContains(member, reverse(route))
         self.assertContains(member, 'class="ea-nav-more"')
@@ -87,17 +85,12 @@ class EditorialScreenTests(TestCase):
     def test_saved_reviews_and_public_information_use_warm_theme(self):
         self.client.force_login(self.user)
         routes = (reverse("places:saved_places"), reverse("places:my_reviews"),
-                  reverse("info:city_information"), reverse("evaluation:sus_survey"),
-                  reverse("evaluation:sus_thanks"), reverse("core:privacy_notice"))
+                  reverse("info:city_information"), reverse("core:privacy_notice"))
         for url in routes:
             with self.subTest(url=url):
                 response = self.client.get(url)
                 self.assertContains(response, 'ek-journey-theme')
                 self.assertContains(response, 'css/explore.css')
-        survey = self.client.get(reverse("evaluation:sus_survey"))
-        for i in range(1, 11):
-            self.assertContains(survey, f'name="q{i}"')
-        self.assertContains(survey, 'name="csrfmiddlewaretoken"')
 
     def test_error_pages_use_warm_theme_without_promising_data_was_saved(self):
         from django.test import RequestFactory
@@ -111,15 +104,12 @@ class EditorialScreenTests(TestCase):
                 self.assertContains(response, 'css/explore.css', status_code=code)
                 self.assertNotContains(response, 'Nothing you saved has been lost', status_code=code)
 
-    def test_privacy_and_survey_describe_implemented_behavior(self):
+    def test_privacy_describes_implemented_behavior(self):
         privacy = self.client.get(reverse("core:privacy_notice"))
         self.assertContains(privacy, 'locally bundled Leaflet')
         self.assertNotContains(privacy, 'Nearby map also loads')
         self.assertContains(privacy, 'account reference cleared')
-        self.client.force_login(self.user)
-        self.client.post(reverse("evaluation:sus_survey"), {f'q{i}': '3' for i in range(1, 11)})
-        survey = self.client.get(reverse("evaluation:sus_survey"))
-        self.assertContains(survey, 'Earlier submissions remain stored')
+        self.assertContains(privacy, 'survey answers submitted before the survey was retired')
 
     def test_city_discovery_keeps_its_listing_and_pagination(self):
         Place.objects.create(city=self.place.city, title="Unpublished candidate",

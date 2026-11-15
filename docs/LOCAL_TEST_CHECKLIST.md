@@ -64,8 +64,8 @@ Places. Do not share passwords or database backups containing private data.
 6. If authorized, open the staff dashboard and inspect the place list, hobby
    review filter, City Information and visit review. Do not execute a write
    action or bulk operation unless approved.
-7. Check the mobile layout, sign-out and the usability survey. Submitting the
-   survey stores a response. For the actual system workflow see
+7. Check the mobile layout and sign-out. The SUS survey is retired and old
+   responses remain stored. For the actual system workflow see
    [workflow and handoff](WORKFLOW_AND_HANDOFF.md).
 
 ## 4. Isolated automated tests (separate PowerShell window)

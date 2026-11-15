@@ -37,9 +37,9 @@ coordinates, hours, inventory, or business operations were independently checked
 6. **City Information.** Browse existing published Places by city-directory
    groups and read the separately published staff guides. Classification and
    publication do not guarantee up-to-date or independently verified facts.
-7. **Evaluation and privacy.** The SUS survey can be submitted anonymously or
-   while signed in. A relevance response may be submitted on a place reached
-   through search. These save data; the privacy notice describes collection.
+7. **Feedback and privacy.** The SUS survey is retired; prior responses are
+   retained. A relevance response may be submitted on a place reached through
+   search. This saves data; the privacy notice describes collection.
 
 ## Staff flow
 

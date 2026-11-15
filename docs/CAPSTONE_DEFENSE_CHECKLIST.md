@@ -15,7 +15,7 @@ certify the laptop database or real account actions.
 - [ ] Keep a recent, private backup of the database **and media**. Do not share
       database dumps; they can contain personal data.
 - [ ] Prepare authorized visitor and staff accounts. Do not share their
-      passwords in chat or presentation materials. Save, review, survey,
+      passwords in chat or presentation materials. Save, review, relevance-rating,
       login/session and search actions may write to the connected database.
 - [ ] Start XAMPP MariaDB. In PowerShell, from the project folder, check the
       versions and system without applying changes:
@@ -46,10 +46,10 @@ Mark a box only after testing it on the actual laptop; these are not results.
 | 3. Map and Nearby | [ ] Open Nearby, use GPS permission or select a landmark, apply a distance filter, and open a mapped place and directions. | GPS and tiles depend on browser, permissions and network. Distances are straight-line estimates, not road distance or travel time. |
 | 4. Directory and reviews | [ ] Open a published place; check the details and image. With authorization, submit or update a review using a test account. | A publication flag, rating or photo does not prove that facts, location or reuse rights have been independently verified. Review writes data. |
 | 5. Saved Places | [ ] With authorization, save a place, find it under Saved Places, and remove the test save if appropriate. | This changes the real database on the laptop. |
-| 6. Retained legacy features | [ ] Confirm Journey, itineraries and visit/reward links are hidden from the main interface. | Their existing URLs and data are retained; hiding them does not disable them. They are not the main defense workflow. |
+| 6. Retired legacy features | [ ] Confirm Journey, itinerary and visit/reward links are absent. | Their routes are retired in this code; the state of old laptop data is unverified. Never run removal migrations without approval and backup. |
 | 7. Administration and data import | [ ] As authorized staff, inspect a place, its hobby tags, publication status and City Information. | Merely inspect unless a write is authorized and backed up. Imports and bulk actions can change existing records; do not run them during the demo without approval. |
 | 8. Accounts and access | [ ] Verify visitor sign-in and that an authorized staff account can reach the staff dashboard. | Access is controlled by Django staff/model permissions; a role label alone does not grant access. An owner portal and role-based city scoping are not implemented. |
-| 9. Evaluation instruments | [ ] Open the SUS survey and, after an applicable search, the relevance control on a place. Submit only if authorized. | Submissions are stored. Having instruments does not mean respondent data has been collected or analyzed. Report only actual results. |
+| 9. Recommendation feedback | [ ] After an applicable search, inspect the relevance control on a place. Submit only if authorized. | Submissions are stored. The SUS survey is retired; existing responses remain stored. Report only actual evaluation results. |
 | 10. Privacy and consent | [ ] Show the privacy notice and registration consent screen without creating an account unless authorized. | The notice has not been presented as a legal review; do not claim formal compliance or a completed agreement without evidence. |
 
 Also open **City Information** and show that it uses the same published place
