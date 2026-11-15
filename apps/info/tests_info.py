@@ -81,11 +81,18 @@ class CityInformationPageTests(TestCase):
         self.assertEqual(response.context["entry_count"], 0)
         self.assertContains(response, "No matching city information")
         self.assertContains(response, 'name="type" value="food"')
-        self.assertContains(response, 'aria-current="page"')
+        self.assertNotContains(response, 'aria-label="City guide types"')
         self.assertContains(response, "Clear filters")
         self.assertNotContains(response, "Draft transport note")
 
-    def test_counts_are_shown_for_every_type(self):
+    def test_guide_category_buttons_are_hidden_but_guides_remain(self):
+        response = self.client.get(reverse("info:city_information"))
+        self.assertNotContains(response, 'aria-label="City guide types"')
+        self.assertNotContains(response, 'Category counts show all published entries.')
+        self.assertContains(response, "City Government Center")
+        self.assertContains(response, "Local dining")
+
+    def test_type_counts_remain_available_in_context(self):
         response = self.client.get(reverse("info:city_information"))
         counts = {link["type"]: link["count"] for link in response.context["type_links"]}
         self.assertEqual(counts["attraction"], 1)

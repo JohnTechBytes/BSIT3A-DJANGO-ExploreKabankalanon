@@ -42,7 +42,7 @@ class CityButtonInstallerTests(unittest.TestCase):
         self.template.write_bytes(old)
         backup = u.apply(self.project, self.base)
         self.assertEqual((backup / NAME).read_bytes(), old)
-        self.assertEqual(self.template.read_bytes(), (ROOT / NAME).read_bytes())
+        self.assertEqual(self.template.read_bytes(), u.download(NAME))
         self.assertEqual(self.db.read_bytes(), b'database untouched')
         self.assertEqual(self.media.read_bytes(), b'media untouched')
         self.assertEqual({p.relative_to(backup).as_posix() for p in backup.rglob('*') if p.is_file()},
