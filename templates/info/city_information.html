@@ -37,7 +37,24 @@
   body.city-info-page .ek-official small { display:block; color:#c8d1ce; margin-top:8px; }
   body.city-info-page .ek-official-pages { display:flex; flex-wrap:wrap; gap:18px; align-items:center; }
   body.city-info-page .ek-official-select { background:#121b29; color:#f0ece2; border:1px solid #81918e; min-height:44px; padding:8px; }
-  @media(max-width:680px) { body.city-info-page .ek-city-profile-grid, body.city-info-page .ek-city-profile-images { grid-template-columns:1fr; } }
+  /* City Information controls: the type selector must not squeeze the search box. */
+  body.site-dark.city-info-page .eainfo-page .eainfo-search { display:flex; flex-wrap:wrap; align-items:end; gap:12px; max-width:950px; }
+  body.site-dark.city-info-page .eainfo-page .eainfo-search .ek-city-search-field { flex:1 1 320px; min-width:min(100%, 220px); }
+  body.site-dark.city-info-page .eainfo-page .eainfo-search .ek-city-type-field { flex:0 1 200px; min-width:min(100%, 180px); }
+  body.site-dark.city-info-page .eainfo-page .eainfo-search :is(.ek-city-search-field, .ek-city-type-field) { display:flex; flex-direction:column; gap:6px; }
+  body.site-dark.city-info-page .eainfo-page .eainfo-search label { color:#e7edea; font-size:14px; font-weight:600; line-height:1.4; }
+  body.site-dark.city-info-page .eainfo-page .eainfo-search :is(input[type="search"], select) { flex:0 0 auto !important; box-sizing:border-box; width:100%; min-width:0; height:48px; min-height:48px; font-size:16px; }
+  body.site-dark.city-info-page .eainfo-page .eainfo-search input[type="hidden"] { display:none !important; }
+  body.site-dark.city-info-page .eainfo-page .eainfo-search :is(input[type="search"], select, button):focus-visible { outline:3px solid #9be8c6; outline-offset:3px; }
+  /* Later shared styles otherwise override page links with a dark green on navy. */
+  body.site-dark.city-info-page .eainfo-page :is(.ek-official, .ek-city-profile, .eainfo-card) a:not([class*="btn"]) { color:#a5edcb !important; text-decoration:underline; text-underline-offset:3px; }
+  body.site-dark.city-info-page .eainfo-page .ek-city-sections a { color:#f0ece2 !important; }
+  body.site-dark.city-info-page .eainfo-page .ek-city-sections a[aria-current="page"] { color:#10251f !important; }
+  body.site-dark.city-info-page .eainfo-page .ek-official small { color:#d2dedb !important; font-size:13px; }
+  @media(max-width:680px) {
+    body.city-info-page .ek-city-profile-grid, body.city-info-page .ek-city-profile-images { grid-template-columns:1fr; }
+    body.site-dark.city-info-page .eainfo-page .eainfo-search :is(.ek-city-search-field, .ek-city-type-field) { flex:1 1 100%; }
+  }
 </style>
 {% endblock %}
 
@@ -47,16 +64,21 @@
     <h1>City Information</h1>
     <p>Discover Kabankalan guides and learn about the city.</p>
     <form class="eainfo-search" method="get" action="{% url 'info:city_information' %}" role="search">
-      <input type="search" name="q" value="{{ search_query }}" placeholder="{% if selected_section == 'official' %}Search official URL labels…{% else %}Search published guides…{% endif %}" aria-label="{% if selected_section == 'official' %}Search official sitemap URL labels{% else %}Search published city guides{% endif %}">
+      <div class="ek-city-search-field">
+        <label for="city-info-search">{% if selected_section == 'official' %}Search official sitemap links{% else %}Search published city guides{% endif %}</label>
+        <input id="city-info-search" type="search" name="q" value="{{ search_query }}" placeholder="{% if selected_section == 'official' %}Search official URL labels…{% else %}Search published guides…{% endif %}">
+      </div>
       <input type="hidden" name="section" value="{% if selected_section == 'about' %}all{% else %}{{ selected_section }}{% endif %}">
       {% if selected_section == 'official' %}
-        <label for="official-kind">Record type</label>
-        <select id="official-kind" class="ek-official-select" name="kind">
-          <option value="">All sitemap types</option>
-          <option value="page"{% if official_kind == 'page' %} selected{% endif %}>Pages</option>
-          <option value="post"{% if official_kind == 'post' %} selected{% endif %}>Posts</option>
-          <option value="category"{% if official_kind == 'category' %} selected{% endif %}>Category archives</option>
-        </select>
+        <div class="ek-city-type-field">
+          <label for="official-kind">Record type</label>
+          <select id="official-kind" class="ek-official-select" name="kind">
+            <option value="">All sitemap types</option>
+            <option value="page"{% if official_kind == 'page' %} selected{% endif %}>Pages</option>
+            <option value="post"{% if official_kind == 'post' %} selected{% endif %}>Posts</option>
+            <option value="category"{% if official_kind == 'category' %} selected{% endif %}>Category archives</option>
+          </select>
+        </div>
       {% endif %}
       <button type="submit">Search</button>
     </form>
