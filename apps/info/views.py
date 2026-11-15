@@ -4,8 +4,13 @@ Staff can still manage all City Information records in the administrative
 panel. This page displays only published attraction and event/festival guides;
 it does not delete, alter, or unpublish records.
 """
+from urllib.parse import urlencode
+
+from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.shortcuts import render
+
+from .official_index import KINDS, search_entries
 
 from apps.cities.locking import LOCKED_CITY_PK, locked_city
 from apps.cities.models import City
@@ -30,7 +35,7 @@ def city_information(request):
         legacy_type = ""
     search_query = (request.GET.get("q") or "").strip()[:100]
     section = (request.GET.get("section") or "").strip()
-    if section not in ("attraction", "event", "about", "all"):
+    if section not in ("attraction", "event", "about", "all", "official"):
         # Preserve old ?type= links and existing unscoped searches; start new
         # visits on Attractions rather than mixing all sections together.
         section = legacy_type or ("all" if search_query else "attraction")
@@ -59,6 +64,32 @@ def city_information(request):
         if items:
             grouped.append({"type": info_type, "label": label, "items": items})
 
+    official_page = None
+    official_kind = ""
+    previous_official_url = next_official_url = ""
+    if section == "official":
+        official_kind = (request.GET.get("kind") or "").strip()
+        if official_kind not in KINDS:
+            official_kind = ""
+        matches = search_entries(search_query, official_kind)
+        page_number = request.GET.get("page", "1")
+        if not page_number.isascii() or not page_number.isdecimal() or len(page_number) > 9:
+            page_number = "1"
+        official_page = Paginator(matches, 25).get_page(page_number)
+
+        def page_link(number):
+            params = {"section": "official", "page": number}
+            if search_query:
+                params["q"] = search_query
+            if official_kind:
+                params["kind"] = official_kind
+            return "?" + urlencode(params)
+
+        if official_page.has_previous():
+            previous_official_url = page_link(official_page.previous_page_number())
+        if official_page.has_next():
+            next_official_url = page_link(official_page.next_page_number())
+
     return render(request, "info/city_information.html", {
         "selected_city": city,
         "grouped_entries": grouped,
@@ -71,4 +102,8 @@ def city_information(request):
         "selected_type": selected_type,
         "selected_section": section,
         "search_query": search_query,
+        "official_page": official_page,
+        "official_kind": official_kind,
+        "previous_official_url": previous_official_url,
+        "next_official_url": next_official_url,
     })

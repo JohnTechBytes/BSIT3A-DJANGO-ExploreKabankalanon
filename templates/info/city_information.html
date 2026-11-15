@@ -29,6 +29,14 @@
   body.city-info-page .ek-city-profile figcaption { margin-top:10px; color:#c8d1ce; font-size:13px; line-height:1.6; }
   body.site-dark.ek-journey-theme.city-info-page .eainfo-page .ek-city-profile a { color:#a5edcb; text-decoration:underline; text-underline-offset:3px; }
   body.city-info-page .ek-city-profile-source { font-size:13px; line-height:1.6; }
+  body.city-info-page .ek-official { max-width:1000px; }
+  body.city-info-page .ek-official-list { list-style:none; padding:0; margin:20px 0; display:grid; gap:10px; }
+  body.city-info-page .ek-official-list li { border:1px solid #43515f; padding:16px; background:#121b29; overflow-wrap:anywhere; }
+  body.site-dark.ek-journey-theme.city-info-page .eainfo-page .ek-official a { color:#a5edcb; text-decoration:underline; text-underline-offset:3px; }
+  body.city-info-page .ek-official a:focus-visible, body.city-info-page .ek-official select:focus-visible { outline:3px solid #9be8c6; outline-offset:3px; }
+  body.city-info-page .ek-official small { display:block; color:#c8d1ce; margin-top:8px; }
+  body.city-info-page .ek-official-pages { display:flex; flex-wrap:wrap; gap:18px; align-items:center; }
+  body.city-info-page .ek-official-select { background:#121b29; color:#f0ece2; border:1px solid #81918e; min-height:44px; padding:8px; }
   @media(max-width:680px) { body.city-info-page .ek-city-profile-grid, body.city-info-page .ek-city-profile-images { grid-template-columns:1fr; } }
 </style>
 {% endblock %}
@@ -39,20 +47,30 @@
     <h1>City Information</h1>
     <p>Discover Kabankalan guides and learn about the city.</p>
     <form class="eainfo-search" method="get" action="{% url 'info:city_information' %}" role="search">
-      <input type="search" name="q" value="{{ search_query }}" placeholder="Search published guides…" aria-label="Search published city guides">
+      <input type="search" name="q" value="{{ search_query }}" placeholder="{% if selected_section == 'official' %}Search official URL labels…{% else %}Search published guides…{% endif %}" aria-label="{% if selected_section == 'official' %}Search official sitemap URL labels{% else %}Search published city guides{% endif %}">
       <input type="hidden" name="section" value="{% if selected_section == 'about' %}all{% else %}{{ selected_section }}{% endif %}">
+      {% if selected_section == 'official' %}
+        <label for="official-kind">Record type</label>
+        <select id="official-kind" class="ek-official-select" name="kind">
+          <option value="">All sitemap types</option>
+          <option value="page"{% if official_kind == 'page' %} selected{% endif %}>Pages</option>
+          <option value="post"{% if official_kind == 'post' %} selected{% endif %}>Posts</option>
+          <option value="category"{% if official_kind == 'category' %} selected{% endif %}>Category archives</option>
+        </select>
+      {% endif %}
       <button type="submit">Search</button>
     </form>
     {% if selected_section == 'about' %}<p>Search looks through published attraction and event guides, not the city overview.</p>{% endif %}
   </header>
 
   <nav class="ek-city-sections" aria-label="City Information sections">
-    <a href="?section=attraction{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}"{% if selected_section == 'attraction' %} aria-current="page"{% endif %}>Attraction</a>
-    <a href="?section=event{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}"{% if selected_section == 'event' %} aria-current="page"{% endif %}>Event / Festival</a>
+    <a href="?section=attraction{% if search_query and selected_section != 'official' %}&amp;q={{ search_query|urlencode }}{% endif %}"{% if selected_section == 'attraction' %} aria-current="page"{% endif %}>Attraction</a>
+    <a href="?section=event{% if search_query and selected_section != 'official' %}&amp;q={{ search_query|urlencode }}{% endif %}"{% if selected_section == 'event' %} aria-current="page"{% endif %}>Event / Festival</a>
     <a href="?section=about"{% if selected_section == 'about' %} aria-current="page"{% endif %}>About Kabankalan</a>
+    <a href="?section=official"{% if selected_section == 'official' %} aria-current="page"{% endif %}>Official City Information</a>
   </nav>
 
-  {% if selected_section != 'about' %}
+  {% if selected_section != 'about' and selected_section != 'official' %}
   <section class="eainfo-guides" aria-labelledby="city-guides-heading">
   <div class="eainfo-section-heading"><div><p class="eainfo-eyebrow">CITY GUIDES</p><h2 id="city-guides-heading">City guides</h2><p>Staff-published notes about Kabankalan.</p></div></div>
   <p class="eainfo-meta">{{ entry_count }} published {{ entry_count|pluralize:"entry,entries" }} shown.</p>
@@ -100,6 +118,32 @@
     </section>
   {% endif %}
 
+  </section>
+  {% endif %}
+
+  {% if selected_section == 'official' %}
+  <section class="ek-official" aria-labelledby="ek-official-heading">
+    <p class="eainfo-eyebrow">OFFICIAL WEBSITE</p>
+    <h2 id="ek-official-heading">Official City Information</h2>
+    <p>Browse a snapshot of the City Government of Kabankalan’s public sitemap links, supplied on October 28, 2026. This is an index of links, not copies of the records. It does not update automatically; a listed page may have changed or become unavailable.</p>
+    <p>Labels below are generated from URL paths, not verified document titles. Search matches those URL labels and addresses, not the full text. The sitemap’s last-modified date is not necessarily the date of the event or record. Open the source for details and current information.</p>
+    <p><a href="https://kabankalancity.gov.ph/">Official city website</a> · <a href="https://kabankalancity.gov.ph/citizens-charter/">Citizen’s Charter</a> · <a href="https://kabankalancity.gov.ph/contact-us/">Contact the city</a> · <a href="https://kabankalancity.gov.ph/wp-sitemap.xml">Official sitemap</a></p>
+    <p>{{ official_page.paginator.count }} matching sitemap {{ official_page.paginator.count|pluralize:"entry,entries" }}.</p>
+    {% if official_page.object_list %}
+      <ul class="ek-official-list">
+        {% for item in official_page %}
+          <li><a href="{{ item.url }}">{{ item.label }}</a><small>{{ item.kind_label }}{% if item.modified %} · Sitemap last modified: {{ item.modified }}{% else %} · No last-modified date in sitemap{% endif %}</small></li>
+        {% endfor %}
+      </ul>
+      <nav class="ek-official-pages" aria-label="Official index pages">
+        {% if previous_official_url %}<a href="{{ previous_official_url }}">Previous</a>{% endif %}
+        <span>Page {{ official_page.number }} of {{ official_page.paginator.num_pages }}</span>
+        {% if next_official_url %}<a href="{{ next_official_url }}">Next</a>{% endif %}
+      </nav>
+    {% else %}
+      <p>No sitemap entries match your search and record type.</p>
+      <p><a href="?section=official">Clear search and type</a></p>
+    {% endif %}
   </section>
   {% endif %}
 
