@@ -1,4 +1,4 @@
-"""City Information in-page site links and guide image rendering."""
+"""City Information uses the shared navigation without a duplicate row."""
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -19,10 +19,11 @@ class CitySiteNavigationTests(TestCase):
 
     def test_site_links_and_existing_image_card_for_anonymous_visitors(self):
         response = self.client.get(reverse('info:city_information'))
-        self.assertContains(response, 'aria-label="City Information site links"')
+        self.assertContains(response, 'aria-label="Main navigation"', count=1)
+        self.assertNotContains(response, 'aria-label="City Information site links"')
+        self.assertNotContains(response, 'class="eainfo-site-nav"')
         self.assertContains(response, 'href="' + reverse('places:attraction_carousel') + '?browse=all"')
         self.assertContains(response, 'href="' + reverse('places:attraction_carousel') + '?mode=nearby"')
-        self.assertContains(response, 'aria-current="page"')
         self.assertNotContains(response, 'aria-label="City guide types"')
         self.assertContains(response, 'src="https://example.com/test.jpg"')
         self.assertContains(response, 'Example photographer')

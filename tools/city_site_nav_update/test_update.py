@@ -35,7 +35,7 @@ class SiteNavInstallerTests(unittest.TestCase):
         view = (self.root / VIEW).read_bytes()
         backup = u.apply(self.root, self.base)
         self.assertEqual((backup / TEMPLATE).read_bytes(), old)
-        self.assertEqual((self.root / TEMPLATE).read_bytes(), (ROOT / TEMPLATE).read_bytes())
+        self.assertEqual((self.root / TEMPLATE).read_bytes(), u.download(TEMPLATE))
         self.assertEqual((self.root / VIEW).read_bytes(), view)
         self.assertEqual((self.root / 'db.sqlite3').read_bytes(), b'keep database')
         self.assertEqual((self.root / 'media/photo.jpg').read_bytes(), b'keep media')
@@ -62,7 +62,7 @@ class SiteNavInstallerTests(unittest.TestCase):
             nonlocal calls
             # Corrupt just the first verification after replacement; rollback
             # then recognizes the installed payload and restores the original.
-            if data == (ROOT / TEMPLATE).read_bytes():
+            if data == u.download(TEMPLATE):
                 calls += 1
                 if calls == 2:
                     return 'failed verification'
