@@ -96,8 +96,6 @@ class KabankalanPlaceAdminForm(forms.ModelForm):
         if has_photo and changed_photo:
             if not (cleaned.get("photo_credit") or "").strip():
                 self.add_error("photo_credit", "Add the photographer/owner attribution for this cover photo.")
-            if not (cleaned.get("photo_license") or "").strip():
-                self.add_error("photo_license", "Record the photo permission or license for this cover photo.")
             if cleaned.get("cover_image_url") and not (cleaned.get("photo_source_url") or "").strip():
                 self.add_error("photo_source_url", "External cover photos need a traceable source URL.")
 

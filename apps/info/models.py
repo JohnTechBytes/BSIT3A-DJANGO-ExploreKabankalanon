@@ -32,6 +32,11 @@ class CityInformation(models.Model):
             "'Photo: Juan Dela Cruz / Wikimedia Commons (CC BY-SA 4.0)'."
         ),
     )
+    # Some existing installations already store these rights fields in the
+    # database. Keep them mapped even when the admin license controls are hidden.
+    photo_license = models.CharField(max_length=100, blank=True)
+    photo_license_url = models.URLField(max_length=1000, blank=True)
+    photo_source_url = models.URLField(max_length=1000, blank=True)
     is_published = models.BooleanField(
         default=False,
         db_index=True,

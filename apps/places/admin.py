@@ -88,8 +88,8 @@ def _content_gaps(obj):
         issues.append("Description")
     if not _photo_url(obj):
         issues.append("Genuine cover photo")
-    elif not (obj.photo_credit or "").strip() or not (obj.photo_license or "").strip():
-        issues.append("Photo attribution/license")
+    elif not (obj.photo_credit or "").strip():
+        issues.append("Photo attribution")
     if obj.latitude is None or obj.longitude is None:
         issues.append("Verified coordinates")
     if not obj.hobbies.exists():
@@ -185,9 +185,11 @@ class PlaceAdmin(admin.ModelAdmin):
         ("Genuine Cover Photo & Rights", {
             "fields": (
                 "cover_image", "cover_image_url", "cover_preview", "photo_credit",
-                "photo_source_url", "photo_license", "photo_license_url",
+                "photo_source_url",
             ),
-            "description": "Use actual destination photography with permission. Never label sample or unrelated images as the destination.",
+            "description": ("Use actual destination photography with permission; check the credit and source "
+                            "for each new photo. Replacing the cover clears its old license details. "
+                            "Never label sample or unrelated images as the destination."),
         }),
         ("Content Completeness", {
             "fields": ("content_checklist",),
@@ -358,12 +360,14 @@ class PlaceAdmin(admin.ModelAdmin):
             ("Genuine cover photo and rights · optional", {
                 "fields": (
                     "cover_image", "cover_image_url", "cover_preview", "photo_credit",
-                    "photo_source_url", "photo_license", "photo_license_url",
+                    "photo_source_url",
                 ),
                 "classes": ("collapse",),
                 "description": (
                     "Use authentic photographs only with permission and proper "
-                    "attribution. Do not copy OSM map images into cover photos."
+                    "attribution. Check the credit and source for each new photo. "
+                    "Replacing the cover clears its old license details. "
+                    "Do not copy OSM map images into cover photos."
                 ),
             }),
             ("Administrative details · optional", {
@@ -481,6 +485,16 @@ class PlaceAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.city_id = KABANKALAN_CITY_ID
+        # License details belong to the previous cover, not a replacement.
+        # Keep them on ordinary edits and when a secondary URL changes while
+        # an uploaded cover remains the active image.
+        cover_changed = (
+            "cover_image" in form.changed_data or
+            ("cover_image_url" in form.changed_data and not obj.cover_image)
+        )
+        if change and cover_changed:
+            obj.photo_license = ""
+            obj.photo_license_url = ""
         if obj.pk and OSM_SLUG.fullmatch(obj.slug or ""):
             if (form.cleaned_data.get("osm_review_notes")
                     and ("is_verified" in form.changed_data or "is_active" in form.changed_data)
