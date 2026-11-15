@@ -59,6 +59,27 @@ def find_candidates(city):
     return candidates
 
 
+def is_reviewed_mag_aso(row):
+    """Match only the exact nearby record reported by this user's PC."""
+    return (row['pk'] == 1703 and row['title'] == 'Mag Aso Falls'
+            and row['latitude'] == Decimal('9.900694')
+            and row['longitude'] == Decimal('122.893451')
+            and row['is_active'] is True and row['is_verified'] is True
+            and 'wilfredo' not in normalized(row['slug']))
+
+
+def reviewed_candidates(city):
+    """Allow that one separately confirmed falls only; stop on every other match."""
+    rows = find_candidates(city)
+    if len(rows) != 1 or not is_reviewed_mag_aso(rows[0]):
+        print('Current matching or nearby records (including unpublished):')
+        for row in rows:
+            print(' ID:', row['pk'], '|', row['title'], '| active:', row['is_active'],
+                  '| verified:', row['is_verified'], '| coordinates:', row['latitude'], row['longitude'])
+        raise ValueError('Expected Mag Aso Falls 1703 alone was not found; nothing was added. Ask for review.')
+    return rows[0]
+
+
 def photo_directory():
     """Only use a local, reviewed Django media directory; never overwrite a file."""
     from django.conf import settings
@@ -82,7 +103,7 @@ def photo_directory():
     return current
 
 
-def create_place(city_id, category_id, image):
+def create_place(city_id, category_id, image, *, separate_mag_aso_confirmed=False):
     """Recheck duplicates under a city lock; add only this row and one new file."""
     from django.db import transaction
     from apps.cities.models import City
@@ -92,6 +113,8 @@ def create_place(city_id, category_id, image):
     if (len(image) != IMAGE_SIZE or hashlib.sha256(image).hexdigest() != IMAGE_HASH
             or not image.startswith(b'\x89PNG\r\n\x1a\n')):
         raise ValueError('Photo verification failed. Nothing was added.')
+    if separate_mag_aso_confirmed is not True:
+        raise ValueError('The separate Mag Aso Falls listing was not confirmed. Nothing was added.')
     created_photo = None
     place = None
     try:
@@ -99,8 +122,8 @@ def create_place(city_id, category_id, image):
             city = City.objects.select_for_update().get(pk=city_id)
             if city.pk != 2 or normalized(city.name) not in ('kabankalan', 'kabankalancity', 'cityofkabankalan') or normalized(city.province) != 'negrosoccidental':
                 raise ValueError('City 2 is not confirmed as Kabankalan, Negros Occidental.')
-            if find_candidates(city):
-                raise ValueError('A matching or nearby listing already exists. Nothing was added; inspect the records first.')
+            # Revalidate inside the transaction; no other matches are allowed.
+            reviewed_candidates(city)
             category = Category.objects.get(pk=category_id) if category_id is not None else None
             place = Place(city=city, category=category, title=TITLE, slug='wilfredos-campsite',
                           address=ADDRESS, barangay='Oringao', latitude=LATITUDE, longitude=LONGITUDE,
@@ -173,12 +196,12 @@ def main():
     city = City.objects.get(pk=2)
     if normalized(city.name) not in ('kabankalan', 'kabankalancity', 'cityofkabankalan') or normalized(city.province) != 'negrosoccidental':
         raise ValueError('City 2 is not confirmed as Kabankalan, Negros Occidental. Nothing was added.')
-    candidates = find_candidates(city)
-    if candidates:
-        print('Possible existing or nearby listings, including unpublished rows:')
-        for row in candidates:
-            print(' ID:', row['pk'], '|', row['title'], '| active:', row['is_active'], '| verified:', row['is_verified'], '| coordinates:', row['latitude'], row['longitude'])
-        raise ValueError('Nothing was added. Check these records and the OSM review queue before proceeding.')
+    reviewed_candidates(city)
+    print('Nearby existing place: ID 1703, Mag Aso Falls, at 9.900694 122.893451.')
+    print('This place will not be changed. No other matching or nearby records are allowed.')
+    if input('Type SEPARATE 1703 to confirm the campsite is a different place, or press Enter to cancel: ').strip() != 'SEPARATE 1703':
+        print('Cancelled. Nothing was added.')
+        return
     categories = list(Category.objects.order_by('name').values_list('pk', 'name'))
     print('\nExisting categories:')
     for pk, name in categories:
@@ -202,7 +225,7 @@ def main():
     if input('Type PUBLISH WILFREDO to add this one place and photo, or press Enter to cancel: ').strip() != 'PUBLISH WILFREDO':
         print('Cancelled. Nothing was added.')
         return
-    pk = create_place(city.pk, category_id, image)
+    pk = create_place(city.pk, category_id, image, separate_mag_aso_confirmed=True)
     print('Added one place and photo. Place ID:', pk)
     print('Check the listing and map. Existing places and media were not changed.')
 

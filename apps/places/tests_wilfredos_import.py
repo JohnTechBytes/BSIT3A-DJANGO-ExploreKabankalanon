@@ -36,12 +36,12 @@ class WilfredosImportTests(TestCase):
         self.addCleanup(patcher1.stop); self.addCleanup(patcher2.stop)
         self.city = City.objects.create(pk=2, name='Kabankalan', slug='kabankalan', province='Negros Occidental')
         self.category = Category.objects.create(name='Nature', slug='nature')
-        self.other = Place.objects.create(city=self.city, title='Existing Mag-aso Falls', address='Existing address', is_verified=True, is_active=True)
+        self.other = Place.objects.create(pk=1703, city=self.city, title='Mag Aso Falls', address='Existing address', latitude=Decimal('9.900694'), longitude=Decimal('122.893451'), is_verified=True, is_active=True)
         self.media.mkdir()
         (self.media / 'existing.png').write_bytes(b'existing media')
 
     def test_inserts_one_place_and_photo_then_refuses_duplicate(self):
-        pk = updater.create_place(self.city.pk, self.category.pk, self.image)
+        pk = updater.create_place(self.city.pk, self.category.pk, self.image, separate_mag_aso_confirmed=True)
         p = Place.objects.get(pk=pk)
         self.assertEqual(p.title, "Wilfredo's Campsite")
         self.assertEqual(p.latitude, Decimal('9.900833'))
@@ -52,8 +52,8 @@ class WilfredosImportTests(TestCase):
         self.assertIn('not independently verified', p.description)
         self.assertIn('PHP 400', p.description)
         self.assertEqual(p.photo_credit, 'Photo provided by the photographer')
-        with self.assertRaisesRegex(ValueError, 'matching or nearby'):
-            updater.create_place(self.city.pk, self.category.pk, self.image)
+        with self.assertRaisesRegex(ValueError, 'Expected Mag Aso Falls 1703 alone'):
+            updater.create_place(self.city.pk, self.category.pk, self.image, separate_mag_aso_confirmed=True)
         self.assertEqual(Place.objects.count(), 2)
         self.other.refresh_from_db()
         self.assertEqual(self.other.address, 'Existing address')
@@ -62,27 +62,48 @@ class WilfredosImportTests(TestCase):
 
     def test_nearby_record_or_unpublished_name_stops_without_files(self):
         other = Place.objects.create(city=self.city, title='Nearby', address='x', latitude=Decimal('9.900900'), longitude=Decimal('122.894200'), is_active=False, is_verified=False)
-        with self.assertRaisesRegex(ValueError, 'matching or nearby'):
-            updater.create_place(self.city.pk, None, self.image)
+        with self.assertRaisesRegex(ValueError, 'Expected Mag Aso Falls 1703 alone'):
+            updater.create_place(self.city.pk, None, self.image, separate_mag_aso_confirmed=True)
         other.latitude = None; other.longitude = None; other.title = 'WILFREDO Campsite'; other.save()
-        with self.assertRaisesRegex(ValueError, 'matching or nearby'):
+        with self.assertRaisesRegex(ValueError, 'Expected Mag Aso Falls 1703 alone'):
+            updater.create_place(self.city.pk, None, self.image, separate_mag_aso_confirmed=True)
+        self.assertFalse((self.media / 'places').exists())
+
+    def test_confirmation_and_expected_falls_identity_are_required(self):
+        with self.assertRaisesRegex(ValueError, 'not confirmed'):
             updater.create_place(self.city.pk, None, self.image)
+        for field, value in [('title', 'Mag Aso Campsite'),
+                             ('latitude', Decimal('9.900695')),
+                             ('longitude', Decimal('122.893452')),
+                             ('is_active', False), ('is_verified', False),
+                             ('slug', 'wilfredos-campsite')]:
+            with self.subTest(field=field):
+                original = getattr(self.other, field)
+                setattr(self.other, field, value)
+                self.other.save(update_fields=[field])
+                with self.assertRaisesRegex(ValueError, 'Expected Mag Aso Falls 1703 alone'):
+                    updater.create_place(self.city.pk, None, self.image, separate_mag_aso_confirmed=True)
+                setattr(self.other, field, original)
+                self.other.save(update_fields=[field])
+        self.other.delete()
+        with self.assertRaisesRegex(ValueError, 'Expected Mag Aso Falls 1703 alone'):
+            updater.create_place(self.city.pk, None, self.image, separate_mag_aso_confirmed=True)
         self.assertFalse((self.media / 'places').exists())
 
     def test_save_failure_removes_new_photo_only(self):
         with patch.object(Place, 'save', side_effect=RuntimeError('simulated save failure')):
             with self.assertRaisesRegex(RuntimeError, 'simulated'):
-                updater.create_place(self.city.pk, self.category.pk, self.image)
+                updater.create_place(self.city.pk, self.category.pk, self.image, separate_mag_aso_confirmed=True)
         self.assertEqual(Place.objects.count(), 1)
         self.assertEqual(list((self.media / 'places/covers').glob('*.png')), [])
         self.assertEqual((self.media / 'existing.png').read_bytes(), b'existing media')
 
     def test_bad_photo_or_city_does_not_write(self):
         with self.assertRaisesRegex(ValueError, 'Photo verification failed'):
-            updater.create_place(self.city.pk, None, b'not the supplied image')
+            updater.create_place(self.city.pk, None, b'not the supplied image', separate_mag_aso_confirmed=True)
         self.city.province = 'Other Province'; self.city.save(update_fields=['province'])
         with self.assertRaisesRegex(ValueError, 'not confirmed'):
-            updater.create_place(self.city.pk, None, self.image)
+            updater.create_place(self.city.pk, None, self.image, separate_mag_aso_confirmed=True)
         self.assertEqual(Place.objects.count(), 1)
         self.assertFalse((self.media / 'places').exists())
 
