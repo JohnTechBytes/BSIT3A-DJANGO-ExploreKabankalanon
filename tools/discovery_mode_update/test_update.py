@@ -42,8 +42,27 @@ class ModeInstallerTests(unittest.TestCase):
         self.assertEqual((self.root / 'media/photo.jpg').read_bytes(), b'media untouched')
         self.assertIsNone(u.apply(self.root, self.backup_parent))
 
+    def test_local_journey_routes_are_accepted_and_preserved(self):
+        urls = self.root / 'apps/places/urls.py'
+        original = urls.read_bytes()
+        marker = b'    path("<int:pk>/save/", journey_views.save_place, name="save_place"),'
+        self.assertEqual(original.count(marker), 1)
+        pc_urls = original.replace(marker, b'    path("journey/", journey_views.journey_dashboard, name="journey_dashboard"),\n' + marker)
+        self.assertEqual(u.digest(pc_urls), 'c9c9a1ef992214756bc95bb222a72327d9ef498be2b79893459747b205f64708')
+        # The base64 supplied by the PC contains both discovery routes already.
+        self.assertIn(b'name="attraction_carousel"', pc_urls)
+        self.assertIn(b'name="nearby_places"', pc_urls)
+        urls.write_bytes(pc_urls.replace(b'\n', b'\r\n'))
+        before = urls.read_bytes()
+        backup = u.apply(self.root, self.backup_parent)
+        self.assertIsNotNone(backup)
+        self.assertEqual(urls.read_bytes(), before)
+        self.assertIn(b'name="journey_dashboard"', urls.read_bytes())
+        self.assertFalse((backup / 'apps/places/urls.py').exists())
+        self.assertIsNone(u.apply(self.root, self.backup_parent))
+
     def test_changed_local_backend_or_microphone_stops(self):
-        for name in ('apps/places/views.py', 'static/js/ea-voice.js', 'apps/places/nearby_intent.py'):
+        for name in ('apps/places/views.py', 'static/js/ea-voice.js', 'apps/places/nearby_intent.py', 'apps/places/urls.py'):
             p = self.root / name
             original = p.read_bytes()
             p.write_bytes(original + b'\nlocal changes')

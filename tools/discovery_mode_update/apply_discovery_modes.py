@@ -38,7 +38,10 @@ PREREQUISITES = {'apps/places/nearby.py': '6d3f0d9d3dae228942cc902e8d602af3f2cf2
  'static/vendor/leaflet/leaflet.js': 'db49d009c841f5ca34a888c96511ae936fd9f5533e90d8b2c4d57596f4e5641a',
  'apps/places/search_intents.py': 'c7246a8202c048c3ea0f4e85fa9e8371a415c97b08451d10a376d2200ddce609',
  'apps/places/nearby_intent.py': '6017b22e5ebbe4b6f23acc7a16e7c43e8a8ca3a194f6bf1d6c5eff41493d668f',
- 'apps/places/urls.py': '468713bfc2f4728a7613f4d5aac2fc8cc74e36719cf8654b61b72d6ed43201b9',
+ # Both reviewed versions include the discovery routes. The second also
+ # retains the local Journey route; neither version is modified by this update.
+ 'apps/places/urls.py': ('468713bfc2f4728a7613f4d5aac2fc8cc74e36719cf8654b61b72d6ed43201b9',
+                         'c9c9a1ef992214756bc95bb222a72327d9ef498be2b79893459747b205f64708'),
  'templates/places/_discovery_modes.html': '65cef8dc22b1dcac9715bbacd0c1e9d279f0dd2d3bff5f7bb1eef46b962a648a',
  'templates/places/attraction_carousel.html': '8dbcb6f94a77c6d83f217950f44894f43979d02d736a07bc5f8ae9713c71db74',
  'static/css/public-field-guide.css': 'e36f1cdc7c6baa1019fad7dad2b78af0bd4b1657a82a6c8913650761b685d08d',
