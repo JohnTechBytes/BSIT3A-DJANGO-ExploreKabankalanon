@@ -34,7 +34,7 @@ class FestivalImportTests(TestCase):
         self.assertTrue(all(not e.thumbnail_url and not e.photo_credit for e in entries))
         self.assertEqual(list(CityInformation.objects.filter(pk=self.existing.pk).values()), before)
         self.assertEqual(list(Place.objects.values().order_by('pk')), place_before)
-        response = self.client.get(reverse('info:city_information'))
+        response = self.client.get(reverse('info:city_information'), {'section': 'event'})
         self.assertContains(response, 'Sinulog sa Kabankalan')
         self.assertContains(response, 'Udyakan sa Kabankalan')
         self.assertContains(response, 'Event / Festival')

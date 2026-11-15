@@ -25,10 +25,20 @@ def city_information(request):
 
     # Old links to the two retained types still work. Other former type and
     # directory parameters are ignored rather than showing the removed content.
-    selected_type = (request.GET.get("type") or "").strip()
-    if selected_type not in PUBLIC_TYPES:
-        selected_type = ""
+    legacy_type = (request.GET.get("type") or "").strip()
+    if legacy_type not in PUBLIC_TYPES:
+        legacy_type = ""
     search_query = (request.GET.get("q") or "").strip()[:100]
+    section = (request.GET.get("section") or "").strip()
+    if section not in ("attraction", "event", "about", "all"):
+        # Preserve old ?type= links and existing unscoped searches; start new
+        # visits on Attractions rather than mixing all sections together.
+        section = legacy_type or ("all" if search_query else "attraction")
+    # The overview is static, not part of guide search. Its search form starts
+    # a separate all-guides search so no results appear inside the About view.
+    if section == "about":
+        search_query = ""
+    selected_type = section if section in PUBLIC_TYPES else ""
 
     counts = {
         row["info_type"]: row["total"]
@@ -59,5 +69,6 @@ def city_information(request):
             for value, label in public_choices
         ],
         "selected_type": selected_type,
+        "selected_section": section,
         "search_query": search_query,
     })

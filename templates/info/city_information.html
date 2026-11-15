@@ -13,6 +13,7 @@
   body.city-info-page .ek-city-sections { display:flex; flex-wrap:wrap; gap:8px; margin:24px 0 32px; }
   body.site-dark.ek-journey-theme.city-info-page .eainfo-page .ek-city-sections a { display:inline-flex; align-items:center; min-height:44px; padding:9px 16px; border:1px solid #536374; background:#121b29; color:#f0ece2; font-size:14px; font-weight:600; text-decoration:none; }
   body.site-dark.ek-journey-theme.city-info-page .eainfo-page .ek-city-sections a:hover { border-color:#9be8c6; background:#1d3433; color:#b6f7d8; }
+  body.site-dark.ek-journey-theme.city-info-page .eainfo-page .ek-city-sections a[aria-current="page"] { border-color:#9be8c6; background:#9be8c6; color:#10251f; }
   body.city-info-page .ek-city-sections a:focus-visible { outline:3px solid #9be8c6; outline-offset:3px; }
   body.city-info-page .ek-city-section-target { scroll-margin-top:24px; }
   body.city-info-page .ek-city-profile { margin:56px 0 24px; padding-top:28px; border-top:1px solid #43515f; }
@@ -36,30 +37,25 @@
 <main class="eainfo-page" id="main-content">
   <header class="eainfo-hero">
     <h1>City Information</h1>
-    <p>Discover published Kabankalan attraction and event guides.</p>
+    <p>Discover Kabankalan guides and learn about the city.</p>
     <form class="eainfo-search" method="get" action="{% url 'info:city_information' %}" role="search">
       <input type="search" name="q" value="{{ search_query }}" placeholder="Search published guides…" aria-label="Search published city guides">
-      {% if selected_type %}<input type="hidden" name="type" value="{{ selected_type }}">{% endif %}
+      <input type="hidden" name="section" value="{% if selected_section == 'about' %}all{% else %}{{ selected_section }}{% endif %}">
       <button type="submit">Search</button>
     </form>
+    {% if selected_section == 'about' %}<p>Search looks through published attraction and event guides, not the city overview.</p>{% endif %}
   </header>
 
   <nav class="ek-city-sections" aria-label="City Information sections">
-    <a href="{% if search_query or selected_type %}{% url 'info:city_information' %}{% endif %}#eainfo-group-attraction">Attraction</a>
-    <a href="{% if search_query or selected_type %}{% url 'info:city_information' %}{% endif %}#eainfo-group-event">Event / Festival</a>
-    <a href="{% if search_query or selected_type %}{% url 'info:city_information' %}{% endif %}#ek-city-profile-heading">About Kabankalan</a>
+    <a href="?section=attraction{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}"{% if selected_section == 'attraction' %} aria-current="page"{% endif %}>Attraction</a>
+    <a href="?section=event{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}"{% if selected_section == 'event' %} aria-current="page"{% endif %}>Event / Festival</a>
+    <a href="?section=about"{% if selected_section == 'about' %} aria-current="page"{% endif %}>About Kabankalan</a>
   </nav>
-  {% if search_query or selected_type %}<p>Section links return to all city information.</p>{% endif %}
 
+  {% if selected_section != 'about' %}
   <section class="eainfo-guides" aria-labelledby="city-guides-heading">
   <div class="eainfo-section-heading"><div><p class="eainfo-eyebrow">CITY GUIDES</p><h2 id="city-guides-heading">City guides</h2><p>Staff-published notes about Kabankalan.</p></div></div>
-  <p class="eainfo-meta">
-    {% if entry_count == total_count %}
-      {{ total_count }} published {{ total_count|pluralize:"entry,entries" }} for {{ selected_city.name|default:"Kabankalan" }}.
-    {% else %}
-      Showing {{ entry_count }} of {{ total_count }} published {{ total_count|pluralize:"entry,entries" }}.
-    {% endif %}
-  </p>
+  <p class="eainfo-meta">{{ entry_count }} published {{ entry_count|pluralize:"entry,entries" }} shown.</p>
 
   {% if grouped_entries %}
     {% for group in grouped_entries %}
@@ -86,17 +82,17 @@
     {% endfor %}
   {% else %}
     <section class="eainfo-empty">
-      <h2>{% if search_query or selected_type %}No matching city information{% else %}No published city information yet{% endif %}</h2>
+      <h2>{% if search_query %}No matching city information{% elif selected_section == 'event' %}No published Event / Festival guides yet{% elif selected_section == 'attraction' %}No published Attraction guides yet{% else %}No published city information yet{% endif %}</h2>
       <p>
-        {% if search_query or selected_type %}
-          No published entry matches the current filter. Try another search term or clear the category filter.
+        {% if search_query %}
+          No published entry in this view matches your search. Try another term or clear the search.
         {% else %}
-          There are no staff-published guides to show yet.
+          There are no staff-published guides to show in this view yet.
         {% endif %}
       </p>
       <div class="eainfo-actions">
-        {% if search_query or selected_type %}
-          <a class="eainfo-btn eainfo-btn-teal" href="{% url 'info:city_information' %}">Clear filters</a>
+        {% if search_query %}
+          <a class="eainfo-btn eainfo-btn-teal" href="{% url 'info:city_information' %}?section={{ selected_section }}">Clear filters</a>
         {% else %}
           <a class="eainfo-btn eainfo-btn-teal" href="{% url 'places:attraction_carousel' %}?browse=all">Explore Places &#8599;</a>
         {% endif %}
@@ -104,19 +100,10 @@
     </section>
   {% endif %}
 
-  {% if not search_query and not selected_type %}
-    {% for link in type_links %}
-      {% if link.count == 0 %}
-        <section class="eainfo-group" aria-labelledby="eainfo-group-{{ link.type }}">
-          <div class="eainfo-group-head"><h2 class="ek-city-section-target" id="eainfo-group-{{ link.type }}" tabindex="-1">{{ link.label }}</h2></div>
-          <p>No published {{ link.label|lower }} guides yet.</p>
-        </section>
-      {% endif %}
-    {% endfor %}
-  {% endif %}
   </section>
+  {% endif %}
 
-  {% if not search_query and not selected_type %}
+  {% if selected_section == 'about' %}
   <section class="ek-city-profile" aria-labelledby="ek-city-profile-heading">
     <p class="eainfo-eyebrow">ABOUT THE CITY</p>
     <h2 class="ek-city-section-target" id="ek-city-profile-heading" tabindex="-1">About Kabankalan</h2>

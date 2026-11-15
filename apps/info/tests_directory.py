@@ -20,7 +20,7 @@ class CityGuideVisibilityTests(TestCase):
     def test_only_attraction_and_event_guides_are_shown(self):
         before_guides = list(CityInformation.objects.order_by("pk").values())
         before_places = list(Place.objects.order_by("pk").values())
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, {"section": "all"})
         for title in ("Guide attraction", "Guide event"):
             self.assertContains(response, title)
         for title in ("Guide food", "Guide stay", "Guide transport", "Directory example"):
@@ -38,14 +38,16 @@ class CityGuideVisibilityTests(TestCase):
             with self.subTest(params=params):
                 response = self.client.get(self.url, params)
                 self.assertContains(response, "Guide attraction")
-                self.assertContains(response, "Guide event")
+                self.assertNotContains(response, "Guide event")
+                event_response = self.client.get(self.url, {"section": "event"})
+                self.assertContains(event_response, "Guide event")
                 self.assertNotContains(response, "Guide food")
                 self.assertNotContains(response, "Directory example")
 
     def test_empty_when_only_other_guide_types_are_published(self):
         CityInformation.objects.filter(info_type__in=["attraction", "event"]).update(is_published=False)
         response = self.client.get(self.url)
-        self.assertContains(response, "No published city information yet")
+        self.assertContains(response, "No published Attraction guides yet")
         self.assertEqual(response.context["total_count"], 0)
         self.assertTrue(CityInformation.objects.filter(title="Guide food", is_published=True).exists())
 

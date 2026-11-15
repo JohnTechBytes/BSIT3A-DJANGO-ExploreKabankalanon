@@ -19,7 +19,7 @@ class CityProfileTests(TestCase):
 
     def test_summary_and_credits_are_visible_without_duplicate_nav_or_data_changes(self):
         before = list(CityInformation.objects.order_by('pk').values())
-        response = self.client.get(reverse('info:city_information'))
+        response = self.client.get(reverse('info:city_information'), {'section': 'about'})
         self.assertContains(response, 'About Kabankalan')
         for topic in ('City overview and government', 'Attractions and celebrations', 'History and cityhood',
                       'Geography', 'Climate', 'Barangays', 'Population and demographics', 'Languages',
@@ -34,8 +34,8 @@ class CityProfileTests(TestCase):
                     'https://commons.wikimedia.org/wiki/File:New_Kabankalan_Cathedral.jpg',
                     'https://commons.wikimedia.org/wiki/File:Barangays_of_Kabankalan,_Negros_Occidental.png'):
             self.assertContains(response, url)
-        self.assertContains(response, 'An attraction')
-        self.assertContains(response, 'An event')
+        self.assertNotContains(response, 'An attraction')
+        self.assertNotContains(response, 'An event')
         self.assertNotContains(response, 'Private food guide')
         self.assertNotContains(response, 'class="eainfo-site-nav"')
         self.assertNotContains(response, 'aria-label="City guide types"')

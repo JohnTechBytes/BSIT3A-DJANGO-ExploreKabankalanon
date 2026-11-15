@@ -18,7 +18,7 @@ class CitySiteNavigationTests(TestCase):
         cls.user = get_user_model().objects.create_user(username='example', password='test')
 
     def test_site_links_and_existing_image_card_for_anonymous_visitors(self):
-        response = self.client.get(reverse('info:city_information'))
+        response = self.client.get(reverse('info:city_information'), {'section': 'event'})
         self.assertContains(response, 'aria-label="Main navigation"', count=1)
         self.assertNotContains(response, 'aria-label="City Information site links"')
         self.assertNotContains(response, 'class="eainfo-site-nav"')
