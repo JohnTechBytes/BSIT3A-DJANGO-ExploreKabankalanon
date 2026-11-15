@@ -46,5 +46,5 @@ class CityProfileTests(TestCase):
             with self.subTest(query=query):
                 response = self.client.get(reverse('info:city_information'), query)
                 self.assertContains(response, 'An event')
-                self.assertNotContains(response, 'About Kabankalan')
+                self.assertNotContains(response, 'id="ek-city-profile-heading"')
                 self.assertNotContains(response, 'An attraction')

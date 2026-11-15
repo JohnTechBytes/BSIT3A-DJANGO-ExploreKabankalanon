@@ -10,6 +10,11 @@
 {% block design_system %}<link rel="stylesheet" href="{% static 'css/explore.css' %}?v=20261106-illustrations-1">{% endblock %}
 {% block page_styles %}
 <style>
+  body.city-info-page .ek-city-sections { display:flex; flex-wrap:wrap; gap:8px; margin:24px 0 32px; }
+  body.site-dark.ek-journey-theme.city-info-page .eainfo-page .ek-city-sections a { display:inline-flex; align-items:center; min-height:44px; padding:9px 16px; border:1px solid #536374; background:#121b29; color:#f0ece2; font-size:14px; font-weight:600; text-decoration:none; }
+  body.site-dark.ek-journey-theme.city-info-page .eainfo-page .ek-city-sections a:hover { border-color:#9be8c6; background:#1d3433; color:#b6f7d8; }
+  body.city-info-page .ek-city-sections a:focus-visible { outline:3px solid #9be8c6; outline-offset:3px; }
+  body.city-info-page .ek-city-section-target { scroll-margin-top:24px; }
   body.city-info-page .ek-city-profile { margin:56px 0 24px; padding-top:28px; border-top:1px solid #43515f; }
   body.city-info-page .ek-city-profile-intro { max-width:75ch; }
   body.city-info-page .ek-city-profile-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin:24px 0; }
@@ -39,6 +44,13 @@
     </form>
   </header>
 
+  <nav class="ek-city-sections" aria-label="City Information sections">
+    <a href="{% if search_query or selected_type %}{% url 'info:city_information' %}{% endif %}#eainfo-group-attraction">Attraction</a>
+    <a href="{% if search_query or selected_type %}{% url 'info:city_information' %}{% endif %}#eainfo-group-event">Event / Festival</a>
+    <a href="{% if search_query or selected_type %}{% url 'info:city_information' %}{% endif %}#ek-city-profile-heading">About Kabankalan</a>
+  </nav>
+  {% if search_query or selected_type %}<p>Section links return to all city information.</p>{% endif %}
+
   <section class="eainfo-guides" aria-labelledby="city-guides-heading">
   <div class="eainfo-section-heading"><div><p class="eainfo-eyebrow">CITY GUIDES</p><h2 id="city-guides-heading">City guides</h2><p>Staff-published notes about Kabankalan.</p></div></div>
   <p class="eainfo-meta">
@@ -53,7 +65,7 @@
     {% for group in grouped_entries %}
       <section class="eainfo-group" aria-labelledby="eainfo-group-{{ group.type }}">
         <div class="eainfo-group-head">
-          <h2 id="eainfo-group-{{ group.type }}">{{ group.label }}</h2>
+          <h2 class="ek-city-section-target" id="eainfo-group-{{ group.type }}" tabindex="-1">{{ group.label }}</h2>
           <span>{{ group.items|length }} {{ group.items|length|pluralize:"entry,entries" }}</span>
         </div>
         <div class="eainfo-grid">
@@ -92,12 +104,22 @@
     </section>
   {% endif %}
 
+  {% if not search_query and not selected_type %}
+    {% for link in type_links %}
+      {% if link.count == 0 %}
+        <section class="eainfo-group" aria-labelledby="eainfo-group-{{ link.type }}">
+          <div class="eainfo-group-head"><h2 class="ek-city-section-target" id="eainfo-group-{{ link.type }}" tabindex="-1">{{ link.label }}</h2></div>
+          <p>No published {{ link.label|lower }} guides yet.</p>
+        </section>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
   </section>
 
   {% if not search_query and not selected_type %}
   <section class="ek-city-profile" aria-labelledby="ek-city-profile-heading">
     <p class="eainfo-eyebrow">ABOUT THE CITY</p>
-    <h2 id="ek-city-profile-heading">About Kabankalan</h2>
+    <h2 class="ek-city-section-target" id="ek-city-profile-heading" tabindex="-1">About Kabankalan</h2>
     <p class="ek-city-profile-intro">A short overview adapted from Wikipedia, with links to original sources where available. Open a topic to learn more. The guide search above searches published guides, not these summaries.</p>
 
     <div class="ek-city-profile-grid">
