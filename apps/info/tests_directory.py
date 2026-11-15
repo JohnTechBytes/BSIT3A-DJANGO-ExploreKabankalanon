@@ -47,6 +47,8 @@ class SharedCityDirectoryTests(TestCase):
         self.assertContains(response, "No hobby tags assigned")
         self.assertContains(response, "Hobbies: Shopping")
         self.assertContains(response, "missing hobby tag does not mean a place is unsuitable")
+        self.assertNotContains(response, 'aria-label="Explore city information by category"')
+        self.assertNotContains(response, 'class="eainfo-directory-link')
 
     def test_directory_groups_and_overlapping_attractions(self):
         tests = {
@@ -62,7 +64,8 @@ class SharedCityDirectoryTests(TestCase):
                 self.assertContains(response, present)
                 self.assertNotContains(response, absent)
                 self.assertNotContains(response, "Travel note")
-                self.assertContains(response, 'aria-current="page"')
+                self.assertEqual(response.context["selected_directory"], section)
+                self.assertNotContains(response, 'aria-label="Explore city information by category"')
 
     def test_legacy_type_link_and_guide_filter_are_preserved(self):
         response = self.client.get(self.url, {"type": "transport"})
@@ -76,7 +79,7 @@ class SharedCityDirectoryTests(TestCase):
         self.assertContains(response, "Example Mall")
         self.assertNotContains(response, "Example Kitchen")
         self.assertContains(response, 'name="directory" value="malls"')
-        self.assertContains(response, 'directory=waterfalls&amp;q=Example')
+        self.assertNotContains(response, 'aria-label="Explore city information by category"')
         response = self.client.get(self.url, {"directory": "malls", "q": "nonexistent"})
         self.assertContains(response, "No matching places")
 

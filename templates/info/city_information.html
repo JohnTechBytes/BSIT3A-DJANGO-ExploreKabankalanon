@@ -22,12 +22,6 @@
     </form>
   </header>
 
-  <nav class="eainfo-directory-nav" aria-label="Explore city information by category">
-    {% for link in directory_links %}
-      <a href="{{ link.url }}" class="eainfo-directory-link{% if link.active %} is-active{% endif %}"{% if link.active %} aria-current="page"{% endif %}>{{ link.label }}</a>
-    {% endfor %}
-  </nav>
-
   {% if show_guides %}
   <section class="eainfo-guides" aria-labelledby="city-guides-heading">
   <div class="eainfo-section-heading"><div><p class="eainfo-eyebrow">CITY GUIDES</p><h2 id="city-guides-heading">City guides</h2><p>Staff-published notes about Kabankalan.</p></div></div>
